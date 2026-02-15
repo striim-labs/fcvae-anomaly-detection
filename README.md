@@ -43,19 +43,19 @@ The dashboard shows a time series of hourly transaction counts with real-time an
 
 ### Spike Anomaly (Test Day 1)
 
-![Spike Detection](day1_spike.png)
+![Spike Detection](images/day1_spike.png)
 
 Transaction count spikes to ~3500 at hours 15-16 (normal range: ~1000-2000). The model flags 2 hours as 1-hour anomalies (red dots), with NLL scores like -5.98 and -6.43 compared to ~0 for normal hours. An additional hour is caught via PA credit (orange dot), confirming segment-level detection.
 
 ### Dip/Outage Anomaly (Test Day 5)
 
-![Dip Detection](day5_dip.png)
+![Dip Detection](images/day5_dip.png)
 
 Transaction volume drops to ~248 at the combo's peak hour (normal: ~1000-2000), simulating an outage. The model detects the anomalous drop with 3 flagged hours. This demonstrates the model's ability to detect volume drops, not just spikes — enabled by balanced threshold calibration with both spike and dip anomalies in the validation set.
 
 ### Sustained Spike (Test Day 9)
 
-![Ramp Detection](day9_ramp.png)
+![Ramp Detection](images/day9_ramp.png)
 
 A multi-hour spike ramps up to ~5800 across hours 9-12. Each anomalous hour is independently flagged by the model with very negative NLL scores (-17.06, -7.63), showing high confidence. The dashboard accumulates 6 total 1-hour anomalies, demonstrating sustained anomaly tracking.
 
@@ -143,15 +143,15 @@ cd producer && uv sync && cd ..
 ### Generate Synthetic Data
 
 ```bash
-uv run python data/generate_transactions_v2.py split \
-    --output data/synthetic_transactions_v2_split60.csv
+uv run python data/generate_transactions.py split \
+    --output data/synthetic_transactions.csv
 ```
 
 ### Train Models
 
 ```bash
 uv run python -m app.train_fcvae \
-    --data-path data/synthetic_transactions_v2_split60.csv \
+    --data-path data/synthetic_transactions.csv \
     --output-dir models/fcvae \
     --kl-warmup-epochs 35 \
     --epochs 75
@@ -196,7 +196,7 @@ fcvae-anomaly-detection/
 │   └── producer.py              # Streams CSV data to Kafka
 │
 ├── data/                        # Data generation
-│   └── generate_transactions_v2.py
+│   └── generate_transactions.py
 │
 └── models/                      # Trained model artifacts
     └── fcvae/

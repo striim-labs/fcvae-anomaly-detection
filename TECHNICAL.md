@@ -451,7 +451,7 @@ Real-time detector implementing the `BaseDetector` interface:
 class FCVAEStreamingDetector(BaseDetector):
     def __init__(
         self,
-        model_path: str = "models/transactions_fcvae",
+        model_path: str = "models/fcvae",
         combo: Optional[Tuple[str, str]] = None,
         window_size: int = 24,
         min_samples: int = 24,
@@ -604,7 +604,7 @@ def fit_scorer_with_calibration(combo, val_loader, ...):
 
 ```bash
 python train_fcvae.py \
-    --data-path data/synthetic_transactions_v2_split60.csv \
+    --data-path data/synthetic_transactions.csv \
     --output-dir models/fcvae \
     --window-size 24 \
     --stride 1 \
@@ -719,7 +719,7 @@ volumes:
 │                        TRAINING PIPELINE                         │
 └─────────────────────────────────────────────────────────────────┘
 
-synthetic_transactions_v2_split60.csv
+synthetic_transactions.csv
          │
          ▼
 ┌─────────────────────────────────────────────────────────────────┐
