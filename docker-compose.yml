@@ -1,0 +1,145 @@
+services:
+  # ============================================
+  # ZOOKEEPER - Required for Kafka coordination
+  # ============================================
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - streaming_network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # KAFKA - Message broker for data streaming
+  # ============================================
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    hostname: kafka
+    container_name: kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"      # External access
+      - "29092:29092"    # Internal container access
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Listeners configuration:
+      # - PLAINTEXT_INTERNAL: For inter-container communication
+      # - PLAINTEXT_EXTERNAL: For host machine access
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://kafka:29092,PLAINTEXT_EXTERNAL://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+    networks:
+      - streaming_network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:29092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  # ============================================
+  # SPARK MASTER - Coordinates Spark workers
+  # ============================================
+  spark-master:
+    image: apache/spark:3.5.3-python3
+    hostname: spark-master
+    container_name: spark-master
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    environment:
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MASTER_WEBUI_PORT=8080
+    ports:
+      - "8080:8080"   # Spark Master Web UI
+      - "7077:7077"   # Spark Master port
+    networks:
+      - streaming_network
+
+  # ============================================
+  # SPARK WORKER - Executes Spark tasks
+  # ============================================
+  spark-worker:
+    image: apache/spark:3.5.3-python3
+    hostname: spark-worker
+    container_name: spark-worker
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+    networks:
+      - streaming_network
+
+  # ============================================
+  # DATA PRODUCER - Streams dataset to Kafka
+  # ============================================
+  # Producer waits for app's /health endpoint to confirm Spark is ready.
+  producer:
+    build: ./producer
+    container_name: producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC: anomaly_stream
+      MESSAGE_DELAY_SECONDS: ${MESSAGE_DELAY_SECONDS:-1}
+      COMBO: ${COMBO:-Accel_nopin}
+      DATA_SPLIT: ${DATA_SPLIT:-test}
+      LOOP_DATA: ${LOOP_DATA:-false}
+      APP_URL: http://app:8050
+      WAIT_FOR_APP: ${WAIT_FOR_APP:-true}
+    volumes:
+      - ./data:/app/data:ro  # Mount dataset directory
+    networks:
+      - streaming_network
+
+  # ============================================
+  # APP - Dash visualization + FCVAE detection
+  # ============================================
+  # Uses FCVAE (Frequency-enhanced Conditional VAE) for anomaly detection
+  # with 24-hour sliding windows and NLL-based scoring.
+  app:
+    build: ./app
+    container_name: app
+    depends_on:
+      - kafka
+      - spark-master
+    ports:
+      - "8050:8050"   # Dash web interface
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_TOPIC: anomaly_stream
+      SPARK_MASTER: spark://spark-master:7077
+      # FCVAE detector configuration
+      DETECTOR_TYPE: fcvae
+      WINDOW_SIZE: ${WINDOW_SIZE:-24}
+      MIN_SAMPLES: ${MIN_SAMPLES:-24}
+      # FCVAE model configuration
+      MODEL_PATH: ${MODEL_PATH:-models/fcvae}
+      COMBO: ${COMBO:-Accel_nopin}
+      N_SAMPLES: ${N_SAMPLES:-16}
+    volumes:
+      - ./models:/app/models:ro  # Mount trained models (read-only)
+    networks:
+      - streaming_network
+
+networks:
+  streaming_network:
+    driver: bridge
