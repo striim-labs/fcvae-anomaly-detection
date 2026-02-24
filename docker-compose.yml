@@ -140,6 +140,42 @@ services:
     networks:
       - streaming_network
 
+  # ============================================
+  # API - FastAPI FCVAE scoring service
+  # ============================================
+  # Stateless REST API wrapping FCVAEStreamingDetector.
+  # No dependency on Kafka or Spark — can run standalone.
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: api
+    ports:
+      - "8000:8000"   # Scoring API
+    environment:
+      FCVAE_MODEL_PATH: models/fcvae
+      FCVAE_MODEL_VERSION: "1.0.0"
+      FCVAE_N_SAMPLES: ${N_SAMPLES:-16}
+      FCVAE_SCORE_MODE: single_pass
+      FCVAE_DEVICE: cpu
+      FCVAE_API_KEY: "${FCVAE_API_KEY:-}"
+      FCVAE_LOG_LEVEL: INFO
+    volumes:
+      - ./models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    networks:
+      - streaming_network
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: "2.0"
+
 networks:
   streaming_network:
     driver: bridge

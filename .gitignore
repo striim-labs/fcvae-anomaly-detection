@@ -92,3 +92,5 @@ logs/
 
 # Models
 models/fcvae_60_kl
+
+PLAN.md
