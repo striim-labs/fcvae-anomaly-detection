@@ -79,6 +79,7 @@ venv.bak/
 
 # Project specific
 *.csv
+!data/*.csv
 *.pkl
 *.pt
 !models/**/*.pt
@@ -94,3 +95,4 @@ logs/
 models/fcvae_60_kl
 
 PLAN.md
+striim/fcvae-score-caller/target/
