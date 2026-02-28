@@ -15,6 +15,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!striim/lib/
 lib64/
 parts/
 sdist/
@@ -95,4 +96,3 @@ logs/
 models/fcvae_60_kl
 
 PLAN.md
-striim/fcvae-score-caller/target/

@@ -157,7 +157,7 @@ Use `LIST TYPES;` to verify type names. Striim registers types as `fcvae.ScorerR
 ## 6. Load Open Processor and Import the TQL Application
 
 ```sql
-LOAD OPENPROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
+LOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
 ```
 
 The TQL defines everything except the Open Processor (which can only be added via Flow Designer). Paste the following into the Striim console. This TQL file is also located at `striim/FCVAE.tql`.
