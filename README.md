@@ -2,7 +2,7 @@
 
 Real-time anomaly detection on transaction frequency time series using a Frequency-enhanced Conditional VAE (FCVAE), streamed via Kafka + Spark and visualized with a Dash dashboard.
 
-**Stack:** PyTorch | Apache Kafka | Apache Spark | Dash/Plotly | Docker Compose | UV
+**Stack:** PyTorch | FastAPI | Apache Kafka | Apache Spark | Dash/Plotly | Docker Compose | UV
 
 ---
 
@@ -58,6 +58,94 @@ Transaction volume drops to ~248 at the combo's peak hour (normal: ~1000-2000), 
 ![Ramp Detection](images/day9_ramp.png)
 
 A multi-hour spike ramps up to ~5800 across hours 9-12. Each anomalous hour is independently flagged by the model with very negative NLL scores (-17.06, -7.63), showing high confidence. The dashboard accumulates 6 total 1-hour anomalies, demonstrating sustained anomaly tracking.
+
+---
+
+## Scoring API
+
+The FCVAE scoring logic is also exposed as a standalone **FastAPI REST service** in `api/`. This is the production-grade interface for external callers (Striim, custom pipelines, etc.) to score transaction windows over HTTP without needing Kafka or Spark.
+
+### Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/v1/score` | POST | Score a single 24-hour window for one combo |
+| `/v1/score/batch` | POST | Score multiple windows in a single call |
+| `/health` | GET | Service health and per-combo model load status |
+| `/v1/model/info` | GET | Model configuration, thresholds, and scorer metadata |
+
+### Quick Start (Local)
+
+```bash
+# Install dependencies
+cd api && uv sync && cd ..
+
+# Start the API server
+PYTHONPATH=app:$PYTHONPATH api/.venv/bin/uvicorn api.main:app --port 8000
+
+# Score a window
+curl -X POST http://localhost:8000/v1/score \
+  -H "Content-Type: application/json" \
+  -d '{
+    "combo": "Accel_nopin",
+    "values": [1023,1150,987,1102,1045,998,1200,1350,1500,1420,1380,1290,1150,1080,1020,980,950,1010,1100,1200,1150,1050,1000,1020]
+  }'
+```
+
+Interactive API docs are available at `http://localhost:8000/docs`.
+
+### Quick Start (Docker)
+
+```bash
+docker compose build api
+docker compose up api
+
+# Score against the container
+curl -X POST http://localhost:8000/v1/score \
+  -H "Content-Type: application/json" \
+  -d '{"combo": "Accel_CMP", "values": [1023,1150,987,1102,1045,998,1200,1350,1500,1420,1380,1290,1150,1080,1020,980,950,1010,1100,1200,1150,1050,1000,1020]}'
+```
+
+The API service has no dependency on Kafka or Spark — it can run completely standalone.
+
+### Streaming Demo
+
+`api/demo_stream.py` simulates the real-time scoring workflow by sliding a 24-hour window across the test data and calling the API for each new hour:
+
+```bash
+# Start the API in one terminal
+PYTHONPATH=app:$PYTHONPATH api/.venv/bin/uvicorn api.main:app --port 8000
+
+# Run the streaming demo in another terminal
+PYTHONPATH=app:$PYTHONPATH api/.venv/bin/python -m api.demo_stream
+```
+
+Options:
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--combo` | `Accel_nopin` | Combo to score |
+| `--delay` | `0.5` | Seconds between API calls (simulates real-time) |
+| `--split` | `test` | Data split: `train`, `val`, `test` |
+| `--no-color` | off | Disable ANSI color output |
+
+The demo prints a live table showing each scored hour with its NLL score, threshold, anomaly decision, and ground-truth label — matching the behavior of the Dash dashboard.
+
+### API Configuration
+
+All settings are overridable via `FCVAE_`-prefixed environment variables (see `.env.example`):
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FCVAE_MODEL_PATH` | `models/fcvae` | Path to trained model artifacts |
+| `FCVAE_MODEL_VERSION` | `1.0.0` | Version tag returned in responses |
+| `FCVAE_N_SAMPLES` | `16` | Latent samples for NLL scoring |
+| `FCVAE_SCORE_MODE` | `single_pass` | `single_pass` or `mcmc` |
+| `FCVAE_DEVICE` | `cpu` | `cpu` or `cuda` |
+| `FCVAE_API_KEY` | `` | API key for auth (empty = no auth) |
+| `FCVAE_LOG_LEVEL` | `INFO` | Log level |
+
+For full architectural details, see [TECHNICAL.md section 11](TECHNICAL.md).
 
 ---
 
@@ -172,11 +260,13 @@ uv run python -m app.evaluate_fcvae detailed \
 
 ```
 fcvae-anomaly-detection/
-├── docker-compose.yml           # Docker orchestration (6 services)
+├── docker-compose.yml           # Docker orchestration (7 services)
+├── .env.example                 # Environment variable documentation
 ├── README.md                    # This file
 ├── TECHNICAL.md                 # Detailed architecture reference
+├── PLAN.md                      # Implementation plan (Steps 1-4)
 │
-├── app/                         # Main application
+├── app/                         # Dash dashboard + model code
 │   ├── Dockerfile
 │   ├── pyproject.toml
 │   ├── main.py                  # Dash dashboard + Spark streaming
@@ -189,6 +279,17 @@ fcvae-anomaly-detection/
 │   ├── train_fcvae.py           # Training pipeline
 │   ├── fcvae_augment.py         # Data augmentation
 │   └── evaluate_fcvae.py        # Evaluation + visualization
+│
+├── api/                         # FastAPI scoring service
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   ├── main.py                  # FastAPI app with lifespan model loading
+│   ├── schemas.py               # Pydantic request/response models
+│   ├── dependencies.py          # Model store, settings, detector lifecycle
+│   ├── demo_stream.py           # Streaming demo (sliding window over test data)
+│   └── routers/
+│       ├── scoring.py           # POST /v1/score, POST /v1/score/batch
+│       └── health.py            # GET /health, GET /v1/model/info
 │
 ├── producer/                    # Kafka data producer
 │   ├── Dockerfile
@@ -212,6 +313,10 @@ fcvae-anomaly-detection/
 
 ## Architecture Overview
 
+The system provides two independent interfaces to the same FCVAE scoring engine:
+
+### Streaming Pipeline (Dash Dashboard)
+
 ```
 Producer ──► Kafka (anomaly_stream) ──► Spark Structured Streaming ──► FCVAE Detector ──► Dash Dashboard
               ▲                                                            │
@@ -224,6 +329,20 @@ Producer ──► Kafka (anomaly_stream) ──► Spark Structured Streaming �
 3. **FCVAE Detector** scores each new hour's 24-hour sliding window using last-point NLL
 4. **Dash Dashboard** displays the time series with real-time anomaly markers and score tables
 
+### REST API (FastAPI Scoring Service)
+
+```
+Any caller ──► FastAPI (/v1/score) ──► FCVAEStreamingDetector ──► JSON response
+ (Striim,                                    │
+  curl,        http://localhost:8000     All 4 combo models
+  etc.)                                 loaded at startup
+```
+
+1. **Caller** sends a 24-value window + combo key via HTTP POST
+2. **FastAPI** validates the request, routes to the correct combo detector
+3. **FCVAEStreamingDetector** normalizes, scores via MCMC mode 2, and applies threshold
+4. **Response** returns `is_anomaly`, `last_point_score`, `threshold`, and all 24 position scores
+
 ---
 
 ## Further Reading
@@ -235,5 +354,8 @@ See [TECHNICAL.md](TECHNICAL.md) for:
 - Data augmentation strategies (point, segment, missing data)
 - Streaming detector implementation
 - Training pipeline with KL annealing
+- **Scoring API architecture** (endpoints, request flow, configuration)
 - Complete data flow diagrams
 - Full configuration reference with hyperparameter ranges
+
+See [PLAN.md](PLAN.md) for the full implementation plan including future Striim integration (Steps 3-4).

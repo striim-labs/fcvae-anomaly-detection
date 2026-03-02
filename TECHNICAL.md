@@ -16,6 +16,7 @@ Detailed architecture and internals of the FCVAE (Frequency-enhanced Conditional
 8. [Docker Infrastructure](#8-docker-infrastructure)
 9. [Data Flow Diagrams](#9-data-flow-diagrams)
 10. [Configuration Reference](#10-configuration-reference)
+11. [Scoring API](#11-scoring-api)
 
 ---
 
@@ -932,16 +933,179 @@ Producer → Kafka Topic (anomaly_stream)
 
 ---
 
+## 11. Scoring API
+
+### 11.1 Overview
+
+The `api/` directory contains a FastAPI REST service that wraps the existing `FCVAEStreamingDetector` in a stateless HTTP interface. It loads all four combo models at startup and exposes scoring, health, and model info endpoints. The API has no dependency on Kafka or Spark and can run standalone.
+
+### 11.2 Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     FastAPI Scoring Service                       │
+│                     (api/main.py)                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Startup (lifespan):                                            │
+│    ModelStore.load_all()                                        │
+│      ├── FCVAEStreamingDetector("Accel", "CMP")                │
+│      ├── FCVAEStreamingDetector("Accel", "no-pin")             │
+│      ├── FCVAEStreamingDetector("Star", "CMP")                 │
+│      └── FCVAEStreamingDetector("Star", "no-pin")              │
+│                                                                  │
+│  Each detector loads:                                           │
+│    model.pt ──► FCVAE (eval mode)                              │
+│    scaler.pkl ──► StandardScaler                                │
+│    scorer.pkl ──► FCVAEScorer                                   │
+│    oracle_thresholds.json ──► last_point_threshold override     │
+│                                                                  │
+│  Endpoints:                                                     │
+│    POST /v1/score ──► _score_single() ──► detector.score_window_detailed()
+│    POST /v1/score/batch ──► [_score_single() for each request]  │
+│    GET  /health ──► ModelStore status                           │
+│    GET  /v1/model/info ──► FCVAEConfig + scorer config          │
+│                                                                  │
+│  Optional:                                                      │
+│    API key auth via X-Api-Key header (middleware)               │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 11.3 Request Flow
+
+```
+Client POST /v1/score
+    │
+    ▼
+┌─────────────────────────────────────────────────────┐
+│ 1. VALIDATE (Pydantic)                              │
+│    - combo ∈ {Accel_CMP, Accel_nopin, Star_CMP,    │
+│               Star_nopin}                            │
+│    - len(values) == 24                              │
+│    - len(timestamps) == 24 (if provided)            │
+└─────────────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────────────┐
+│ 2. ROUTE TO DETECTOR                                │
+│    detector = model_store.get_detector(combo)       │
+│    → 503 if not loaded                              │
+└─────────────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────────────┐
+│ 3. BUILD DATAFRAME                                  │
+│    df = DataFrame({"timestamp": ts, "value": vals}) │
+└─────────────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────────────┐
+│ 4. SCORE (FCVAEStreamingDetector.score_window_detailed)
+│    a. Normalize via combo's fitted StandardScaler   │
+│    b. Reshape to (1, 1, 24) tensor                  │
+│    c. score_mcmc(x) → (24,) NLL scores              │
+│    d. Reconstruct for error computation             │
+│    e. last_point_score = scores[-1]                 │
+│    f. is_anomaly = last_point_score < threshold     │
+└─────────────────────────────────────────────────────┘
+    │
+    ▼
+┌─────────────────────────────────────────────────────┐
+│ 5. RESPOND                                          │
+│    {is_anomaly, last_point_score, threshold,        │
+│     combo, scored_timestamp, all_point_scores,      │
+│     model_version}                                  │
+└─────────────────────────────────────────────────────┘
+```
+
+### 11.4 Key Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| **Stateless scoring** | The API receives a complete 24-value window and scores it without maintaining a sliding window buffer. Window management is the caller's responsibility (Striim CQ, or the demo script). This keeps the API horizontally scalable. |
+| **One detector per combo** | Four `FCVAEStreamingDetector` instances are created at startup, each loading its own model, scaler, and scorer. This mirrors the `FCVAERegistry` pattern but uses the detector's `score_window_detailed()` method directly. |
+| **Reuse existing scoring path** | The API does not reimplement scoring logic. It calls `FCVAEStreamingDetector.score_window_detailed()`, which handles normalization, tensor construction, MCMC scoring, and threshold comparison — the same code path used by the Dash app. |
+| **Oracle thresholds** | Thresholds from `oracle_thresholds.json` override the scorer's default thresholds. These are F1-calibrated on synthetic anomalies during training. |
+| **Single Uvicorn worker** | PyTorch models hold state in memory. Multiple workers would each load all four models. For scaling, run multiple container replicas behind a load balancer instead. |
+
+### 11.5 Module Structure
+
+| File | Description |
+|------|-------------|
+| `api/main.py` | FastAPI app, lifespan model loading, optional API key middleware |
+| `api/schemas.py` | Pydantic models: `ScoreRequest`, `ScoreResponse`, `BatchScoreRequest`, `BatchScoreResponse`, `HealthResponse`, `ModelInfoResponse` |
+| `api/dependencies.py` | `Settings` (env config), `ModelStore` (detector lifecycle), `COMBO_KEY_MAP`, sys.path setup for app module imports |
+| `api/routers/scoring.py` | `POST /v1/score` and `POST /v1/score/batch` |
+| `api/routers/health.py` | `GET /health` and `GET /v1/model/info` |
+| `api/demo_stream.py` | Streaming demo: loads test data, slides 24h window, calls API per hour |
+
+### 11.6 Configuration
+
+All settings are managed via `pydantic-settings` with the `FCVAE_` environment variable prefix:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `FCVAE_MODEL_PATH` | `models/fcvae` | Directory containing trained model artifacts |
+| `FCVAE_MODEL_VERSION` | `1.0.0` | Version string returned in API responses |
+| `FCVAE_N_SAMPLES` | `16` | Latent samples for NLL scoring |
+| `FCVAE_SCORE_MODE` | `single_pass` | `single_pass` (fast) or `mcmc` (accurate) |
+| `FCVAE_DEVICE` | `cpu` | Inference device: `cpu` or `cuda` |
+| `FCVAE_API_KEY` | `` | API key for `X-Api-Key` header auth (empty = disabled) |
+| `FCVAE_LOG_LEVEL` | `INFO` | Python log level |
+
+### 11.7 Docker Integration
+
+The API is defined as the `api` service in `docker-compose.yml`:
+
+```yaml
+api:
+  build:
+    context: .
+    dockerfile: api/Dockerfile
+  ports:
+    - "8000:8000"
+  volumes:
+    - ./models:/app/models:ro
+  deploy:
+    resources:
+      limits:
+        memory: 2G
+        cpus: "2.0"
+```
+
+The Dockerfile copies `app/*.py` (model code) and `api/` (API code) into the image, sets `PYTHONPATH=/app/app` so the flat imports in the model modules resolve, and runs Uvicorn with a single worker.
+
+### 11.8 Import Strategy
+
+The `app/` modules use flat imports (e.g., `from fcvae_model import FCVAE`, not `from app.fcvae_model`). The API resolves these by adding the `app/` directory to `sys.path` at the top of `api/dependencies.py`:
+
+```python
+_app_dir = str(Path(__file__).resolve().parent.parent / "app")
+if _app_dir not in sys.path:
+    sys.path.insert(0, _app_dir)
+```
+
+For Docker, the equivalent is `ENV PYTHONPATH="/app/app:${PYTHONPATH}"` in the Dockerfile. For local development, run with `PYTHONPATH=app:$PYTHONPATH`.
+
+---
+
 ## File Descriptions
 
 | File | Lines | Description |
 |------|-------|-------------|
-| `fcvae_model.py` | ~440 | Core FCVAE VAE architecture with frequency conditioning |
-| `attention.py` | ~100 | Transformer attention modules |
-| `fcvae_scorer.py` | ~580 | NLL-based scoring with multiple threshold methods |
-| `fcvae_registry.py` | ~790 | Manages 4 independent combo models |
-| `fcvae_streaming_detector.py` | ~490 | Real-time streaming interface |
-| `train_fcvae.py` | ~730 | Complete training pipeline with augmentation |
-| `fcvae_augment.py` | ~220 | Point/segment/missing data augmentation |
-| `evaluate_fcvae.py` | ~1760 | Comprehensive evaluation and plotting |
-| `main.py` | ~600 | Dash application for visualization |
+| `app/fcvae_model.py` | ~440 | Core FCVAE VAE architecture with frequency conditioning |
+| `app/attention.py` | ~100 | Transformer attention modules |
+| `app/fcvae_scorer.py` | ~580 | NLL-based scoring with multiple threshold methods |
+| `app/fcvae_registry.py` | ~790 | Manages 4 independent combo models |
+| `app/fcvae_streaming_detector.py` | ~490 | Real-time streaming interface |
+| `app/train_fcvae.py` | ~730 | Complete training pipeline with augmentation |
+| `app/fcvae_augment.py` | ~220 | Point/segment/missing data augmentation |
+| `app/evaluate_fcvae.py` | ~1760 | Comprehensive evaluation and plotting |
+| `app/main.py` | ~600 | Dash application for visualization |
+| `api/main.py` | ~65 | FastAPI app entry point with lifespan and auth middleware |
+| `api/schemas.py` | ~100 | Pydantic request/response models with validation |
+| `api/dependencies.py` | ~115 | Model store, settings, detector lifecycle management |
+| `api/routers/scoring.py` | ~80 | Scoring endpoints (single and batch) |
+| `api/routers/health.py` | ~40 | Health check and model info endpoints |
+| `api/demo_stream.py` | ~160 | Streaming demo script for API validation |
