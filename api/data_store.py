@@ -169,6 +169,59 @@ class WindowDataStore:
             for row in rows
         ]
 
+    def get_all_windows(
+        self,
+        combo: str,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        lookback_days: Optional[int] = None,
+        limit: Optional[int] = None,
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve all windows (normal and anomalous) for a combo.
+
+        Same date-range filtering as get_normal_windows() but without the
+        is_anomaly = 0 filter. Includes is_anomaly label in each returned dict.
+
+        Returns:
+            List of dicts with keys: raw_values, window_end, last_point_score, is_anomaly
+        """
+        conn = self._get_connection()
+
+        query = "SELECT raw_values, window_end, last_point_score, is_anomaly FROM scored_windows WHERE combo = ?"
+        params: list = [combo]
+
+        if lookback_days is not None:
+            cutoff = (datetime.now(timezone.utc) - timedelta(days=lookback_days)).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            )
+            query += " AND created_at >= ?"
+            params.append(cutoff)
+        else:
+            if start_date is not None:
+                query += " AND window_end >= ?"
+                params.append(start_date)
+            if end_date is not None:
+                query += " AND window_end <= ?"
+                params.append(end_date)
+
+        query += " ORDER BY window_end ASC"
+
+        if limit is not None:
+            query += " LIMIT ?"
+            params.append(limit)
+
+        rows = conn.execute(query, params).fetchall()
+        return [
+            {
+                "raw_values": json.loads(row["raw_values"]),
+                "window_end": row["window_end"],
+                "last_point_score": row["last_point_score"],
+                "is_anomaly": bool(row["is_anomaly"]),
+            }
+            for row in rows
+        ]
+
     def count_normal_windows(
         self,
         combo: str,

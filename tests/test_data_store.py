@@ -140,6 +140,87 @@ class TestGetNormalWindows:
         assert windows == []
 
 
+class TestGetAllWindows:
+    def test_includes_both_normal_and_anomalous(self, store, sample_values):
+        store.append("Accel_CMP", sample_values, "2026-03-01T10:00:00Z", -0.5, False)
+        store.append("Accel_CMP", sample_values, "2026-03-01T11:00:00Z", -3.0, True)
+        store.append("Accel_CMP", sample_values, "2026-03-01T12:00:00Z", -0.4, False)
+
+        windows = store.get_all_windows("Accel_CMP")
+        assert len(windows) == 3
+
+    def test_includes_is_anomaly_label(self, store, sample_values):
+        store.append("Accel_CMP", sample_values, "2026-03-01T10:00:00Z", -0.5, False)
+        store.append("Accel_CMP", sample_values, "2026-03-01T11:00:00Z", -3.0, True)
+
+        windows = store.get_all_windows("Accel_CMP")
+        assert windows[0]["is_anomaly"] is False
+        assert windows[1]["is_anomaly"] is True
+
+    def test_is_anomaly_is_bool(self, store, sample_values):
+        store.append("Accel_CMP", sample_values, "2026-03-01T10:00:00Z", -0.5, False)
+        store.append("Accel_CMP", sample_values, "2026-03-01T11:00:00Z", -3.0, True)
+
+        windows = store.get_all_windows("Accel_CMP")
+        for w in windows:
+            assert isinstance(w["is_anomaly"], bool)
+
+    def test_chronological_order(self, store, sample_values):
+        store.append("Accel_CMP", sample_values, "2026-03-01T12:00:00Z", -0.5, False)
+        store.append("Accel_CMP", sample_values, "2026-03-01T10:00:00Z", -3.0, True)
+        store.append("Accel_CMP", sample_values, "2026-03-01T11:00:00Z", -0.4, False)
+
+        windows = store.get_all_windows("Accel_CMP")
+        assert windows[0]["window_end"] == "2026-03-01T10:00:00Z"
+        assert windows[1]["window_end"] == "2026-03-01T11:00:00Z"
+        assert windows[2]["window_end"] == "2026-03-01T12:00:00Z"
+
+    def test_filter_by_date_range(self, store, sample_values):
+        store.append("Accel_CMP", sample_values, "2026-02-28T12:00:00Z", -0.5, False)
+        store.append("Accel_CMP", sample_values, "2026-03-01T12:00:00Z", -3.0, True)
+        store.append("Accel_CMP", sample_values, "2026-03-02T12:00:00Z", -0.4, False)
+
+        windows = store.get_all_windows(
+            "Accel_CMP",
+            start_date="2026-03-01T00:00:00Z",
+            end_date="2026-03-01T23:59:59Z",
+        )
+        assert len(windows) == 1
+        assert windows[0]["is_anomaly"] is True
+
+    def test_filter_by_combo(self, store, sample_values):
+        store.append("Accel_CMP", sample_values, "2026-03-01T10:00:00Z", -0.5, False)
+        store.append("Star_CMP", sample_values, "2026-03-01T11:00:00Z", -3.0, True)
+
+        windows = store.get_all_windows("Accel_CMP")
+        assert len(windows) == 1
+        windows = store.get_all_windows("Star_CMP")
+        assert len(windows) == 1
+
+    def test_limit(self, store, sample_values):
+        for i in range(10):
+            store.append("Accel_CMP", sample_values, f"2026-03-01T{i:02d}:00:00Z", -0.5, i % 3 == 0)
+
+        windows = store.get_all_windows("Accel_CMP", limit=3)
+        assert len(windows) == 3
+
+    def test_empty_store_returns_empty(self, store):
+        windows = store.get_all_windows("Accel_CMP")
+        assert windows == []
+
+    def test_returned_dict_has_all_keys(self, store, sample_values):
+        store.append("Accel_CMP", sample_values, "2026-03-01T10:00:00Z", -0.5, False)
+
+        windows = store.get_all_windows("Accel_CMP")
+        assert len(windows) == 1
+        w = windows[0]
+        assert set(w.keys()) == {"raw_values", "window_end", "last_point_score", "is_anomaly"}
+        assert w["raw_values"] == sample_values
+        assert w["window_end"] == "2026-03-01T10:00:00Z"
+        assert w["last_point_score"] == -0.5
+        assert w["is_anomaly"] is False
+
+
 class TestCountNormalWindows:
     def test_count_basic(self, store, sample_values):
         for i in range(5):
