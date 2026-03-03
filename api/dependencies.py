@@ -39,6 +39,8 @@ class Settings(BaseSettings):
     device: str = "cpu"
     api_key: str = ""
     log_level: str = "INFO"
+    data_store_dir: str = "data/retrain"
+    enable_data_store: bool = True
 
 
 settings = Settings()
@@ -121,3 +123,12 @@ class ModelStore:
 
 # Singleton — populated during FastAPI lifespan
 model_store = ModelStore()
+
+# Data store for accumulating scored windows (used by retrain pipeline)
+from api.data_store import WindowDataStore  # noqa: E402
+
+data_store: Optional[WindowDataStore] = (
+    WindowDataStore(data_dir=settings.data_store_dir)
+    if settings.enable_data_store
+    else None
+)
