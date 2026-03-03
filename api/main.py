@@ -17,7 +17,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from api.dependencies import data_store, model_store, settings
-from api.routers import health, scoring
+from api.routers import health, retrain, scoring
 
 # Configure structured logging
 logging.basicConfig(
@@ -80,3 +80,4 @@ if settings.api_key:
 
 app.include_router(health.router)
 app.include_router(scoring.router)
+app.include_router(retrain.router)

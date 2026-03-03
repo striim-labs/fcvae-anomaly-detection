@@ -120,6 +120,48 @@ class ModelStore:
             return detector.scorer.last_point_threshold or detector.scorer.point_threshold
         return None
 
+    def reload_combo(
+        self, combo_key: str, model_path: str, device: str, n_samples: int,
+    ) -> bool:
+        """Hot-swap a combo's detector with a freshly loaded one.
+
+        Creates a new FCVAEStreamingDetector from model_path/{combo_dirname}/,
+        verifies it loaded successfully, then atomically swaps the dict entry
+        (GIL-safe dict assignment).
+
+        Returns True on success, False on failure.
+        """
+        combo_tuple = COMBO_KEY_MAP.get(combo_key)
+        if combo_tuple is None:
+            logger.error(f"reload_combo: unknown combo_key '{combo_key}'")
+            return False
+
+        try:
+            new_detector = FCVAEStreamingDetector(
+                model_path=model_path,
+                combo=combo_tuple,
+                window_size=24,
+                min_samples=24,
+                device=device,
+                n_samples=n_samples,
+                decision_mode="last_point",
+            )
+            if not new_detector.is_ready:
+                logger.error(
+                    f"reload_combo: new detector for {combo_key} failed to load: "
+                    f"{new_detector._load_error}"
+                )
+                return False
+
+            # Atomic swap — GIL-safe dict assignment
+            self.detectors[combo_key] = new_detector
+            logger.info(f"reload_combo: hot-swapped detector for {combo_key}")
+            return True
+
+        except Exception:
+            logger.exception(f"reload_combo: failed to create detector for {combo_key}")
+            return False
+
 
 # Singleton — populated during FastAPI lifespan
 model_store = ModelStore()
@@ -132,3 +174,8 @@ data_store: Optional[WindowDataStore] = (
     if settings.enable_data_store
     else None
 )
+
+# Retrain job manager singleton (lazy import to avoid circular deps)
+from api.retrain_job import RetrainJobManager  # noqa: E402
+
+retrain_job_manager = RetrainJobManager()

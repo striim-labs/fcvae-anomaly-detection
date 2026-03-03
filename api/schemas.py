@@ -116,3 +116,85 @@ class ModelInfoResponse(BaseModel):
     model_config_info: Dict
     combos: Dict[str, ComboInfo]
     model_version: str
+
+
+# --- Retrain schemas ---
+
+
+class RetrainRequest(BaseModel):
+    """Request to trigger a retrain job."""
+
+    mode: str = Field(
+        default="weekly",
+        description="Retrain mode: 'weekly' (lookback_days) or 'manual' (date range)",
+    )
+    combos: Optional[List[str]] = Field(
+        default=None,
+        description="Combo keys to retrain. Default: all 4.",
+    )
+    lookback_days: int = Field(default=7, description="Lookback days for weekly mode")
+    start_date: Optional[str] = Field(default=None, description="Start date for manual mode (ISO)")
+    end_date: Optional[str] = Field(default=None, description="End date for manual mode (ISO)")
+    auto_reload: bool = Field(default=True, description="Auto-promote and hot-swap on success")
+    min_windows: int = Field(default=50, description="Minimum normal windows required per combo")
+
+    @field_validator("combos")
+    @classmethod
+    def validate_combos(cls, v: Optional[List[str]]) -> Optional[List[str]]:
+        if v is not None:
+            for combo in v:
+                if combo not in VALID_COMBOS:
+                    raise ValueError(
+                        f"Invalid combo '{combo}'. Must be one of: {sorted(VALID_COMBOS)}"
+                    )
+        return v
+
+
+class RetrainResponse(BaseModel):
+    """Response from POST /v1/retrain."""
+
+    job_id: str
+    status: str
+    message: str
+
+
+class RetrainStatusResponse(BaseModel):
+    """Response from GET /v1/retrain/status/{job_id}."""
+
+    job_id: str
+    status: str  # "running", "completed", "failed"
+    combo_results: Optional[List[dict]] = None
+    started_at: str
+    completed_at: Optional[str] = None
+    duration_seconds: Optional[float] = None
+
+
+class ReloadRequest(BaseModel):
+    """Request to manually reload models from staged artifacts."""
+
+    combos: Optional[List[str]] = Field(
+        default=None,
+        description="Combo keys to reload. Default: all 4.",
+    )
+    staging_dir: str = Field(
+        default="models/fcvae_staging",
+        description="Path to staged artifacts directory",
+    )
+
+    @field_validator("combos")
+    @classmethod
+    def validate_combos(cls, v: Optional[List[str]]) -> Optional[List[str]]:
+        if v is not None:
+            for combo in v:
+                if combo not in VALID_COMBOS:
+                    raise ValueError(
+                        f"Invalid combo '{combo}'. Must be one of: {sorted(VALID_COMBOS)}"
+                    )
+        return v
+
+
+class ReloadResponse(BaseModel):
+    """Response from POST /v1/model/reload."""
+
+    reloaded_combos: List[str]
+    message: str
