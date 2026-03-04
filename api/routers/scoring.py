@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 
-from api.dependencies import data_store, model_store, settings
+from api.dependencies import data_store, model_store
 from api.schemas import (
     BatchScoreRequest,
     BatchScoreResponse,
@@ -65,7 +65,7 @@ def _score_single(req: ScoreRequest) -> ScoreResponse:
         combo=req.combo,
         scored_timestamp=scored_timestamp,
         all_point_scores=all_point_scores,
-        model_version=settings.model_version,
+        model_version=model_store.effective_version,
     )
 
     # Accumulate raw window for future retraining (fire-and-forget)

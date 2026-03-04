@@ -3,7 +3,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from api.dependencies import COMBO_KEY_MAP, model_store, settings
+from api.dependencies import COMBO_KEY_MAP, model_store
 from api.schemas import ComboInfo, HealthResponse, ModelInfoResponse
 
 router = APIRouter()
@@ -19,7 +19,7 @@ async def health():
     response = HealthResponse(
         status="healthy" if healthy else "unhealthy",
         models_loaded=models_loaded,
-        model_version=settings.model_version,
+        model_version=model_store.effective_version,
         uptime_seconds=round(model_store.uptime_seconds, 1),
     )
     status_code = 200 if healthy else 503
@@ -38,5 +38,8 @@ async def model_info():
     return ModelInfoResponse(
         model_config_info=model_store.get_model_config_dict(),
         combos=combos,
-        model_version=settings.model_version,
+        model_version=model_store.effective_version,
+        retrain_count=model_store.retrain_counter,
+        last_retrain_time=model_store.last_retrain_time,
+        combo_versions=dict(model_store.combo_versions),
     )

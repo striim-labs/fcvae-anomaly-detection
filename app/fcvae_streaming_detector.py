@@ -30,26 +30,22 @@ import numpy as np
 import pandas as pd
 import torch
 
-from base_detector import BaseDetector
-from fcvae_model import FCVAE, FCVAEConfig
-from fcvae_scorer import FCVAEScorer
+from app.base_detector import BaseDetector
+from app.fcvae_model import FCVAE, FCVAEConfig
+from app.fcvae_scorer import FCVAEScorer
 
-# Pickle compatibility: models were saved with "app." prefixed module paths
-# (e.g., app.fcvae_model.FCVAEConfig) but Docker runs flat from /app.
-# Register current modules under their app.* aliases so pickle can find them.
+# Pickle compatibility: models were saved with "app." prefixed module paths.
+# With app/ as a proper package, sys.modules already has app.fcvae_model etc.,
+# but also register bare aliases for Docker environments that run flat from /app.
 import sys
-import types
-import fcvae_model as _fcvae_model
-import fcvae_scorer as _fcvae_scorer
-import fcvae_augment as _fcvae_augment
-import attention as _attention
+import app.fcvae_model as _fcvae_model
+import app.fcvae_scorer as _fcvae_scorer
+import app.fcvae_augment as _fcvae_augment
+import app.attention as _attention
 
-_app_module = types.ModuleType("app")
-sys.modules["app"] = _app_module
 for _name, _mod in [("fcvae_model", _fcvae_model), ("fcvae_scorer", _fcvae_scorer),
                      ("fcvae_augment", _fcvae_augment), ("attention", _attention)]:
-    sys.modules[f"app.{_name}"] = _mod
-    setattr(_app_module, _name, _mod)
+    sys.modules.setdefault(_name, _mod)
 
 logger = logging.getLogger(__name__)
 

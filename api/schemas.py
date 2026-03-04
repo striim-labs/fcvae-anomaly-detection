@@ -116,6 +116,9 @@ class ModelInfoResponse(BaseModel):
     model_config_info: Dict
     combos: Dict[str, ComboInfo]
     model_version: str
+    retrain_count: int = Field(default=0, description="Total successful retrains since startup")
+    last_retrain_time: Optional[str] = Field(default=None, description="UTC timestamp of last successful retrain")
+    combo_versions: Dict[str, int] = Field(default_factory=dict, description="Per-combo retrain count since startup")
 
 
 # --- Retrain schemas ---

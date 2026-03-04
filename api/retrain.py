@@ -20,15 +20,15 @@ from sklearn.preprocessing import StandardScaler
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from torch.utils.data import DataLoader
 
-# Add app/ to Python path (same pattern as api/dependencies.py)
-_app_dir = str(Path(__file__).resolve().parent.parent / "app")
-if _app_dir not in sys.path:
-    sys.path.insert(0, _app_dir)
+# Add project root to Python path so `from app.X` imports work
+_project_root = str(Path(__file__).resolve().parent.parent)
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
 
-from fcvae_augment import AugmentConfig, batch_augment  # noqa: E402
-from fcvae_model import FCVAE, FCVAEConfig  # noqa: E402
-from fcvae_scorer import FCVAEScorer  # noqa: E402
-from transaction_preprocessor import SlidingWindowDataset  # noqa: E402
+from app.fcvae_augment import AugmentConfig, batch_augment  # noqa: E402
+from app.fcvae_model import FCVAE, FCVAEConfig  # noqa: E402
+from app.fcvae_scorer import FCVAEScorer  # noqa: E402
+from app.transaction_preprocessor import SlidingWindowDataset  # noqa: E402
 
 from api.data_store import WindowDataStore  # noqa: E402
 

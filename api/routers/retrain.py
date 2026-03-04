@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from api.dependencies import (
     COMBO_KEY_MAP,
     data_store,
+    model_event_log,
     model_store,
     retrain_job_manager,
     settings,
@@ -64,6 +65,7 @@ async def trigger_retrain(req: RetrainRequest):
             auto_reload=req.auto_reload,
             model_store=model_store,
             min_windows=req.min_windows,
+            event_log=model_event_log,
         )
     except RuntimeError:
         raise HTTPException(status_code=409, detail="A retrain job is already running")
@@ -126,6 +128,11 @@ async def reload_models(req: ReloadRequest):
         )
         if ok:
             reloaded.append(combo)
+            model_event_log.log_event(
+                "model_reloaded",
+                combo=combo,
+                details={"source": "manual", "version": model_store.combo_versions.get(combo, 0)},
+            )
 
     return ReloadResponse(
         reloaded_combos=reloaded,

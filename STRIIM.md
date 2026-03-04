@@ -57,7 +57,7 @@ cd /Users/<your-username>/Documents/Striim/fcvae-anomaly-detection
 cd api && uv sync && cd ..
 
 # Start the API server
-PYTHONPATH=app:$PYTHONPATH api/.venv/bin/uvicorn api.main:app --port 8000
+api/.venv/bin/uvicorn api.main:app --port 8000
 ```
 
 ### Option B: Docker

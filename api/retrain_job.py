@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 
 if TYPE_CHECKING:
     from api.dependencies import ModelStore
+    from api.model_events import ModelEventLog
     from api.retrain import RetrainPipeline
 
 logger = logging.getLogger(__name__)
@@ -39,6 +40,7 @@ class RetrainJobManager:
         auto_reload: bool,
         model_store: "ModelStore",
         min_windows: int,
+        event_log: Optional["ModelEventLog"] = None,
     ) -> str:
         """Submit a retrain job. Returns job_id.
 
@@ -62,11 +64,18 @@ class RetrainJobManager:
                 "auto_reload": auto_reload,
             }
 
+        if event_log is not None:
+            event_log.log_event(
+                "retrain_started",
+                details={"job_id": job_id, "combos": combos, "mode": mode},
+            )
+
         thread = threading.Thread(
             target=self._run_job,
             args=(
                 job_id, pipeline, combos, mode, lookback_days,
                 start_date, end_date, auto_reload, model_store, min_windows,
+                event_log,
             ),
             daemon=True,
         )
@@ -94,6 +103,7 @@ class RetrainJobManager:
         auto_reload: bool,
         model_store: "ModelStore",
         min_windows: int,
+        event_log: Optional["ModelEventLog"] = None,
     ) -> None:
         """Execute retrain for each combo in sequence."""
         start_time = time.perf_counter()
@@ -116,7 +126,30 @@ class RetrainJobManager:
 
                 if result.status == "success" and auto_reload:
                     self._promote_and_reload(
-                        combo, pipeline.config, model_store,
+                        combo, pipeline.config, model_store, event_log,
+                    )
+                    if event_log is not None:
+                        event_log.log_event(
+                            "retrain_completed",
+                            combo=combo,
+                            details={
+                                "job_id": job_id,
+                                "new_f1": result.new_f1,
+                                "old_f1": result.old_f1,
+                                "new_threshold": result.new_threshold,
+                                "duration_seconds": result.duration_seconds,
+                            },
+                        )
+                elif result.status == "rejected" and event_log is not None:
+                    event_log.log_event(
+                        "retrain_rejected",
+                        combo=combo,
+                        details={
+                            "job_id": job_id,
+                            "reason": result.error_message,
+                            "new_f1": result.new_f1,
+                            "old_f1": result.old_f1,
+                        },
                     )
 
                 if result.status == "error":
@@ -143,6 +176,7 @@ class RetrainJobManager:
         combo: str,
         config: "RetrainConfig",  # noqa: F821
         model_store: "ModelStore",
+        event_log: Optional["ModelEventLog"] = None,
     ) -> None:
         """Copy staged artifacts to production dir and hot-swap the detector."""
         staging = Path(config.staging_dir) / combo
@@ -163,5 +197,13 @@ class RetrainJobManager:
         )
         if ok:
             logger.info(f"Hot-swapped detector for {combo}")
+            if event_log is not None:
+                event_log.log_event(
+                    "model_reloaded",
+                    combo=combo,
+                    details={"version": model_store.combo_versions.get(combo, 0)},
+                )
         else:
             logger.error(f"Failed to hot-swap detector for {combo}")
+            if event_log is not None:
+                event_log.log_event("validation_failed", combo=combo)

@@ -16,7 +16,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from api.dependencies import data_store, model_store, settings
+from api.dependencies import data_store, model_event_log, model_store, settings
 from api.routers import health, retrain, scoring
 
 # Configure structured logging
@@ -47,6 +47,7 @@ async def lifespan(app: FastAPI):
         logger.info("Data store initialized: %s", data_store.get_stats())
     else:
         logger.info("Data store disabled")
+    logger.info("Model event log: %s", model_event_log.path)
     yield
     logger.info("Shutting down FCVAE Scoring API")
 
