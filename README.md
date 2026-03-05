@@ -291,7 +291,7 @@ uv run python -m app.train_fcvae \
 ```bash
 uv run python -m app.evaluate_fcvae detailed \
     --model-dir models/fcvae \
-    --output-dir plots/fcvae \
+    --output-dir results/fcvae \
     --streaming-sim
 ```
 

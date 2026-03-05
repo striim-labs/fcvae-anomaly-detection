@@ -85,7 +85,7 @@ venv.bak/
 *.pt
 !models/**/*.pt
 !models/**/*.pkl
-plots/
+results/
 logs/
 *.log
 
