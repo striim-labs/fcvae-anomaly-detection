@@ -3,7 +3,7 @@
 **Striim Version:** Platform 5.2.0.4 (OpenJDK 11)
 **Pipeline:** FileReader -> Hourly Aggregation -> 24-Hour Sliding Window -> Open Processor (FCVAE API) -> FileWriter (JSON)
 
-This guide walks through recreating the end-to-end Striim FCVAE anomaly detection pipeline from scratch on any local machine. It assumes Striim Platform is installed at `/opt/Striim` and the FCVAE scoring API is running locally.
+This guide walks through recreating the end-to-end Striim FCVAE anomaly detection pipeline from scratch on any local machine. It assumes Striim Platform is installed locally (default `/opt/Striim`, but any path works) and the FCVAE scoring API is running on the same host.
 
 ---
 
@@ -30,7 +30,16 @@ This guide walks through recreating the end-to-end Striim FCVAE anomaly detectio
 
 Before starting, confirm you have the following:
 
-**Striim Platform** installed and running (tested on 5.2.0.4). The default install path is `/opt/Striim`. Verify Striim is accessible at your web UI (e.g., `http://<your-ip>:9080`).
+**Striim Platform** installed and running (tested on 5.2.0.4). Verify Striim is accessible at your web UI (e.g., `http://<your-ip>:9080`).
+
+Set `STRIIM_HOME` to your Striim installation directory. All commands in this guide use this variable:
+
+```bash
+# Example values:
+#   /opt/Striim
+#   /Users/<your-username>/Striim
+export STRIIM_HOME="/path/to/Striim"
+```
 
 **The FCVAE repo** cloned locally. This guide assumes the repo is at:
 ```
@@ -100,14 +109,30 @@ mkdir -p /tmp/fcvae_test
 
 The Open Processor is a pre-built Java module that Striim loads at runtime. It calls the FCVAE scoring API over HTTP for each event batch and returns typed scoring results.
 
-The pre-built module is included in the repo at `striim/fcvae-score-caller/target/FCVAEScoreCaller.jar`. Copy it to Striim's modules directory with the `.scm` extension:
+The pre-built module is included in the repo at `<repo>/striim/fcvae-score-caller/target/FCVAEScoreCaller.jar`. Copy it to Striim's modules directory with the `.scm` extension:
 
 ```bash
 cp /path/to/fcvae-anomaly-detection/striim/fcvae-score-caller/target/FCVAEScoreCaller.jar \
-   /opt/Striim/modules/FCVAEScoreCaller.scm
+   "$STRIIM_HOME/modules/FCVAEScoreCaller.scm"
 ```
 
-Then restart Striim so it picks up the new module
+Then restart Striim so it picks up the new module.
+
+### Verify the Module Loaded
+
+After Striim restarts, open the Striim console and run:
+
+```sql
+LOAD OPEN PROCESSOR "$STRIIM_HOME/modules/FCVAEScoreCaller.scm";
+```
+
+If the module loaded successfully, you should see no errors. You can also verify by checking the Striim server log:
+
+```bash
+tail -20 "$STRIIM_HOME/logs/striim.server.log" | grep -i "FCVAEScoreCaller"
+```
+
+Look for a log entry indicating the module was registered.
 
 > **Note:** If you need to modify the Open Processor Java code and rebuild from source, see [Step 14](#14-building-from-source-developer-reference).
 
@@ -115,7 +140,7 @@ Then restart Striim so it picks up the new module
 
 ## 5. Create the Namespace and Types in Striim
 
-Open the Striim console. You can use either the CLI console (`/opt/Striim/bin/console.sh`) or paste commands into the web console. The web console does NOT support `@/path/to/file.tql` syntax, so paste directly.
+Open the Striim console. You can use either the CLI console (`$STRIIM_HOME/bin/console.sh`) or paste commands into the web console. The web console does NOT support `@/path/to/file.tql` syntax, so paste directly.
 
 **Always use the `fcvae` namespace.** Components created in the wrong namespace cause deployment failures.
 
@@ -157,8 +182,10 @@ Use `LIST TYPES;` to verify type names. Striim registers types as `fcvae.ScorerR
 ## 6. Load Open Processor and Import the TQL Application
 
 ```sql
-LOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
+LOAD OPEN PROCESSOR "$STRIIM_HOME/modules/FCVAEScoreCaller.scm";
 ```
+
+> **Note:** Replace `$STRIIM_HOME` with the actual path in the Striim console, as the console does not expand shell variables (e.g., `LOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";`).
 
 The TQL defines everything except the Open Processor (which can only be added via Flow Designer). Paste the following into the Striim console. This TQL file is also located at `striim/FCVAE.tql`.
 
@@ -179,7 +206,7 @@ The TQL defines everything except the Open Processor (which can only be added vi
 -- Prerequisites:
 --   1. FCVAE Scoring API running at http://localhost:8000
 --   2. FCVAEScoreCaller.scm loaded via:
---        LOAD OPEN PROCESSOR '/opt/Striim/modules/FCVAEScoreCaller.scm';
+--        LOAD OPEN PROCESSOR '<STRIIM_HOME>/modules/FCVAEScoreCaller.scm';
 --   3. Synthetic transactions CSV in /tmp/fcvae_test/
 --
 -- Namespace: fcvae
@@ -383,7 +410,7 @@ Increment the suffix for each run (`_run3.csv`, `_run4.csv`, etc.).
 ### Check Striim Logs
 
 ```bash
-tail -f /opt/Striim/logs/striim.server.log
+tail -f "$STRIIM_HOME/logs/striim.server.log"
 ```
 
 Look for log entries from `FCVAEScoreCaller` showing successful API calls.
@@ -433,28 +460,28 @@ DROP APPLICATION fcvae.FCVAE CASCADE;
 If you need to rebuild the Open Processor Java code:
 
 ```sql
--- In Striim console:
-UNLOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
+-- In Striim console (replace $STRIIM_HOME with your actual path):
+UNLOAD OPEN PROCESSOR "$STRIIM_HOME/modules/FCVAEScoreCaller.scm";
 ```
 
 Then:
 
 ```bash
 # Stop Striim
-/opt/Striim/bin/server.sh stop
+"$STRIIM_HOME/bin/server.sh" stop
 
 # Rebuild and copy (see Step 14)
 cd striim/fcvae-score-caller
 ./build.sh
 
 # Start Striim
-/opt/Striim/bin/server.sh start
+"$STRIIM_HOME/bin/server.sh" start
 ```
 
 Then reload:
 
 ```sql
-LOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
+LOAD OPEN PROCESSOR "$STRIIM_HOME/modules/FCVAEScoreCaller.scm";
 ```
 
 **Never** overwrite a loaded `.scm` without doing a full Striim restart in between. Doing so causes `Unexpected end of ZLIB input stream` errors.
@@ -541,8 +568,9 @@ UNDEPLOY APPLICATION fcvae.FCVAE;
 DROP APPLICATION fcvae.FCVAE CASCADE;
 
 -- Module management (requires full Striim restart between unload and load)
-UNLOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
-LOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
+-- Replace $STRIIM_HOME with your actual path in the Striim console
+UNLOAD OPEN PROCESSOR "$STRIIM_HOME/modules/FCVAEScoreCaller.scm";
+LOAD OPEN PROCESSOR "$STRIIM_HOME/modules/FCVAEScoreCaller.scm";
 
 -- Export types for Maven build (only needed if rebuilding from source)
 EXPORT TYPES OF fcvae.FCVAE TO "UploadedFiles/fcvae_types.jar";
@@ -670,11 +698,11 @@ chmod +x build.sh
 
 What `build.sh` does:
 
-1. **Installs the Striim SDK JAR** from `/opt/Striim/StriimSDK/StriimOpenProcessor-SDK.jar` into your local Maven repo (groupId `com.striim`, artifactId `OpenProcessorSDK`). Safe to re-run.
+1. **Installs the Striim SDK JAR** from `$STRIIM_HOME/StriimSDK/StriimOpenProcessor-SDK.jar` into your local Maven repo (groupId `com.striim`, artifactId `OpenProcessorSDK`). Safe to re-run. The script reads `STRIIM_HOME` from your environment, so ensure it is exported before running.
 
 2. **Runs `mvn clean package`**, which compiles `FCVAEScoreCaller.java` and uses the Maven Shade plugin to produce a fat JAR at `target/FCVAEScoreCaller.jar`. The fat JAR bundles Gson (for JSON parsing) but excludes Striim SDK and types JARs (marked `provided` in the pom since Striim supplies them at runtime). The shade plugin also injects manifest entries that tell Striim the module name, service interface, and implementation class.
 
-3. **Copies `target/FCVAEScoreCaller.jar` to `/opt/Striim/modules/FCVAEScoreCaller.scm`**. Striim expects the `.scm` extension for Open Processor modules. The file is just a renamed JAR.
+3. **Copies `target/FCVAEScoreCaller.jar` to `$STRIIM_HOME/modules/FCVAEScoreCaller.scm`**. Striim expects the `.scm` extension for Open Processor modules. The file is just a renamed JAR.
 
 After a successful build, `target/` will contain:
 
@@ -713,7 +741,7 @@ rm -f /tmp/fcvae_test/synthetic_transactions_phase2*.csv
 
 DROP TYPE fcvae.ScorerResult; DROP TYPE fcvae.DailyPayloadStream_Type;
 
-UNLOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
+UNLOAD OPEN PROCESSOR "$STRIIM_HOME/modules/FCVAEScoreCaller.scm";
 
 ```
 
@@ -723,11 +751,11 @@ UNLOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEScoreCaller.scm";
 
 | Component | Detail |
 |---|---|
-| Striim Platform | 5.2.0.4, installed at `/opt/Striim` |
+| Striim Platform | 5.2.0.4, installed at `$STRIIM_HOME` (default `/opt/Striim`) |
 | FCVAE API | `http://localhost:8000` |
 | Striim namespace | `fcvae` |
 | OP module name | `FCVAEScoreCaller` |
 | Data file | `<repo>/data/synthetic_transactions_phase2.csv` (copy to `/tmp/fcvae_test/` at runtime) |
 | Output directory | `/tmp/fcvae_test/` |
-| Striim logs | `/opt/Striim/logs/striim.server.log` |
+| Striim logs | `$STRIIM_HOME/logs/striim.server.log` |
 | Types JAR | `<repo>/striim/lib/fcvae_types.jar` (only needed for building from source) |
