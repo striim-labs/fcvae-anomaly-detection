@@ -6,6 +6,27 @@ Real-time anomaly detection on transaction frequency time series using a Frequen
 
 ---
 
+## Table of Contents
+
+- [Overview](#overview)
+- [How Scoring Works](#how-scoring-works)
+- [Run Paths](#run-paths)
+- [Detection Examples](#detection-examples)
+- [Scoring API](#scoring-api)
+  - [API-only Quick Start (Local)](#api-only-quick-start-local)
+  - [API-only Docker Quick Start](#api-only-docker-quick-start)
+  - [Streaming Demo](#streaming-demo)
+  - [API Configuration](#api-configuration)
+- [Prerequisites](#prerequisites)
+- [Full Stack Docker Quick Start](#full-stack-docker-quick-start)
+- [Configuration](#configuration)
+- [Local Development Setup](#local-development-setup)
+- [Project Structure](#project-structure)
+- [Architecture Overview](#architecture-overview)
+- [Further Reading](#further-reading)
+
+---
+
 ## Overview
 
 The system monitors hourly transaction counts across 4 independent network/transaction-type combinations:
@@ -32,6 +53,26 @@ The FCVAE reconstructs 24-hour sliding windows of normalized hourly transaction 
 **Scoring method:** The detector uses MCMC mode 2 scoring with 16 latent samples averaged, providing stable scores suitable for low-latency streaming.
 
 See [TECHNICAL.md sections 1, 3, 6](TECHNICAL.md) for full details on the architecture, scoring system, and streaming detector.
+
+---
+
+## Run Paths
+
+| Path | What it does | Section |
+|------|-------------|---------|
+| **API-only** | Score windows via REST — no Kafka/Spark needed | [Local](#api-only-quick-start-local) / [Docker](#api-only-docker-quick-start) |
+| **Full streaming stack** | Kafka + Spark + Dash dashboard for real-time monitoring | [Full Stack Docker Quick Start](#full-stack-docker-quick-start) |
+| **Train / evaluate** | Generate data, train FCVAE models, run evaluation | [Local Development Setup](#local-development-setup) |
+
+> **Fastest first success** — verify the API works in under 60 seconds:
+>
+> ```bash
+> docker compose build api && docker compose up -d api
+> curl http://localhost:8000/health
+> curl -X POST http://localhost:8000/v1/score \
+>   -H "Content-Type: application/json" \
+>   -d '{"combo": "Accel_CMP", "values": [1023,1150,987,1102,1045,998,1200,1350,1500,1420,1380,1290,1150,1080,1020,980,950,1010,1100,1200,1150,1050,1000,1020]}'
+> ```
 
 ---
 
@@ -74,7 +115,7 @@ The FCVAE scoring logic is also exposed as a standalone **FastAPI REST service**
 | `/health` | GET | Service health and per-combo model load status |
 | `/v1/model/info` | GET | Model configuration, thresholds, and scorer metadata |
 
-### Quick Start (Local)
+### API-only Quick Start (Local)
 
 ```bash
 # Install dependencies
@@ -94,7 +135,7 @@ curl -X POST http://localhost:8000/v1/score \
 
 Interactive API docs are available at `http://localhost:8000/docs`.
 
-### Quick Start (Docker)
+### API-only Docker Quick Start
 
 ```bash
 docker compose build api
@@ -158,7 +199,7 @@ For full architectural details, see [TECHNICAL.md section 11](TECHNICAL.md).
 
 ---
 
-## Quick Start (Docker)
+## Full Stack Docker Quick Start
 
 ```bash
 # Clone the repo
