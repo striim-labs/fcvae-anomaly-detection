@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 
-from api.dependencies import model_store, settings
+from api.dependencies import data_store, model_store
 from api.schemas import (
     BatchScoreRequest,
     BatchScoreResponse,
@@ -58,15 +58,30 @@ def _score_single(req: ScoreRequest) -> ScoreResponse:
         latency_ms,
     )
 
-    return ScoreResponse(
+    response = ScoreResponse(
         is_anomaly=result["is_anomaly"],
         last_point_score=result["last_point_score"],
         threshold=result["point_threshold"],
         combo=req.combo,
         scored_timestamp=scored_timestamp,
         all_point_scores=all_point_scores,
-        model_version=settings.model_version,
+        model_version=model_store.effective_version,
     )
+
+    # Accumulate raw window for future retraining (fire-and-forget)
+    if data_store is not None:
+        try:
+            data_store.append(
+                combo=req.combo,
+                raw_values=req.values,
+                window_end=scored_timestamp,
+                last_point_score=result["last_point_score"],
+                is_anomaly=result["is_anomaly"],
+            )
+        except Exception:
+            logger.warning("Failed to store window for retraining", exc_info=True)
+
+    return response
 
 
 @router.post("/score", response_model=ScoreResponse)
