@@ -100,3 +100,6 @@ Striim_FCVAE_Report.md
 production.md
 retrain_demo.md
 plots/
+Striim_retrain_demo.md
+models/fcvae_backup
+models/fcvae_staging

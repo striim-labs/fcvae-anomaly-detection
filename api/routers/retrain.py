@@ -125,6 +125,7 @@ async def reload_models(req: ReloadRequest):
             model_path=str(production_base),
             device=settings.device,
             n_samples=settings.n_samples,
+            reread_oracle_thresholds=True,
         )
         if ok:
             reloaded.append(combo)

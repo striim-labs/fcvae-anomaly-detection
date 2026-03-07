@@ -133,6 +133,7 @@ class ModelStore:
 
     def reload_combo(
         self, combo_key: str, model_path: str, device: str, n_samples: int,
+        reread_oracle_thresholds: bool = False,
     ) -> bool:
         """Hot-swap a combo's detector with a freshly loaded one.
 
@@ -140,12 +141,37 @@ class ModelStore:
         verifies it loaded successfully, then atomically swaps the dict entry
         (GIL-safe dict assignment).
 
+        Args:
+            reread_oracle_thresholds: If True, re-read oracle_thresholds.json
+                from disk and apply the oracle threshold to the new detector.
+                Use this for manual reload (POST /v1/model/reload) so that
+                updated thresholds are picked up without an API restart.
+                If False (default), the new detector uses whatever threshold
+                is in its scorer.pkl -- appropriate after a retrain, where the
+                retrain pipeline has already computed a fresh threshold.
+
         Returns True on success, False on failure.
         """
         combo_tuple = COMBO_KEY_MAP.get(combo_key)
         if combo_tuple is None:
             logger.error(f"reload_combo: unknown combo_key '{combo_key}'")
             return False
+
+        oracle_thresh = None
+        if reread_oracle_thresholds:
+            # Re-read oracle thresholds from disk (may have been updated since startup)
+            oracle_path = Path(model_path) / "oracle_thresholds.json"
+            if oracle_path.exists():
+                try:
+                    with open(oracle_path) as f:
+                        self.oracle_thresholds = json.load(f)
+                    logger.info(f"reload_combo: refreshed oracle thresholds from {oracle_path}")
+                except Exception:
+                    logger.exception(
+                        f"reload_combo: failed to read {oracle_path}, using cached thresholds"
+                    )
+            oracle_thresh = self.oracle_thresholds.get(combo_key)
+            logger.info(f"reload_combo: applying oracle threshold {oracle_thresh} for {combo_key}")
 
         try:
             new_detector = FCVAEStreamingDetector(
@@ -156,6 +182,7 @@ class ModelStore:
                 device=device,
                 n_samples=n_samples,
                 decision_mode="last_point",
+                oracle_threshold=oracle_thresh,
             )
             if not new_detector.is_ready:
                 logger.error(
