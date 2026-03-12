@@ -23,10 +23,10 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader
 
-from app.fcvae_model import FCVAE, FCVAEConfig
-from app.fcvae_scorer import FCVAEScorer, FCVAEScorerConfig
-from app.fcvae_augment import batch_augment, AugmentConfig
-from app.transaction_config import COMBO_KEYS
+from fcvae_model import FCVAE, FCVAEConfig
+from fcvae_scorer import FCVAEScorer, FCVAEScorerConfig
+from fcvae_augment import batch_augment, AugmentConfig
+from transaction_config import COMBO_KEYS
 
 logger = logging.getLogger(__name__)
 
@@ -345,8 +345,8 @@ class FCVAERegistry:
         Returns:
             Dict with calibration metrics
         """
-        from app.synthetic_anomaly import SyntheticAnomalyGenerator, SyntheticAnomalyConfig
-        from app.transaction_preprocessor import SlidingWindowDataset
+        from synthetic_anomaly import SyntheticAnomalyGenerator, SyntheticAnomalyConfig
+        from transaction_preprocessor import SlidingWindowDataset
 
         model = self.get_model(combo)
         scorer = self.get_scorer(combo)
@@ -551,7 +551,7 @@ class FCVAERegistry:
 
         # Plot anomaly reconstruction for diagnostic purposes
         try:
-            from app.evaluate_fcvae import plot_anomaly_reconstruction
+            from evaluate_fcvae import plot_anomaly_reconstruction
             from pathlib import Path
 
             output_path = Path("plots/fcvae")

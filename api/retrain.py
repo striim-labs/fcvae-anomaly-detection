@@ -4,15 +4,31 @@ Core retraining pipeline for FCVAE anomaly detection models.
 Fine-tunes from current production weights with reduced LR/epochs,
 computes oracle threshold from labeled historical data, validates
 against the old model, and stages artifacts for hot-swap.
+
+Phase 11: Validation gate now uses window-level point-adjusted F1
+(segment-aware) instead of raw per-window F1. This is consistent
+with the PA-F1 metric reported in evaluate_fcvae.py:
+
+  - Last-point NLL scores are used (one scalar per window).
+  - last_point_threshold is used (the strong, well-calibrated threshold).
+  - Each window is classified as anomaly or normal independently.
+  - Point-adjustment is applied across windows: if ANY window within
+    a contiguous run of anomaly-labeled windows is correctly detected,
+    the ENTIRE segment counts as a TP.
+
+This preserves the strong per-window discriminative power of the
+last-point approach while forgiving missed windows within multi-day
+anomaly events.
 """
 
+import json
 import logging
 import pickle
 import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -263,6 +279,36 @@ class RetrainPipeline:
         old_scorer = FCVAEScorer.load(str(combo_dir / "scorer.pkl"))
         old_threshold = old_scorer.last_point_threshold or old_scorer.point_threshold
 
+        # If the old model is the original pretrained version (v0 or v1),
+        # its scorer.pkl contains uncalibrated percentile-based thresholds.
+        # In production, the API overrides these with oracle thresholds from
+        # oracle_thresholds.json (loaded by dependencies.py at startup).
+        # Apply the same override here so the F1 gate evaluates the old model
+        # with the threshold it is actually running with in production.
+        #
+        # After the first retrain (version >= 2), scorer.pkl contains the
+        # retrain-computed threshold which is already well-calibrated, so
+        # no override is needed.
+        if old_version <= 1:
+            oracle_path = Path(self.config.production_dir) / "oracle_thresholds.json"
+            if oracle_path.exists():
+                try:
+                    with open(oracle_path) as f:
+                        oracle_thresholds = json.load(f)
+                    oracle_thresh = oracle_thresholds.get(combo)
+                    if oracle_thresh is not None:
+                        logger.info(
+                            f"[{combo}] Pretrained model v{old_version}: overriding "
+                            f"scorer.pkl threshold ({old_threshold:.4f}) with oracle "
+                            f"threshold ({oracle_thresh:.4f})"
+                        )
+                        old_threshold = oracle_thresh
+                except Exception:
+                    logger.warning(
+                        f"[{combo}] Could not read oracle_thresholds.json, "
+                        f"using scorer.pkl threshold: {old_threshold:.4f}"
+                    )
+
         # Score all windows with old model + old scaler normalization
         old_all_norm = (
             old_scaler.transform(all_raw.reshape(-1, 1))
@@ -298,16 +344,40 @@ class RetrainPipeline:
                 duration_seconds=time.perf_counter() - start_time,
             )
 
-        # F1 gate: reject if new F1 significantly worse (only when anomalies exist)
+        # F1 gate (Phase 11 revised): window-level point-adjusted F1
+        #
+        # Uses last-point scores with last_point_threshold for strong
+        # per-window discrimination, then applies segment adjustment
+        # across consecutive anomaly-labeled windows. This matches the
+        # PA-F1 metric reported in evaluate_fcvae.py's streaming
+        # simulation table.
+        #
+        # If ANY window within a contiguous run of anomaly-labeled
+        # windows is correctly detected, the entire segment counts
+        # as a TP. This forgives missed windows within multi-day
+        # anomaly events while preserving the high-quality last-point
+        # threshold that gives F1 > 0.9 on the pretrained models.
         old_f1: Optional[float] = None
         new_f1: Optional[float] = None
         if anomaly_mask.any():
-            old_f1 = _compute_f1(old_all_scores[:, -1], old_threshold, all_labels)
-            new_f1 = _compute_f1(new_all_scores[:, -1], new_threshold, all_labels)
+            # Per-window binary predictions using last-point scores
+            old_preds = old_all_scores[:, -1] < old_threshold
+            new_preds = new_all_scores[:, -1] < new_threshold
+
+            old_pa = _point_adjusted_f1(old_preds, all_labels)
+            new_pa = _point_adjusted_f1(new_preds, all_labels)
+            old_f1 = old_pa["f1"]
+            new_f1 = new_pa["f1"]
+
+            logger.info(
+                f"[{combo}] Point-adjusted F1 (last-point, window-level): "
+                f"old={old_f1:.4f} ({old_pa['tp_segments']}/{old_pa['total_segments']} segments), "
+                f"new={new_f1:.4f} ({new_pa['tp_segments']}/{new_pa['total_segments']} segments)"
+            )
 
             if new_f1 < self.config.min_f1_ratio * old_f1:
                 logger.warning(
-                    f"[{combo}] REJECTED: F1 degradation "
+                    f"[{combo}] REJECTED: Point-adjusted F1 degradation "
                     f"(old={old_f1:.4f}, new={new_f1:.4f}, "
                     f"min_ratio={self.config.min_f1_ratio})"
                 )
@@ -324,7 +394,7 @@ class RetrainPipeline:
                     best_epoch=history["best_epoch"],
                     new_threshold=new_threshold,
                     old_threshold=old_threshold,
-                    error_message="F1 degradation exceeded threshold",
+                    error_message="Point-adjusted F1 degradation exceeded threshold",
                     duration_seconds=time.perf_counter() - start_time,
                 )
 
@@ -404,7 +474,7 @@ class RetrainPipeline:
                 else 1.0
             )
 
-            # — Training phase —
+            # -- Training phase --
             model.train()
             train_loss = 0.0
             num_batches = 0
@@ -429,7 +499,7 @@ class RetrainPipeline:
 
             train_loss /= max(num_batches, 1)
 
-            # — Validation phase —
+            # -- Validation phase --
             model.eval()
             val_loss = 0.0
             num_val_batches = 0
@@ -502,14 +572,129 @@ class RetrainPipeline:
         return scores.cpu().numpy()
 
 
+# ----------------------------------------------------------------------
+# Window-level point-adjusted F1 (segment-aware)
+#
+# Ported from evaluate_fcvae.py to keep retrain.py self-contained.
+# Follows the DONUT convention: if ANY window within a contiguous
+# anomaly segment is correctly detected, the ENTIRE segment is a TP.
+#
+# In the retrain context, each "point" is one 24-hour scoring window.
+# Windows are chronologically ordered by window_end. A segment is a
+# contiguous run of anomaly-labeled windows (e.g., a 3-day anomaly
+# event). Detecting any one window in the segment counts the whole
+# segment as detected.
+# ----------------------------------------------------------------------
+
+
+def _find_contiguous_segments(
+    labels: np.ndarray,
+) -> List[Tuple[int, int]]:
+    """Find contiguous runs of True values in a boolean array.
+
+    Returns list of (start_idx, end_idx) tuples, inclusive on both ends.
+    """
+    segments: List[Tuple[int, int]] = []
+    in_segment = False
+    start = 0
+
+    for i in range(len(labels)):
+        if labels[i] and not in_segment:
+            start = i
+            in_segment = True
+        elif not labels[i] and in_segment:
+            segments.append((start, i - 1))
+            in_segment = False
+
+    if in_segment:
+        segments.append((start, len(labels) - 1))
+
+    return segments
+
+
+def _point_adjusted_f1(
+    predictions: np.ndarray,
+    ground_truth: np.ndarray,
+) -> Dict[str, float]:
+    """Compute window-level point-adjusted F1 (DONUT/FCVAE convention).
+
+    If ANY prediction within a contiguous ground-truth anomaly segment
+    is correct, the ENTIRE segment is treated as detected. This adjusts
+    the prediction array so all points in a detected segment become TP,
+    then computes standard precision/recall/F1 on the adjusted arrays.
+
+    In the retrain context each "point" is one 24-hour scoring window,
+    classified by its last-point NLL score against last_point_threshold.
+    A contiguous anomaly segment is a run of consecutive anomaly-labeled
+    windows (e.g., a 3-day spike). Detecting any one window counts as
+    catching the whole segment.
+
+    Args:
+        predictions: Boolean array, True = predicted anomaly.  Shape (N,).
+        ground_truth: Boolean array, True = actual anomaly.  Shape (N,).
+
+    Returns:
+        Dict with f1, precision, recall, tp, fp, fn, tp_segments,
+        fn_segments, total_segments.
+    """
+    predictions = np.asarray(predictions, dtype=bool)
+    ground_truth = np.asarray(ground_truth, dtype=bool)
+
+    gt_segments = _find_contiguous_segments(ground_truth)
+
+    tp_segments = 0
+    fn_segments = 0
+
+    for seg_start, seg_end in gt_segments:
+        if np.any(predictions[seg_start:seg_end + 1]):
+            tp_segments += 1
+        else:
+            fn_segments += 1
+
+    # Adjust predictions: detected segments get all points marked as TP
+    adjusted_predictions = predictions.copy()
+    for seg_start, seg_end in gt_segments:
+        if np.any(predictions[seg_start:seg_end + 1]):
+            adjusted_predictions[seg_start:seg_end + 1] = True
+
+    # Standard point-level metrics on adjusted arrays
+    tp = int(np.sum(adjusted_predictions & ground_truth))
+    fp = int(np.sum(adjusted_predictions & ~ground_truth))
+    fn = int(np.sum(~adjusted_predictions & ground_truth))
+
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = (
+        float(2.0 * precision * recall / (precision + recall))
+        if (precision + recall) > 0
+        else 0.0
+    )
+
+    return {
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "tp_segments": tp_segments,
+        "fn_segments": fn_segments,
+        "total_segments": len(gt_segments),
+    }
+
+
 def _compute_f1(
     lp_scores: np.ndarray,
     threshold: float,
     labels: np.ndarray,
 ) -> float:
-    """Compute F1 from last-point scores, threshold, and ground-truth labels.
+    """Compute raw per-window F1 (DEPRECATED by Phase 11).
 
-    Uses inverted comparison: score < threshold → predicted anomaly.
+    Kept for reference. The validation gate now uses hour-level
+    _point_adjusted_f1 instead. This function is no longer called
+    by the retrain pipeline.
+
+    Uses inverted comparison: score < threshold -> predicted anomaly.
     """
     predictions = lp_scores < threshold
     tp = int(np.sum(predictions & labels))

@@ -30,22 +30,9 @@ import numpy as np
 import pandas as pd
 import torch
 
-from app.base_detector import BaseDetector
-from app.fcvae_model import FCVAE, FCVAEConfig
-from app.fcvae_scorer import FCVAEScorer
-
-# Pickle compatibility: models were saved with "app." prefixed module paths.
-# With app/ as a proper package, sys.modules already has app.fcvae_model etc.,
-# but also register bare aliases for Docker environments that run flat from /app.
-import sys
-import app.fcvae_model as _fcvae_model
-import app.fcvae_scorer as _fcvae_scorer
-import app.fcvae_augment as _fcvae_augment
-import app.attention as _attention
-
-for _name, _mod in [("fcvae_model", _fcvae_model), ("fcvae_scorer", _fcvae_scorer),
-                     ("fcvae_augment", _fcvae_augment), ("attention", _attention)]:
-    sys.modules.setdefault(_name, _mod)
+from base_detector import BaseDetector
+from fcvae_model import FCVAE, FCVAEConfig
+from fcvae_scorer import FCVAEScorer
 
 logger = logging.getLogger(__name__)
 

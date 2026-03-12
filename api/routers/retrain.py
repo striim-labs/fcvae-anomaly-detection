@@ -1,5 +1,6 @@
 """Retrain and model reload endpoints."""
 
+import asyncio
 import logging
 import shutil
 from pathlib import Path
@@ -37,7 +38,9 @@ async def trigger_retrain(req: RetrainRequest):
     """Trigger a background retrain job.
 
     Returns 202 with a job_id that can be polled via GET /v1/retrain/status/{job_id}.
-    Returns 409 if a retrain job is already running.
+    If a retrain job is already running, queues the request and waits up to 120s
+    for the current job to finish before submitting. Returns 409 only if the
+    wait times out.
     """
     if data_store is None:
         raise HTTPException(status_code=503, detail="Data store is disabled")
@@ -54,21 +57,40 @@ async def trigger_retrain(req: RetrainRequest):
         device=settings.device,
     )
 
-    try:
-        job_id = retrain_job_manager.submit_job(
-            pipeline=pipeline,
-            combos=combos,
-            mode=req.mode,
-            lookback_days=req.lookback_days,
-            start_date=req.start_date,
-            end_date=req.end_date,
-            auto_reload=req.auto_reload,
-            model_store=model_store,
-            min_windows=req.min_windows,
-            event_log=model_event_log,
-        )
-    except RuntimeError:
-        raise HTTPException(status_code=409, detail="A retrain job is already running")
+    # If a job is already running, wait for it to finish before submitting.
+    # This serializes concurrent retrain requests (e.g., from per-combo triggers)
+    # instead of rejecting them with 409.
+    max_wait_seconds = 120
+    poll_interval = 2.0
+    waited = 0.0
+
+    while True:
+        try:
+            job_id = retrain_job_manager.submit_job(
+                pipeline=pipeline,
+                combos=combos,
+                mode=req.mode,
+                lookback_days=req.lookback_days,
+                start_date=req.start_date,
+                end_date=req.end_date,
+                auto_reload=req.auto_reload,
+                model_store=model_store,
+                min_windows=req.min_windows,
+                event_log=model_event_log,
+            )
+            break
+        except RuntimeError:
+            if waited >= max_wait_seconds:
+                raise HTTPException(
+                    status_code=409,
+                    detail=f"A retrain job is still running after waiting {max_wait_seconds}s",
+                )
+            logger.info(
+                f"Retrain queue: waiting for current job to finish "
+                f"(combo={combos}, waited={waited:.0f}s)"
+            )
+            await asyncio.sleep(poll_interval)
+            waited += poll_interval
 
     return RetrainResponse(
         job_id=job_id,

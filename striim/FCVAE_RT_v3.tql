@@ -1,0 +1,91 @@
+CREATE APPLICATION FCVAE_RT;
+
+CREATE SOURCE TxnFileSource USING FileReader (
+  positionByEOF: false,
+  directory: '/tmp/fcvae_test',
+  wildcard: 'week_*.csv' )
+PARSE USING DSVParser (
+  columndelimiter: ',',
+  header: true )
+OUTPUT TO RawTxnStream;
+
+CREATE STREAM ScorerResultStream OF ScorerResult;
+
+CREATE STREAM TimestampedResultStream OF TimestampedResult;
+
+CREATE STREAM RetrainTriggerStream OF Global.RetrainTrigger_Type_1_0;
+
+CREATE STREAM RetrainTriggerAckStream OF Global.RetrainTrigger_Type_1_0;
+
+CREATE CQ ParseTransactions
+INSERT INTO TypedTxnStream
+SELECT
+  TO_STRING(data[1]) + '_' + CASE
+    WHEN TO_STRING(data[2]) = 'no-pin' THEN 'nopin'
+    ELSE TO_STRING(data[2])
+  END                                               AS combo_key,
+  TO_DATEF(SLEFT(TO_STRING(data[0]), 19),
+           'yyyy-MM-dd HH:mm:ss')                   AS txn_timestamp
+FROM RawTxnStream;
+
+CREATE TARGET ResultFile USING FileWriter (
+  filename: 'scored_output',
+  directory: '/tmp/fcvae_test' )
+FORMAT USING JSONFormatter  (
+ )
+INPUT FROM ScorerResultStream;
+
+CREATE CQ AddTimestamp
+INSERT INTO TimestampedResultStream
+SELECT
+  combo_key        AS combo_key,
+  is_anomaly       AS is_anomaly,
+  anomaly_score    AS anomaly_score,
+  threshold        AS threshold,
+  window_end       AS window_end,
+  TO_DATEF(window_end, 'yyyy/MM/dd HH:mm:ss.SSS') AS scored_ts
+FROM ScorerResultStream;
+
+CREATE JUMPING WINDOW RetrainScheduleWindow OVER TimestampedResultStream
+KEEP WITHIN 7 DAY ON scored_ts
+PARTITION BY combo_key;
+
+CREATE JUMPING WINDOW HourlyWindow OVER TypedTxnStream
+KEEP WITHIN 1 HOUR ON txn_timestamp
+PARTITION BY combo_key;
+
+CREATE CQ RetrainTrigger
+INSERT INTO RetrainTriggerStream
+SELECT
+  w.combo_key                         AS combo,
+  'weekly'                            AS mode,
+  TO_STRING(COUNT(*))                 AS windows_scored,
+  TO_STRING(LAST(w.window_end))       AS trigger_time
+FROM RetrainScheduleWindow w
+GROUP BY w.combo_key;
+
+CREATE CQ HourlyCounts
+INSERT INTO HourlyCountStream
+SELECT
+  w.combo_key                        AS combo_key,
+  COUNT(*)                           AS txn_count,
+  TO_STRING(FIRST(w.txn_timestamp))  AS hour_start,
+  TO_STRING(LAST(w.txn_timestamp))   AS hour_end
+FROM HourlyWindow w
+GROUP BY w.combo_key;
+
+CREATE WINDOW DailyWindow OVER HourlyCountStream
+KEEP 24 ROWS
+PARTITION BY combo_key;
+
+CREATE CQ AssembleDailyPayload
+INSERT INTO DailyPayloadStream
+SELECT
+  w.combo_key                              AS combo_key,
+  LIST(TO_STRING(w.txn_count))             AS values_list,
+  COUNT(*)                                 AS window_size,
+  TO_STRING(FIRST(w.hour_start))           AS window_start,
+  TO_STRING(LAST(w.hour_start))            AS window_end
+FROM DailyWindow w
+GROUP BY w.combo_key
+HAVING COUNT(*) >= 24;
