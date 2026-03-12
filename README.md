@@ -83,12 +83,6 @@ docker compose logs -f app
 
 # Access the Dash dashboard (served by the "app" service on port 8050)
 open http://localhost:8050
-
-# The FastAPI scoring API is available separately on port 8000
-curl http://localhost:8000/health
-
-# Stop all services
-docker compose down
 ```
 
 > **Note:** `docker compose build` builds all services but does not stop on individual failures. If a service fails to build, it will silently be missing when you run `docker compose up -d`. Running `docker compose build app` separately after the full build confirms the dashboard image was built successfully.
