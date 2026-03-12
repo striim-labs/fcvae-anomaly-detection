@@ -62,6 +62,9 @@ See [TECHNICAL.md sections 1, 3, 6](TECHNICAL.md) for full details on the archit
 # Clone the repo
 git clone <repo-url> && cd fcvae-anomaly-detection
 
+# Pull model and data files tracked by Git LFS
+git lfs pull
+
 # Build all containers (this must complete before starting services)
 docker compose build
 
@@ -230,7 +233,7 @@ For full architectural details, see [TECHNICAL.md section 11](TECHNICAL.md).
 - **Docker** and **Docker Compose** v2+ (for containerized deployment)
 - **UV** package manager (for local development)
 - **Python 3.11+** (for local development)
-- **Git**
+- **Git** with **[Git LFS](https://git-lfs.com/)** (`brew install git-lfs && git lfs install`)
 
 ---
 

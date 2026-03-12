@@ -41,11 +41,15 @@ Set `STRIIM_HOME` to your Striim installation directory. All commands in this gu
 export STRIIM_HOME="/path/to/Striim"
 ```
 
-**The FCVAE repo** cloned locally. This guide assumes the repo is at:
-```
-/Users/<your-username>/Documents/Striim/fcvae-anomaly-detection/
+**The FCVAE repo** cloned locally with LFS files pulled. This guide assumes the repo is at:
+```bash
+git clone <repo-url> /Users/<your-username>/Documents/Striim/fcvae-anomaly-detection
+cd /Users/<your-username>/Documents/Striim/fcvae-anomaly-detection
+git lfs pull
 ```
 Replace `<your-username>` with your actual macOS username throughout this guide.
+
+**Git LFS** installed (`brew install git-lfs && git lfs install`). The trained model weights and data files are tracked by LFS.
 
 **Python 3.11+** and **UV** package manager for the scoring API.
 
