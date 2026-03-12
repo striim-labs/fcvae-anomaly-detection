@@ -329,7 +329,7 @@ def plot_combo_comparison(
         logger.warning("matplotlib not available, skipping combo comparison plot")
         return
 
-    from transaction_config import COMBO_KEYS
+    from app.transaction_config import COMBO_KEYS
 
     fig, axes = plt.subplots(2, 2, figsize=figsize)
     axes = axes.flatten()
@@ -918,7 +918,7 @@ def evaluate_combo(
         Dict with evaluation results
     """
     from torch.utils.data import DataLoader
-    from transaction_preprocessor import SlidingWindowDataset
+    from app.transaction_preprocessor import SlidingWindowDataset
 
     combo_name = f"{combo[0]}/{combo[1]}"
     logger.info(f"\nEvaluating {combo_name}...")
@@ -1087,9 +1087,9 @@ def main():
     print(f"\nDevice: {device}")
 
     # Load registry
-    from fcvae_registry import FCVAERegistry
-    from transaction_config import COMBO_KEYS, TransactionPreprocessorConfig
-    from transaction_preprocessor import TransactionPreprocessor
+    from app.fcvae_registry import FCVAERegistry
+    from app.transaction_config import COMBO_KEYS, TransactionPreprocessorConfig
+    from app.transaction_preprocessor import TransactionPreprocessor
 
     registry = FCVAERegistry(device=device)
     registry.load_all(args.model_dir)
@@ -2341,7 +2341,7 @@ def evaluate_with_detailed_plots(
         Dict with evaluation results including FP indices
     """
     from torch.utils.data import DataLoader
-    from transaction_preprocessor import SlidingWindowDataset
+    from app.transaction_preprocessor import SlidingWindowDataset
 
     combo_name = f"{combo[0]}/{combo[1]}"
     logger.info(f"\nComprehensive evaluation for {combo_name}...")
@@ -2560,9 +2560,9 @@ def run_detailed_evaluation():
     print(f"\nDevice: {device}")
 
     # Load registry
-    from fcvae_registry import FCVAERegistry
-    from transaction_config import COMBO_KEYS, TransactionPreprocessorConfig
-    from transaction_preprocessor import TransactionPreprocessor
+    from app.fcvae_registry import FCVAERegistry
+    from app.transaction_config import COMBO_KEYS, TransactionPreprocessorConfig
+    from app.transaction_preprocessor import TransactionPreprocessor
 
     registry = FCVAERegistry(device=device)
     registry.load_all(args.model_dir)

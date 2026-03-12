@@ -19,7 +19,7 @@ import numpy as np
 import torch
 from torch import nn
 
-from attention import EncoderLayer_selfattn
+from app.attention import EncoderLayer_selfattn
 
 
 @dataclass

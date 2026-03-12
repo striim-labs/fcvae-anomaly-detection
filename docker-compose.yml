@@ -127,7 +127,7 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       KAFKA_TOPIC: anomaly_stream
       SPARK_MASTER: spark://spark-master:7077
-      PYTHONPATH: /app
+      PYTHONPATH: /
       # FCVAE detector configuration
       DETECTOR_TYPE: fcvae
       WINDOW_SIZE: ${WINDOW_SIZE:-24}

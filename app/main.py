@@ -33,7 +33,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col, to_timestamp
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
-from base_detector import create_detector, BaseDetector
+from app.base_detector import create_detector, BaseDetector
 
 logging.basicConfig(
     level=logging.INFO,

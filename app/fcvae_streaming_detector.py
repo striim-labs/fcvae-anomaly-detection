@@ -30,9 +30,9 @@ import numpy as np
 import pandas as pd
 import torch
 
-from base_detector import BaseDetector
-from fcvae_model import FCVAE, FCVAEConfig
-from fcvae_scorer import FCVAEScorer
+from app.base_detector import BaseDetector
+from app.fcvae_model import FCVAE, FCVAEConfig
+from app.fcvae_scorer import FCVAEScorer
 
 logger = logging.getLogger(__name__)
 

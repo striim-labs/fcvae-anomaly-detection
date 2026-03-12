@@ -301,9 +301,9 @@ def main():
     print(f"\nDevice: {device}")
 
     # Load registry
-    from fcvae_registry import FCVAERegistry
-    from transaction_config import COMBO_KEYS, TransactionPreprocessorConfig
-    from transaction_preprocessor import TransactionPreprocessor, SlidingWindowDataset
+    from app.fcvae_registry import FCVAERegistry
+    from app.transaction_config import COMBO_KEYS, TransactionPreprocessorConfig
+    from app.transaction_preprocessor import TransactionPreprocessor, SlidingWindowDataset
 
     registry = FCVAERegistry(device=device)
     registry.load_all(args.model_dir)

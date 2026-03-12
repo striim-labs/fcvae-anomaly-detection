@@ -26,12 +26,12 @@ from typing import Dict, Tuple
 import numpy as np
 import torch
 
-from transaction_config import TransactionPreprocessorConfig, COMBO_KEYS
-from transaction_preprocessor import TransactionPreprocessor
-from fcvae_registry import FCVAERegistry
-from fcvae_model import FCVAEConfig
-from fcvae_scorer import FCVAEScorerConfig
-from fcvae_augment import AugmentConfig
+from app.transaction_config import TransactionPreprocessorConfig, COMBO_KEYS
+from app.transaction_preprocessor import TransactionPreprocessor
+from app.fcvae_registry import FCVAERegistry
+from app.fcvae_model import FCVAEConfig
+from app.fcvae_scorer import FCVAEScorerConfig
+from app.fcvae_augment import AugmentConfig
 
 logger = logging.getLogger(__name__)
 

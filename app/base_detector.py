@@ -138,7 +138,7 @@ def create_detector(
             f"This repository only supports 'fcvae' detector."
         )
 
-    from fcvae_streaming_detector import FCVAEStreamingDetector
+    from app.fcvae_streaming_detector import FCVAEStreamingDetector
 
     return FCVAEStreamingDetector(
         model_path=model_path,
