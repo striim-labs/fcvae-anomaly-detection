@@ -10,6 +10,7 @@ Real-time anomaly detection on transaction frequency time series using a Frequen
 
 - [Overview](#overview)
 - [How Scoring Works](#how-scoring-works)
+- [Full Stack Docker Quick Start](#full-stack-docker-quick-start)
 - [Run Paths](#run-paths)
 - [Detection Examples](#detection-examples)
 - [Scoring API](#scoring-api)
@@ -18,7 +19,6 @@ Real-time anomaly detection on transaction frequency time series using a Frequen
   - [Streaming Demo](#streaming-demo)
   - [API Configuration](#api-configuration)
 - [Prerequisites](#prerequisites)
-- [Full Stack Docker Quick Start](#full-stack-docker-quick-start)
 - [Configuration](#configuration)
 - [Local Development Setup](#local-development-setup)
 - [Project Structure](#project-structure)
@@ -53,6 +53,47 @@ The FCVAE reconstructs 24-hour sliding windows of normalized hourly transaction 
 **Scoring method:** The detector uses MCMC mode 2 scoring with 16 latent samples averaged, providing stable scores suitable for low-latency streaming.
 
 See [TECHNICAL.md sections 1, 3, 6](TECHNICAL.md) for full details on the architecture, scoring system, and streaming detector.
+
+---
+
+## Full Stack Docker Quick Start
+
+```bash
+# Clone the repo
+git clone <repo-url> && cd fcvae-anomaly-detection
+
+# Build all containers (this must complete before starting services)
+docker compose build
+
+# Verify the app image built successfully (look for "app" in the output)
+docker compose build app
+
+# Start all services
+docker compose up -d
+
+# Check service health -- you should see 7 services:
+#   zookeeper, kafka, spark-master, spark-worker, producer, app, api
+docker compose ps
+
+# If the "app" service is missing from the list, check its build/startup logs:
+#   docker compose logs app
+
+# View app logs (the Dash dashboard + Spark streaming)
+docker compose logs -f app
+
+# Access the Dash dashboard (served by the "app" service on port 8050)
+open http://localhost:8050
+
+# The FastAPI scoring API is available separately on port 8000
+curl http://localhost:8000/health
+
+# Stop all services
+docker compose down
+```
+
+> **Note:** `docker compose build` builds all services but does not stop on individual failures. If a service fails to build, it will silently be missing when you run `docker compose up -d`. Running `docker compose build app` separately after the full build confirms the dashboard image was built successfully.
+
+The producer waits for the app's `/health` endpoint before streaming data, so services start in the correct order automatically.
 
 ---
 
@@ -196,47 +237,6 @@ For full architectural details, see [TECHNICAL.md section 11](TECHNICAL.md).
 - **UV** package manager (for local development)
 - **Python 3.11+** (for local development)
 - **Git**
-
----
-
-## Full Stack Docker Quick Start
-
-```bash
-# Clone the repo
-git clone <repo-url> && cd fcvae-anomaly-detection
-
-# Build all containers (this must complete before starting services)
-docker compose build
-
-# Verify the app image built successfully (look for "app" in the output)
-docker compose build app
-
-# Start all services
-docker compose up -d
-
-# Check service health -- you should see 7 services:
-#   zookeeper, kafka, spark-master, spark-worker, producer, app, api
-docker compose ps
-
-# If the "app" service is missing from the list, check its build/startup logs:
-#   docker compose logs app
-
-# View app logs (the Dash dashboard + Spark streaming)
-docker compose logs -f app
-
-# Access the Dash dashboard (served by the "app" service on port 8050)
-open http://localhost:8050
-
-# The FastAPI scoring API is available separately on port 8000
-curl http://localhost:8000/health
-
-# Stop all services
-docker compose down
-```
-
-> **Note:** `docker compose build` builds all services but does not stop on individual failures. If a service fails to build, it will silently be missing when you run `docker compose up -d`. Running `docker compose build app` separately after the full build confirms the dashboard image was built successfully.
-
-The producer waits for the app's `/health` endpoint before streaming data, so services start in the correct order automatically.
 
 ---
 
