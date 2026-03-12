@@ -205,24 +205,36 @@ For full architectural details, see [TECHNICAL.md section 11](TECHNICAL.md).
 # Clone the repo
 git clone <repo-url> && cd fcvae-anomaly-detection
 
-# Build all containers
+# Build all containers (this must complete before starting services)
 docker compose build
+
+# Verify the app image built successfully (look for "app" in the output)
+docker compose build app
 
 # Start all services
 docker compose up -d
 
-# Check service health
+# Check service health -- you should see 7 services:
+#   zookeeper, kafka, spark-master, spark-worker, producer, app, api
 docker compose ps
 
-# View app logs
+# If the "app" service is missing from the list, check its build/startup logs:
+#   docker compose logs app
+
+# View app logs (the Dash dashboard + Spark streaming)
 docker compose logs -f app
 
-# Access the dashboard
+# Access the Dash dashboard (served by the "app" service on port 8050)
 open http://localhost:8050
+
+# The FastAPI scoring API is available separately on port 8000
+curl http://localhost:8000/health
 
 # Stop all services
 docker compose down
 ```
+
+> **Note:** `docker compose build` builds all services but does not stop on individual failures. If a service fails to build, it will silently be missing when you run `docker compose up -d`. Running `docker compose build app` separately after the full build confirms the dashboard image was built successfully.
 
 The producer waits for the app's `/health` endpoint before streaming data, so services start in the correct order automatically.
 
@@ -269,31 +281,47 @@ cd app && uv sync && cd ..
 cd producer && uv sync && cd ..
 ```
 
-### Generate Synthetic Data
+### Pre-built Artifacts (No Setup Required)
+
+The repo ships with all generated data, trained models, and evaluation outputs already committed. **You do not need to run the commands below to use the system.** They are provided as reference for how the artifacts were produced. Skip to [Project Structure](#project-structure) unless you want to regenerate them from scratch.
+
+<details>
+<summary>Reference: Generate Synthetic Data</summary>
 
 ```bash
-uv run python data/generate_transactions.py split \
+app/.venv/bin/python data/generate_transactions.py split \
     --output data/synthetic_transactions.csv
 ```
 
-### Train Models
+This produces `data/synthetic_transactions.csv` with train/val/test splits. The output is already in the repo at that path.
+</details>
+
+<details>
+<summary>Reference: Train Models</summary>
 
 ```bash
-uv run python -m app.train_fcvae \
+PYTHONPATH=app:$PYTHONPATH app/.venv/bin/python -m app.train_fcvae \
     --data-path data/synthetic_transactions.csv \
     --output-dir models/fcvae \
     --kl-warmup-epochs 35 \
     --epochs 75
 ```
 
-### Evaluate
+This trains FCVAE models for all 4 combos and writes artifacts to `models/fcvae/`. The trained models are already in the repo.
+</details>
+
+<details>
+<summary>Reference: Evaluate</summary>
 
 ```bash
-uv run python -m app.evaluate_fcvae detailed \
+PYTHONPATH=app:$PYTHONPATH app/.venv/bin/python -m app.evaluate_fcvae detailed \
     --model-dir models/fcvae \
     --output-dir plots/fcvae \
     --streaming-sim
 ```
+
+This runs the full evaluation suite and writes plots to `plots/fcvae/`. The outputs are already in the repo.
+</details>
 
 ---
 
