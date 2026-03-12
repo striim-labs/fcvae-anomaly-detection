@@ -23,7 +23,7 @@ from sklearn.preprocessing import StandardScaler
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-from app.transaction_config import (
+from transaction_config import (
     TransactionPreprocessorConfig,
     COMBO_KEYS,
     SAMPLES_PER_DAY,
