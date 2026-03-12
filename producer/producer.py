@@ -236,7 +236,7 @@ def parse_combo(combo_str: str):
 def main():
     bootstrap_servers = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
     topic = os.getenv("KAFKA_TOPIC", "anomaly_stream")
-    data_path = os.getenv("DATA_PATH", "/app/data/synthetic_transactions_v2_split60.csv")
+    data_path = os.getenv("DATA_PATH", "/app/data/synthetic_transactions.csv")
     delay = float(os.getenv("MESSAGE_DELAY_SECONDS", "0.1"))
     loop_data = os.getenv("LOOP_DATA", "true").lower() == "true"
     combo_str = os.getenv("COMBO", "Accel_nopin")
