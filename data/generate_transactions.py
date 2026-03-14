@@ -25,7 +25,7 @@ import argparse
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
-from typing import Dict, Tuple, List
+from typing import Dict, List, Optional, Tuple
 
 # ─── Base Configuration (same as v1) ─────────────────────────────────────────
 
@@ -92,6 +92,23 @@ AMOUNT_PARAMS = {
     "log_sigma": 0.9,
 }
 
+# ─── Penny Transaction Configuration ─────────────────────────────────────────
+
+PENNY_CONFIG = {
+    "base_rate": 0.02,        # p_0: 2% baseline penny fraction
+    "amplitude": 0.005,       # p_1: diurnal variation amplitude
+    "phase": np.pi / 2,       # offset penny peak from total-volume peak
+    "weekend_mult": 1.2,      # weekend multiplier (more automated testing)
+    "noise_std": 0.003,       # Gaussian noise on penny fraction per hour
+}
+
+# Penny amount distribution: 40% $0.01, 30% $0.50, 30% Uniform(0.01, 0.99)
+PENNY_AMOUNT_DIST = {
+    "prob_one_cent": 0.40,
+    "prob_fifty_cents": 0.30,
+    # remaining 30% is Uniform(0.01, 0.99)
+}
+
 # ─── NEW: Variability Configuration ──────────────────────────────────────────
 
 VARIABILITY_CONFIG = {
@@ -132,6 +149,130 @@ TEST_ANOMALIES = [
      "combo_hours": {("Star", "CMP"): [18], ("Star", "no-pin"): [8]}},
     {"day_offset": 9, "type": "spike", "hours": [9, 10, 11], "multiplier": 2.5},        # Day 60
 ]
+
+# ─── Penny Anomaly Injection Configuration ───────────────────────────────────
+# Penny anomalies multiply the penny fraction during specified hours, producing
+# a spike in sub-dollar transaction counts without changing total volume.
+# These are injected only in the test split for post-hoc oracle threshold
+# selection. The "penny_spike_factor" multiplies the penny fraction for those
+# hours. No penny_anomaly column is added; labels are determined post-hoc.
+
+TEST_PENNY_ANOMALIES = [
+    # Day 53: Mild carding probe (5x penny rate for 6 hours)
+    {"day_offset": 2, "hours": list(range(2, 8)), "penny_spike_factor": 5.0},
+    # Day 55: Moderate carding attack (10x penny rate for 4 hours)
+    {"day_offset": 4, "hours": list(range(10, 14)), "penny_spike_factor": 10.0},
+    # Day 58: Severe carding attack (25x penny rate for 4 hours)
+    {"day_offset": 7, "hours": list(range(20, 24)), "penny_spike_factor": 25.0},
+]
+
+
+# ─── Penny Transaction Functions ─────────────────────────────────────────────
+
+def penny_fraction(hour: float, dow: int, rng: np.random.Generator) -> float:
+    """
+    Compute the probability that a transaction at the given hour becomes a
+    penny transaction.
+
+    Args:
+        hour: Fractional hour [0, 24)
+        dow: Day of week (0=Mon, 6=Sun)
+        rng: Random number generator
+
+    Returns:
+        Probability in [0, 1]
+    """
+    cfg = PENNY_CONFIG
+    p = cfg["base_rate"] + cfg["amplitude"] * np.sin(
+        2 * np.pi * hour / 24 + cfg["phase"]
+    )
+    # Weekend multiplier
+    if dow >= 5:  # Saturday=5, Sunday=6
+        p *= cfg["weekend_mult"]
+    # Add Gaussian noise
+    p += rng.normal(0, cfg["noise_std"])
+    return np.clip(p, 0.0, 1.0)
+
+
+def generate_penny_amounts(n: int, rng: np.random.Generator) -> np.ndarray:
+    """
+    Draw n amounts from the penny amount distribution.
+
+    Distribution: 40% $0.01, 30% $0.50, 30% Uniform(0.01, 0.99)
+    """
+    amounts = np.empty(n)
+    p1 = PENNY_AMOUNT_DIST["prob_one_cent"]
+    p2 = PENNY_AMOUNT_DIST["prob_fifty_cents"]
+
+    draws = rng.random(n)
+    mask_one_cent = draws < p1
+    mask_fifty = (draws >= p1) & (draws < p1 + p2)
+    mask_uniform = draws >= (p1 + p2)
+
+    amounts[mask_one_cent] = 0.01
+    amounts[mask_fifty] = 0.50
+    amounts[mask_uniform] = np.round(
+        rng.uniform(0.01, 0.99, size=int(mask_uniform.sum())), 2
+    )
+    return amounts
+
+
+def apply_penny_amounts(
+    timestamps_seconds: np.ndarray,
+    amounts: np.ndarray,
+    day_offset: int,
+    rng: np.random.Generator,
+    penny_spike_hours: Optional[Dict[int, float]] = None,
+) -> np.ndarray:
+    """
+    Replace a fraction of transaction amounts with sub-dollar penny amounts.
+
+    For each transaction, computes the penny probability based on its hour
+    and day-of-week, draws a Bernoulli, and replaces the amount if selected.
+
+    Args:
+        timestamps_seconds: Array of timestamps in seconds from epoch
+        amounts: Array of original amounts (modified in place)
+        day_offset: Day number (0-based) for day-of-week calculation
+        rng: Random number generator
+        penny_spike_hours: Optional dict of {hour: spike_factor} for anomaly
+                          injection. During these hours, the penny fraction
+                          is multiplied by the spike factor.
+
+    Returns:
+        Modified amounts array
+    """
+    if len(timestamps_seconds) == 0:
+        return amounts
+
+    dow = day_offset % 7
+    day_start_seconds = day_offset * 24 * 3600
+
+    # Compute hour for each transaction
+    hours = ((timestamps_seconds - day_start_seconds) / 3600).astype(int)
+    hours = np.clip(hours, 0, 23)
+
+    # Compute penny probability per transaction
+    # Use a single RNG call for the penny fraction noise per unique hour
+    unique_hours = np.unique(hours)
+    hour_penny_frac = {}
+    for h in unique_hours:
+        frac = penny_fraction(float(h), dow, rng)
+        # Apply spike factor if this hour is in the anomaly schedule
+        if penny_spike_hours and h in penny_spike_hours:
+            frac = min(frac * penny_spike_hours[h], 1.0)
+        hour_penny_frac[h] = frac
+
+    # Draw Bernoulli for each transaction
+    probs = np.array([hour_penny_frac[h] for h in hours])
+    is_penny = rng.random(len(amounts)) < probs
+
+    # Replace amounts for penny transactions
+    n_penny = int(is_penny.sum())
+    if n_penny > 0:
+        amounts[is_penny] = generate_penny_amounts(n_penny, rng)
+
+    return amounts
 
 
 # ─── Variability Functions ───────────────────────────────────────────────────
@@ -686,6 +827,8 @@ def generate_dataset_with_splits(
     test_days: int = TEST_DAYS,
     val_anomalies: List[Dict] = None,
     test_anomalies: List[Dict] = None,
+    test_penny_anomalies: List[Dict] = None,
+    include_penny: bool = False,
     start_date: datetime = START_DATE,
     seed: int = SEED
 ) -> pd.DataFrame:
@@ -698,6 +841,9 @@ def generate_dataset_with_splits(
         test_days: Number of test days (with anomalies for evaluation)
         val_anomalies: List of anomaly configs for validation split
         test_anomalies: List of anomaly configs for test split
+        test_penny_anomalies: List of penny anomaly configs for test split
+        include_penny: If True, impose penny amount distribution on a fraction
+                       of transactions
         start_date: Start date (should be a Monday)
         seed: Random seed for reproducibility
 
@@ -709,6 +855,8 @@ def generate_dataset_with_splits(
         val_anomalies = VAL_ANOMALIES
     if test_anomalies is None:
         test_anomalies = TEST_ANOMALIES
+    if test_penny_anomalies is None:
+        test_penny_anomalies = TEST_PENNY_ANOMALIES
 
     rng = np.random.default_rng(seed)
     total_days = train_days + val_days + test_days
@@ -725,6 +873,17 @@ def generate_dataset_with_splits(
     for config in test_anomalies:
         absolute_day = test_start_day + config["day_offset"]
         anomaly_by_day[absolute_day] = config
+
+    # Build penny anomaly lookup: absolute_day -> {hour: spike_factor}
+    penny_anomaly_by_day: Dict[int, Dict[int, float]] = {}
+    if include_penny:
+        for config in test_penny_anomalies:
+            absolute_day = test_start_day + config["day_offset"]
+            spike_hours = {h: config["penny_spike_factor"] for h in config["hours"]}
+            if absolute_day in penny_anomaly_by_day:
+                penny_anomaly_by_day[absolute_day].update(spike_hours)
+            else:
+                penny_anomaly_by_day[absolute_day] = spike_hours
 
     all_records = []
 
@@ -755,6 +914,14 @@ def generate_dataset_with_splits(
             # Generate amounts
             amounts = generate_amounts(len(ts), combo, rng)
 
+            # Apply penny amount distribution if enabled
+            if include_penny:
+                penny_spike_hours = penny_anomaly_by_day.get(day)
+                amounts = apply_penny_amounts(
+                    ts, amounts, day, rng,
+                    penny_spike_hours=penny_spike_hours,
+                )
+
             # Determine split for this day
             if day < train_days:
                 split = "train"
@@ -763,13 +930,21 @@ def generate_dataset_with_splits(
             else:
                 split = "test"
 
+            # Build set of penny anomaly hours for this day
+            penny_anom_hours = set()
+            if include_penny and day in penny_anomaly_by_day:
+                penny_anom_hours = set(penny_anomaly_by_day[day].keys())
+
             # Create records
             day_start_seconds = day * 24 * 3600
             for i, t in enumerate(ts):
                 hour = int((t - day_start_seconds) / 3600)
 
                 # Determine if this transaction is anomalous
+                # Mark combo-level anomalies OR penny anomalies (sub-dollar in spike hours)
                 is_anomaly = 1 if hour in anomaly_hours else 0
+                if hour in penny_anom_hours and amounts[i] < 1.00:
+                    is_anomaly = 1
 
                 all_records.append({
                     "timestamp_seconds": t,
@@ -1047,6 +1222,12 @@ def generate_split():
         default=SEED,
         help="Random seed for reproducibility"
     )
+    parser.add_argument(
+        "--include-penny",
+        action="store_true",
+        default=False,
+        help="Include penny transaction amount distribution (~2%% of transactions get sub-dollar amounts)"
+    )
     args = parser.parse_args()
 
     total_days = args.train_days + args.val_days + args.test_days
@@ -1061,6 +1242,15 @@ def generate_split():
     print(f"  Validation: {args.val_days} days (days {args.train_days+1}-{args.train_days+args.val_days})")
     print(f"  Test:       {args.test_days} days (days {args.train_days+args.val_days+1}-{total_days})")
     print(f"  Total:      {total_days} days")
+    if args.include_penny:
+        print(f"\n  Penny distribution: ENABLED")
+        print(f"    Base rate:     {PENNY_CONFIG['base_rate']*100:.1f}%")
+        print(f"    Weekend mult:  {PENNY_CONFIG['weekend_mult']:.1f}x")
+        print(f"\n  Penny anomalies (test split only):")
+        for config in TEST_PENNY_ANOMALIES:
+            day = args.train_days + args.val_days + config["day_offset"] + 1
+            print(f"    Day {day}: {config['penny_spike_factor']}x spike "
+                  f"(hours {config['hours'][0]}-{config['hours'][-1]})")
 
     print(f"\nValidation anomalies (for F1 threshold tuning):")
     for config in VAL_ANOMALIES:
@@ -1077,6 +1267,7 @@ def generate_split():
         train_days=args.train_days,
         val_days=args.val_days,
         test_days=args.test_days,
+        include_penny=args.include_penny,
         seed=args.seed
     )
 
@@ -1104,6 +1295,18 @@ def generate_split():
     combo_counts = df.groupby(["network_type", "transaction_type"]).size()
     for (net, txn), count in combo_counts.items():
         print(f"  {net}/{txn}: {count:,}")
+
+    if args.include_penny:
+        penny_mask = df["amount"] < 1.00
+        n_penny = int(penny_mask.sum())
+        print(f"\nPenny transaction summary:")
+        print(f"  Total penny txns: {n_penny:,} ({n_penny/len(df)*100:.2f}%)")
+        for split in ["train", "val", "test"]:
+            split_mask = df["split"] == split
+            split_penny = int((penny_mask & split_mask).sum())
+            split_total = int(split_mask.sum())
+            print(f"  {split}: {split_penny:,} / {split_total:,} "
+                  f"({split_penny/split_total*100:.2f}%)")
 
     # Save
     df.to_csv(args.output, index=False)

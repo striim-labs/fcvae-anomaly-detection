@@ -21,7 +21,7 @@ Usage:
 import argparse
 import logging
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
 import torch
@@ -164,6 +164,7 @@ def train_all_combos(
     registry: FCVAERegistry,
     preprocessor: TransactionPreprocessor,
     combo_dataloaders: Dict[Tuple[str, str], Dict[str, torch.utils.data.DataLoader]],
+    combos: List[Tuple[str, str]] = None,
     epochs: int = 30,
     learning_rate: float = 5e-4,
     patience: int = 5,
@@ -174,7 +175,7 @@ def train_all_combos(
     kl_warmup_epochs: int = 10,
 ) -> Dict[Tuple[str, str], Dict]:
     """
-    Train all 4 combo models using FCVAE.
+    Train combo models using FCVAE.
 
     Args:
         registry: FCVAERegistry to store models
@@ -192,13 +193,16 @@ def train_all_combos(
     Returns:
         Dict of calibration results per combo
     """
+    if combos is None:
+        combos = COMBO_KEYS
+
     print("\n" + "=" * 60)
     print("TRAINING ALL COMBOS (FCVAE)")
     print("=" * 60)
 
     calibration_results = {}
 
-    for combo in COMBO_KEYS:
+    for combo in combos:
         print(f"\n--- Training {combo[0]}/{combo[1]} ---")
 
         loaders = combo_dataloaders[combo]
@@ -295,25 +299,29 @@ def evaluate_all_combos(
     registry: FCVAERegistry,
     preprocessor: TransactionPreprocessor,
     combo_dataloaders: Dict[Tuple[str, str], Dict[str, torch.utils.data.DataLoader]],
+    combos: List[Tuple[str, str]] = None,
 ) -> Dict[Tuple[str, str], Dict]:
     """
-    Evaluate all combo models on test data.
+    Evaluate combo models on test data.
 
     Args:
         registry: Trained FCVAERegistry
         preprocessor: TransactionPreprocessor with window info
         combo_dataloaders: Dict of DataLoaders per combo
+        combos: List of combo tuples to evaluate (defaults to COMBO_KEYS)
 
     Returns:
         Dict of evaluation results per combo
     """
+    if combos is None:
+        combos = COMBO_KEYS
     print("\n" + "=" * 60)
     print("EVALUATING ON TEST SET (FCVAE)")
     print("=" * 60)
 
     all_results = {}
 
-    for combo in COMBO_KEYS:
+    for combo in combos:
         print(f"\n--- {combo[0]}/{combo[1]} ---")
 
         loaders = combo_dataloaders[combo]
@@ -402,8 +410,11 @@ def evaluate_all_combos(
 def print_summary(
     registry: FCVAERegistry,
     eval_results: Dict[Tuple[str, str], Dict],
+    combos: List[Tuple[str, str]] = None,
 ) -> None:
     """Print training and evaluation summary."""
+    if combos is None:
+        combos = COMBO_KEYS
     print("\n" + "=" * 60)
     print("SUMMARY")
     print("=" * 60)
@@ -428,7 +439,7 @@ def print_summary(
     print(f"{'Combo':<20} {'Best Ep':>10} {'Val Loss':>12} {'Test Anom':>12} {'W-Thresh':>12}")
     print("-" * 70)
 
-    for combo in COMBO_KEYS:
+    for combo in combos:
         combo_key = f"{combo[0]}_{combo[1]}"
         combo_stats = stats["combos"].get(combo_key, {})
 
@@ -452,7 +463,7 @@ def print_summary(
     print(f"{'Combo':<20} {'TP':>6} {'FP':>6} {'FN':>6} {'TN':>6} {'Precision':>10} {'Recall':>10} {'F1':>10}")
     print("-" * 86)
 
-    for combo in COMBO_KEYS:
+    for combo in combos:
         eval_res = eval_results.get(combo, {})
         combo_name = f"{combo[0]}/{combo[1]}"
 
@@ -583,6 +594,19 @@ def main():
         default="single_pass",
         help="Scoring mode: single_pass (fast) or mcmc (accurate)"
     )
+    parser.add_argument(
+        "--aggregation-mode",
+        type=str,
+        choices=["combo", "penny"],
+        default="combo",
+        help="'combo' trains 4 per-combo models; 'penny' trains 1 pooled penny model"
+    )
+    parser.add_argument(
+        "--pool-train-val",
+        action="store_true",
+        default=False,
+        help="Pool train+val splits for training (maximizes normal data for penny model)"
+    )
     args = parser.parse_args()
 
     # Setup logging
@@ -609,14 +633,25 @@ def main():
     preprocessor = TransactionPreprocessor(config=preprocess_config)
 
     # Load and aggregate data (this populates combo_hourly)
-    preprocessor.load_and_aggregate(args.data_path)
+    preprocessor.load_and_aggregate(args.data_path, aggregation_mode=args.aggregation_mode)
 
-    print(f"\nSliding window config: window_size={args.window_size}, stride={args.stride}")
+    # Determine active combos based on aggregation mode
+    if args.aggregation_mode == "penny":
+        active_combos = [("Penny", "All")]
+        print(f"\nAggregation mode: penny (1 pooled model)")
+    else:
+        active_combos = COMBO_KEYS
+        print(f"\nAggregation mode: combo ({len(active_combos)} models)")
+
+    if args.pool_train_val:
+        print("Train+val pooling: ENABLED")
+
+    print(f"Sliding window config: window_size={args.window_size}, stride={args.stride}")
 
     # Create sliding window DataLoaders for each combo
     combo_dataloaders = {}
 
-    for combo in COMBO_KEYS:
+    for combo in active_combos:
         print(f"\n  Creating sliding windows for {combo[0]}/{combo[1]}...")
 
         # Create sliding windows and splits
@@ -625,6 +660,16 @@ def main():
             window_size=args.window_size,
             stride=args.stride
         )
+
+        # Pool train+val for training if requested
+        if args.pool_train_val:
+            train_w, train_l = splits["train"]
+            val_w, val_l = splits["val"]
+            if len(train_w) > 0 and len(val_w) > 0:
+                pooled_w = np.concatenate([train_w, val_w])
+                pooled_l = np.concatenate([train_l, val_l])
+                splits["train"] = (pooled_w, pooled_l)
+                print(f"    Pooled train+val: {len(train_w)} + {len(val_w)} = {len(pooled_w)} windows")
 
         # Normalize
         normalized = preprocessor.normalize_sliding_windows(
@@ -708,6 +753,7 @@ def main():
         registry=registry,
         preprocessor=preprocessor,
         combo_dataloaders=combo_dataloaders,
+        combos=active_combos,
         epochs=args.epochs,
         learning_rate=args.lr,
         patience=args.patience,
@@ -727,10 +773,11 @@ def main():
         registry=registry,
         preprocessor=preprocessor,
         combo_dataloaders=combo_dataloaders,
+        combos=active_combos,
     )
 
     # Print summary
-    print_summary(registry, eval_results)
+    print_summary(registry, eval_results, combos=active_combos)
 
     # Step 5: Save models
     if not args.skip_save:
@@ -741,7 +788,7 @@ def main():
         registry.save_all(args.output_dir)
 
         print(f"\nArtifacts saved to: {args.output_dir}/")
-        for combo in COMBO_KEYS:
+        for combo in active_combos:
             dirname = f"{combo[0]}_{combo[1].replace('-', '')}"
             print(f"  {dirname}/")
             print(f"    - model.pt")

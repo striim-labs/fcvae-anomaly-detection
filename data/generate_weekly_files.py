@@ -42,6 +42,8 @@ from generate_transactions import (
     generate_combo_timestamps_v2,
     generate_amounts,
     inject_anomaly,
+    apply_penny_amounts,
+    PENNY_CONFIG,
 )
 
 # -- Configuration ------------------------------------------------------------
@@ -112,6 +114,63 @@ WEEKLY_ANOMALIES: Dict[int, List[dict]] = {
 }
 
 
+# -- Per-week penny anomaly schedules ------------------------------------------
+#
+# Penny anomalies multiply the penny fraction during specified hours, producing
+# a spike in sub-dollar transaction counts without changing total volume.
+# These are injected only when --inject-penny-anomalies is passed.
+# Each entry has:
+#   day_in_week        : 0-6 (Mon-Sun)
+#   hours              : list of affected hours
+#   penny_spike_factor : multiplier on the penny fraction for those hours
+
+PENNY_WEEKLY_ANOMALIES: Dict[int, List[dict]] = {
+    # Week 3 (index 2): mild carding probe on Monday
+    2: [
+        {
+            "day_in_week": 0,   # Monday
+            "hours": list(range(2, 8)),
+            "penny_spike_factor": 5.0,
+        },
+    ],
+    # Week 4 (index 3): moderate probe Wednesday, severe probe Saturday
+    3: [
+        {
+            "day_in_week": 2,   # Wednesday
+            "hours": list(range(10, 14)),
+            "penny_spike_factor": 10.0,
+        },
+        {
+            "day_in_week": 5,   # Saturday
+            "hours": list(range(0, 4)),
+            "penny_spike_factor": 25.0,
+        },
+    ],
+}
+
+
+def _build_penny_anomaly_lookup(
+    week_index: int,
+) -> Dict[int, Dict[int, float]]:
+    """
+    Build a mapping from day-in-week (0-6) to {hour: spike_factor} for penny
+    anomalies in the given week.
+
+    Returns:
+        Dict mapping day_in_week -> {hour: spike_factor}
+    """
+    configs = PENNY_WEEKLY_ANOMALIES.get(week_index, [])
+    lookup: Dict[int, Dict[int, float]] = {}
+    for cfg in configs:
+        d = cfg["day_in_week"]
+        spike_hours = {h: cfg["penny_spike_factor"] for h in cfg["hours"]}
+        if d in lookup:
+            lookup[d].update(spike_hours)
+        else:
+            lookup[d] = spike_hours
+    return lookup
+
+
 def _build_anomaly_lookup(
     week_index: int,
 ) -> Dict[int, List[dict]]:
@@ -135,15 +194,20 @@ def generate_one_week(
     start_date: datetime,
     seed: int,
     inject_anomalies: bool = False,
+    include_penny: bool = False,
+    inject_penny_anomalies: bool = False,
 ) -> pd.DataFrame:
     """
     Generate 7 days of transaction data for all combos.
 
     Args:
-        week_index:       0-based week number (used to offset dates)
-        start_date:       The Monday that week 0 begins on
-        seed:             Random seed for this week
-        inject_anomalies: If True, apply anomaly configs from WEEKLY_ANOMALIES
+        week_index:              0-based week number (used to offset dates)
+        start_date:              The Monday that week 0 begins on
+        seed:                    Random seed for this week
+        inject_anomalies:        If True, apply anomaly configs from WEEKLY_ANOMALIES
+        include_penny:           If True, impose penny amount distribution
+        inject_penny_anomalies:  If True, apply penny spike configs from
+                                 PENNY_WEEKLY_ANOMALIES
 
     Returns:
         DataFrame with columns: timestamp, network_type, transaction_type,
@@ -153,6 +217,10 @@ def generate_one_week(
 
     day_offset_base = week_index * DAYS_PER_WEEK
     anomaly_lookup = _build_anomaly_lookup(week_index) if inject_anomalies else {}
+    penny_anomaly_lookup = (
+        _build_penny_anomaly_lookup(week_index)
+        if inject_penny_anomalies else {}
+    )
 
     all_records = []
 
@@ -191,6 +259,14 @@ def generate_one_week(
                 continue
 
             amounts = generate_amounts(len(ts), combo, rng)
+
+            # Apply penny amount distribution if enabled
+            if include_penny:
+                penny_spike_hours = penny_anomaly_lookup.get(day_in_week)
+                amounts = apply_penny_amounts(
+                    ts, amounts, absolute_day, rng,
+                    penny_spike_hours=penny_spike_hours,
+                )
 
             day_start_seconds = absolute_day * 24 * 3600
             for i, t in enumerate(ts):
@@ -247,7 +323,23 @@ def main():
         default=False,
         help="Inject anomalies in weeks 3-4 (spike, dip, ramp, compound)"
     )
+    parser.add_argument(
+        "--include-penny",
+        action="store_true",
+        default=False,
+        help="Include penny transaction amount distribution (~2%% sub-dollar)"
+    )
+    parser.add_argument(
+        "--inject-penny-anomalies",
+        action="store_true",
+        default=False,
+        help="Inject penny-rate spike anomalies in weeks 3-4 (requires --include-penny)"
+    )
     args = parser.parse_args()
+
+    # --inject-penny-anomalies implies --include-penny
+    if args.inject_penny_anomalies:
+        args.include_penny = True
 
     os.makedirs(args.output_dir, exist_ok=True)
 
@@ -259,6 +351,8 @@ def main():
     print(f"  Output dir:       {args.output_dir}")
     print(f"  Base seed:        {args.seed}")
     print(f"  Inject anomalies: {args.inject_anomalies}")
+    print(f"  Include penny:    {args.include_penny}")
+    print(f"  Penny anomalies:  {args.inject_penny_anomalies}")
 
     if args.inject_anomalies:
         print("\n  Anomaly schedule:")
@@ -271,12 +365,25 @@ def main():
                 print(f"    Week {wk_num}, {day_name}: {cfg['type']}"
                       f" (hours {cfg.get('hours', 'N/A')})")
 
+    if args.inject_penny_anomalies:
+        print("\n  Penny anomaly schedule:")
+        for wk_idx in sorted(PENNY_WEEKLY_ANOMALIES.keys()):
+            if wk_idx >= args.num_weeks:
+                continue
+            wk_num = wk_idx + 1
+            for cfg in PENNY_WEEKLY_ANOMALIES[wk_idx]:
+                day_name = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][cfg["day_in_week"]]
+                print(f"    Week {wk_num}, {day_name}: {cfg['penny_spike_factor']}x penny spike"
+                      f" (hours {cfg['hours'][0]}-{cfg['hours'][-1]})")
+
     total_anomaly_rows = 0
 
     for week in range(args.num_weeks):
         week_seed = args.seed + week * 1000
         df = generate_one_week(week, START_DATE, week_seed,
-                               inject_anomalies=args.inject_anomalies)
+                               inject_anomalies=args.inject_anomalies,
+                               include_penny=args.include_penny,
+                               inject_penny_anomalies=args.inject_penny_anomalies)
 
         filename = f"week_{week + 1}.csv"
         filepath = os.path.join(args.output_dir, filename)
@@ -299,6 +406,10 @@ def main():
             )
             anom_str = f"  ({anom_count} anomaly)" if anom_count > 0 else ""
             print(f"    {net}/{txn}: {count:,}{anom_str}")
+
+        if args.include_penny:
+            n_penny = int((df["amount"] < 1.00).sum())
+            print(f"    Penny txns: {n_penny:,} ({n_penny/len(df)*100:.2f}%)")
 
     print(f"\n{'=' * 60}")
     if total_anomaly_rows > 0:

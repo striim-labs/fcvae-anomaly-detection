@@ -136,15 +136,20 @@ class TransactionPreprocessor:
 
         logger.info(f"Initialized TransactionPreprocessor with config: {self.config}")
 
-    def load_and_aggregate(self, filepath: str) -> Dict[Tuple[str, str], pd.DataFrame]:
+    def load_and_aggregate(
+        self, filepath: str, aggregation_mode: str = "combo"
+    ) -> Dict[Tuple[str, str], pd.DataFrame]:
         """
-        Load transaction CSV and aggregate to hourly counts per combo.
+        Load transaction CSV and aggregate to hourly counts.
 
         The raw CSV has columns: timestamp, network_type, transaction_type, amount, is_anomaly
-        This aggregates to hourly transaction counts for each (network_type, transaction_type) combo.
+        This aggregates to hourly transaction counts either per combo or pooled for penny
+        transactions.
 
         Args:
             filepath: Path to synthetic_transactions.csv
+            aggregation_mode: "combo" for per-combo counts (default),
+                            "penny" for pooled sub-dollar counts
 
         Returns:
             Dict mapping combo tuple to DataFrame with hourly counts
@@ -182,9 +187,26 @@ class TransactionPreprocessor:
             self.has_csv_splits = False
             logger.info("No 'split' column - using day-based splits")
 
-        # Aggregate: count transactions per hour per combo
-        # Also aggregate is_anomaly (max = 1 if any transaction was anomalous)
-        # And split (first = all transactions in an hour should have same split)
+        # Create complete hourly index for the full date range
+        full_hours = pd.date_range(
+            start=self.data_start.floor("h"),
+            end=self.data_end.floor("h"),
+            freq="h"
+        )
+        expected_hours = len(full_hours)
+        logger.info(f"Expected hours: {expected_hours} ({expected_hours // 24} days)")
+
+        if aggregation_mode == "penny":
+            self._aggregate_penny(df, full_hours, has_split_col)
+        else:
+            self._aggregate_combo(df, full_hours, has_split_col)
+
+        return self.combo_hourly
+
+    def _aggregate_combo(
+        self, df: pd.DataFrame, full_hours: pd.DatetimeIndex, has_split_col: bool
+    ) -> None:
+        """Aggregate to hourly counts per (network_type, transaction_type) combo."""
         agg_dict = {"timestamp": "count", "is_anomaly": "max"}
         if has_split_col:
             agg_dict["split"] = "first"
@@ -197,15 +219,6 @@ class TransactionPreprocessor:
             counts.columns = ["hour_bucket", "network_type", "transaction_type", "count", "is_anomaly", "split"]
         else:
             counts.columns = ["hour_bucket", "network_type", "transaction_type", "count", "is_anomaly"]
-
-        # Create complete hourly index for the full date range
-        full_hours = pd.date_range(
-            start=self.data_start.floor("h"),
-            end=self.data_end.floor("h"),
-            freq="h"
-        )
-        expected_hours = len(full_hours)
-        logger.info(f"Expected hours: {expected_hours} ({expected_hours // 24} days)")
 
         # Process each combo
         for combo in COMBO_KEYS:
@@ -252,7 +265,58 @@ class TransactionPreprocessor:
                 log_msg += f", splits: {split_counts}"
             logger.info(log_msg)
 
-        return self.combo_hourly
+    def _aggregate_penny(
+        self, df: pd.DataFrame, full_hours: pd.DatetimeIndex, has_split_col: bool
+    ) -> None:
+        """
+        Filter to sub-dollar transactions, pool across all combos, and
+        aggregate to hourly penny counts as a single ("Penny", "All") series.
+        """
+        combo = ("Penny", "All")
+        total_before = len(df)
+        df = df[df["amount"] < 1.00]
+        logger.info(
+            f"Penny filter: {len(df):,} / {total_before:,} transactions "
+            f"({len(df)/total_before*100:.2f}%)"
+        )
+
+        # Aggregate by hour only (pool all combos)
+        agg_dict = {"timestamp": "count", "is_anomaly": "max"}
+        if has_split_col:
+            agg_dict["split"] = "first"
+
+        counts = df.groupby("hour_bucket").agg(agg_dict).reset_index()
+
+        if has_split_col:
+            counts.columns = ["hour_bucket", "count", "is_anomaly", "split"]
+        else:
+            counts.columns = ["hour_bucket", "count", "is_anomaly"]
+
+        # Reindex to full hour range, fill missing with 0
+        combo_df = pd.DataFrame({"hour_bucket": full_hours})
+        combo_df = combo_df.merge(counts, on="hour_bucket", how="left")
+        combo_df["count"] = combo_df["count"].fillna(0).astype(int)
+        combo_df["is_anomaly"] = combo_df["is_anomaly"].fillna(0).astype(int)
+
+        if has_split_col:
+            combo_df["split"] = combo_df["split"].ffill().bfill()
+            self.combo_hour_splits[combo] = combo_df["split"]
+            self.combo_hour_anomalies[combo] = combo_df["is_anomaly"]
+
+        self.combo_hourly[combo] = combo_df
+
+        # Log stats
+        total_txns = combo_df["count"].sum()
+        mean_hourly = combo_df["count"].mean()
+        log_msg = (
+            f"  {combo}: {len(combo_df)} hours, "
+            f"{total_txns:,} total penny transactions, "
+            f"{mean_hourly:.1f} mean/hour"
+        )
+        if has_split_col:
+            split_counts = combo_df["split"].value_counts().to_dict()
+            log_msg += f", splits: {split_counts}"
+        logger.info(log_msg)
 
     def segment_into_days(
         self,

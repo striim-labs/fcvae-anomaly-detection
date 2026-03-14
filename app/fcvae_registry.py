@@ -12,6 +12,7 @@ Key differences from ModelRegistry (LSTM-AE):
 """
 import logging
 import pickle
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Dict, Tuple, List
@@ -84,10 +85,8 @@ class FCVAERegistry:
         self.scalers: Dict[Tuple[str, str], StandardScaler] = {}
         self.training_histories: Dict[Tuple[str, str], Dict] = {}
 
-        # Model versioning
-        self.model_versions: Dict[Tuple[str, str], int] = {
-            combo: 0 for combo in COMBO_KEYS
-        }
+        # Model versioning (defaultdict so unknown combos start at 0)
+        self.model_versions: Dict[Tuple[str, str], int] = defaultdict(int)
 
         logger.info(f"Initialized FCVAERegistry with device={self.device}")
         logger.info(f"  Model config: window={self.model_config.window}, "
@@ -656,7 +655,9 @@ class FCVAERegistry:
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        for combo in COMBO_KEYS:
+        # Save all combos that have models (supports both standard and penny combos)
+        combos_to_save = set(self.models.keys()) | set(self.scorers.keys()) | set(self.training_histories.keys())
+        for combo in combos_to_save:
             combo_dir = output_dir / combo_to_dirname(combo)
             combo_dir.mkdir(parents=True, exist_ok=True)
 
@@ -789,7 +790,10 @@ class FCVAERegistry:
             "combos": {},
         }
 
-        for combo in COMBO_KEYS:
+        all_combos = set(self.models.keys()) | set(self.scorers.keys()) | set(self.training_histories.keys())
+        if not all_combos:
+            all_combos = COMBO_KEYS
+        for combo in all_combos:
             combo_stats = {
                 "has_model": combo in self.models,
                 "has_scorer": combo in self.scorers,
