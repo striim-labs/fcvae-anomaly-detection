@@ -946,12 +946,16 @@ def generate_dataset_with_splits(
                 if hour in penny_anom_hours and amounts[i] < 1.00:
                     is_anomaly = 1
 
+                # Penny-specific anomaly label: only sub-dollar txns in penny spike hours
+                penny_is_anomaly = 1 if (hour in penny_anom_hours and amounts[i] < 1.00) else 0
+
                 all_records.append({
                     "timestamp_seconds": t,
                     "network_type": network,
                     "transaction_type": txn_type,
                     "amount": amounts[i],
                     "is_anomaly": is_anomaly,
+                    "penny_is_anomaly": penny_is_anomaly,
                     "split": split,
                 })
 
@@ -966,7 +970,11 @@ def generate_dataset_with_splits(
     df.sort_values("timestamp", inplace=True)
     df.reset_index(drop=True, inplace=True)
 
-    df = df[["timestamp", "network_type", "transaction_type", "amount", "is_anomaly", "split"]]
+    # Include penny_is_anomaly if penny data was generated
+    cols = ["timestamp", "network_type", "transaction_type", "amount", "is_anomaly", "split"]
+    if include_penny and "penny_is_anomaly" in df.columns:
+        cols.insert(5, "penny_is_anomaly")
+    df = df[cols]
 
     return df
 
@@ -1314,6 +1322,83 @@ def generate_split():
     print(f"File size: {df.memory_usage(deep=True).sum() / 1e6:.1f} MB (in memory)")
 
 
+def patch_penny_labels():
+    """
+    Add penny_is_anomaly column to an existing CSV without regenerating.
+
+    Derives penny-specific anomaly labels from the known injection schedule
+    (TEST_PENNY_ANOMALIES). Only sub-dollar transactions in penny spike hours
+    get penny_is_anomaly=1. All other transactions get 0.
+    """
+    parser = argparse.ArgumentParser(
+        description="Add penny_is_anomaly column to existing CSV"
+    )
+    parser.add_argument(
+        "--input", "-i",
+        type=str,
+        default="data/synthetic_transactions.csv",
+        help="Input CSV path"
+    )
+    parser.add_argument(
+        "--output", "-o",
+        type=str,
+        default=None,
+        help="Output CSV path (default: overwrite input)"
+    )
+    parser.add_argument(
+        "--train-days",
+        type=int,
+        default=TRAIN_DAYS,
+    )
+    parser.add_argument(
+        "--val-days",
+        type=int,
+        default=VAL_DAYS,
+    )
+    args = parser.parse_args()
+    output = args.output or args.input
+
+    print(f"Loading {args.input}...")
+    df = pd.read_csv(args.input, parse_dates=["timestamp"])
+    print(f"  {len(df):,} rows")
+
+    # Build penny anomaly hour lookup (absolute day -> set of hours)
+    test_start_day = args.train_days + args.val_days
+    penny_anom_hours = set()
+    for config in TEST_PENNY_ANOMALIES:
+        abs_day = test_start_day + config["day_offset"]
+        for h in config["hours"]:
+            penny_anom_hours.add((abs_day, h))
+
+    # Compute penny_is_anomaly
+    base_ts = df["timestamp"].min().normalize()
+    day_index = (df["timestamp"] - base_ts).dt.days.values
+    hour_index = df["timestamp"].dt.hour.values
+    is_penny = (df["amount"] < 1.00).values
+
+    penny_labels = np.zeros(len(df), dtype=np.int8)
+    for i in range(len(df)):
+        if is_penny[i] and (day_index[i], hour_index[i]) in penny_anom_hours:
+            penny_labels[i] = 1
+
+    df["penny_is_anomaly"] = penny_labels
+
+    n_labeled = int(penny_labels.sum())
+    print(f"  Labeled {n_labeled:,} transactions as penny_is_anomaly=1")
+
+    # Reorder columns
+    cols = list(df.columns)
+    if "penny_is_anomaly" in cols:
+        cols.remove("penny_is_anomaly")
+        # Insert after is_anomaly
+        idx = cols.index("is_anomaly") + 1
+        cols.insert(idx, "penny_is_anomaly")
+        df = df[cols]
+
+    df.to_csv(output, index=False)
+    print(f"  Saved to: {output}")
+
+
 if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1 and sys.argv[1] == "append":
@@ -1322,5 +1407,8 @@ if __name__ == "__main__":
     elif len(sys.argv) > 1 and sys.argv[1] == "split":
         sys.argv.pop(1)  # Remove "split" from args
         generate_split()
+    elif len(sys.argv) > 1 and sys.argv[1] == "patch-penny":
+        sys.argv.pop(1)
+        patch_penny_labels()
     else:
         main()

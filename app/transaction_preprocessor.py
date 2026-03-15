@@ -280,8 +280,18 @@ class TransactionPreprocessor:
             f"({len(df)/total_before*100:.2f}%)"
         )
 
+        # Use penny-specific anomaly labels if available, otherwise fall back to is_anomaly
+        anomaly_col = "penny_is_anomaly" if "penny_is_anomaly" in df.columns else "is_anomaly"
+        if anomaly_col == "penny_is_anomaly":
+            logger.info("Using penny_is_anomaly column (penny-specific labels)")
+        else:
+            logger.warning(
+                "penny_is_anomaly column not found — using is_anomaly "
+                "(may include combo-level anomaly labels)"
+            )
+
         # Aggregate by hour only (pool all combos)
-        agg_dict = {"timestamp": "count", "is_anomaly": "max"}
+        agg_dict = {"timestamp": "count", anomaly_col: "max"}
         if has_split_col:
             agg_dict["split"] = "first"
 

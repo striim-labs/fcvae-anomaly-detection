@@ -1066,6 +1066,13 @@ def main():
         action="store_true",
         help="Skip generating plots (evaluation metrics only)"
     )
+    parser.add_argument(
+        "--aggregation-mode",
+        type=str,
+        choices=["combo", "penny"],
+        default="combo",
+        help="Aggregation mode: 'combo' (per network/txn type) or 'penny' (sub-dollar pooled)"
+    )
     args = parser.parse_args()
 
     # Setup logging
@@ -1092,30 +1099,72 @@ def main():
     from transaction_preprocessor import TransactionPreprocessor
 
     registry = FCVAERegistry(device=device)
-    registry.load_all(args.model_dir)
-    print(f"Loaded models from: {args.model_dir}")
 
     # Load preprocessor
     preprocessor = TransactionPreprocessor(config=TransactionPreprocessorConfig())
-    preprocessor.load_and_aggregate(args.data_path)
+
+    if args.aggregation_mode == "penny":
+        # Penny mode: load model directly, bypass registry's COMBO_KEYS iteration
+        preprocessor.load_and_aggregate(args.data_path, aggregation_mode="penny")
+        combo = ("Penny", "All")
+        combos_to_eval = [combo]
+
+        # Load penny model artifacts directly into the registry
+        import pickle
+        from fcvae_model import FCVAE, FCVAEConfig
+        from fcvae_scorer import FCVAEScorer
+
+        penny_dir = Path(args.model_dir)
+        # Support both models/fcvae (parent) and models/fcvae/Penny_All (direct)
+        if (penny_dir / "Penny_All").is_dir():
+            penny_dir = penny_dir / "Penny_All"
+
+        torch.serialization.add_safe_globals([FCVAEConfig])
+        checkpoint = torch.load(
+            penny_dir / "model.pt", map_location=device, weights_only=False
+        )
+        model = FCVAE(config=checkpoint["model_config"])
+        model.load_state_dict(checkpoint["model_state_dict"])
+        model.to(device)
+        model.eval()
+        registry.models[combo] = model
+
+        registry.scorers[combo] = FCVAEScorer.load(penny_dir / "scorer.pkl")
+
+        with open(penny_dir / "scaler.pkl", "rb") as f:
+            scaler = pickle.load(f)
+            # Store with _sliding suffix to match evaluate_combo's lookup pattern
+            registry.scalers[(combo[0], combo[1] + "_sliding")] = scaler
+
+        history_path = penny_dir / "history.pkl"
+        if history_path.exists():
+            with open(history_path, "rb") as f:
+                registry.training_histories[combo] = pickle.load(f)
+
+        print(f"Loaded Penny_All model from: {penny_dir}")
+    else:
+        # Standard combo mode
+        registry.load_all(args.model_dir)
+        preprocessor.load_and_aggregate(args.data_path)
+
+        if args.combo.lower() == "all":
+            combos_to_eval = list(COMBO_KEYS)
+        else:
+            parts = args.combo.split("/")
+            if len(parts) == 2:
+                combos_to_eval = [(parts[0], parts[1])]
+            else:
+                logger.error(f"Invalid combo format: {args.combo}. Use 'Accel/CMP' format.")
+                return
+
+        print(f"Loaded models from: {args.model_dir}")
+
     print(f"Loaded data from: {args.data_path}")
 
     # Output directory
     output_path = Path(args.output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
     print(f"Output directory: {output_path}")
-
-    # Determine combos to evaluate
-    if args.combo.lower() == "all":
-        combos_to_eval = list(COMBO_KEYS)
-    else:
-        # Parse combo string like "Accel/CMP"
-        parts = args.combo.split("/")
-        if len(parts) == 2:
-            combos_to_eval = [(parts[0], parts[1])]
-        else:
-            logger.error(f"Invalid combo format: {args.combo}. Use 'Accel/CMP' format.")
-            return
 
     # Evaluate each combo
     all_results = {}
