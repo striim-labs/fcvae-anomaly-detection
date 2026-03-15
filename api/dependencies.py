@@ -25,6 +25,7 @@ COMBO_KEY_MAP: Dict[str, Tuple[str, str]] = {
     "Accel_nopin": ("Accel", "no-pin"),
     "Star_CMP": ("Star", "CMP"),
     "Star_nopin": ("Star", "no-pin"),
+    "Penny_All": ("Penny", "All"),
 }
 
 

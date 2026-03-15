@@ -1,0 +1,105 @@
+USE fcvae;
+
+CREATE APPLICATION FCVAE_PENNY;
+
+-- ============================================================
+-- Ingest raw transaction rows from CSV
+-- ============================================================
+
+CREATE SOURCE PennyTxnFileSource USING FileReader (
+  directory: '/tmp/fcvae_penny_test',
+  wildcard: 'synthetic_transactions*.csv',
+  positionByEOF: false
+)
+PARSE USING DSVParser (
+  columndelimiter: ',',
+  header: true
+)
+OUTPUT TO PennyRawTxnStream;
+
+-- ============================================================
+-- Parse timestamp and amount from raw WAEvent
+-- ============================================================
+
+CREATE CQ PennyParseTxn
+INSERT INTO PennyParsedStream
+SELECT
+  TO_DATEF(SLEFT(TO_STRING(data[0]), 19),
+           'yyyy-MM-dd HH:mm:ss')   AS txn_timestamp,
+  TO_DOUBLE(TO_STRING(data[3]))      AS amount
+FROM PennyRawTxnStream;
+
+-- ============================================================
+-- Filter to penny transactions only (amount < $1.00)
+-- All combos are pooled into a single "Penny_All" key
+-- ============================================================
+
+CREATE CQ PennyFilter
+INSERT INTO PennyFilteredStream
+SELECT
+  'Penny_All'    AS combo_key,
+  txn_timestamp  AS txn_timestamp
+FROM PennyParsedStream
+WHERE amount < 1.00;
+
+-- ============================================================
+-- Hourly aggregation (1-hour jumping window, event time)
+-- ============================================================
+
+CREATE JUMPING WINDOW PennyHourlyWindow
+OVER PennyFilteredStream
+KEEP WITHIN 1 HOUR
+ON txn_timestamp
+PARTITION BY combo_key;
+
+CREATE CQ PennyHourlyCounts
+INSERT INTO PennyHourlyCountStream
+SELECT
+  w.combo_key                        AS combo_key,
+  COUNT(*)                           AS txn_count,
+  TO_STRING(FIRST(w.txn_timestamp))  AS hour_start,
+  TO_STRING(LAST(w.txn_timestamp))   AS hour_end
+FROM PennyHourlyWindow w
+GROUP BY w.combo_key;
+
+-- ============================================================
+-- 24-hour sliding window
+-- ============================================================
+
+CREATE WINDOW PennyDailyWindow
+OVER PennyHourlyCountStream
+KEEP 24 ROWS
+PARTITION BY combo_key;
+
+CREATE STREAM PennyDailyPayloadStream OF fcvae.DailyPayloadStream_Type;
+
+CREATE CQ PennyAssembleDailyPayload
+INSERT INTO PennyDailyPayloadStream
+SELECT
+  w.combo_key                              AS combo_key,
+  LIST(TO_STRING(w.txn_count))             AS values_list,
+  COUNT(*)                                 AS window_size,
+  TO_STRING(FIRST(w.hour_start))           AS window_start,
+  TO_STRING(LAST(w.hour_start))            AS window_end
+FROM PennyDailyWindow w
+GROUP BY w.combo_key
+HAVING COUNT(*) >= 24;
+
+-- ============================================================
+-- Output stream for scored results (populated by Open Processor)
+-- ============================================================
+
+CREATE STREAM PennyScorerResultStream OF fcvae.ScorerResult;
+
+-- ============================================================
+-- Write scored results to JSON file
+-- ============================================================
+
+CREATE TARGET PennyResultFile USING FileWriter (
+  directory: '/tmp/fcvae_penny_test',
+  filename: 'penny_scored_output'
+)
+FORMAT USING JSONFormatter ()
+INPUT FROM PennyScorerResultStream;
+
+END APPLICATION FCVAE_PENNY;

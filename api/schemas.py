@@ -4,7 +4,7 @@ from typing import Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
-VALID_COMBOS = {"Accel_CMP", "Accel_nopin", "Star_CMP", "Star_nopin"}
+VALID_COMBOS = {"Accel_CMP", "Accel_nopin", "Star_CMP", "Star_nopin", "Penny_All"}
 
 WINDOW_SIZE = 24
 
@@ -14,7 +14,7 @@ class ScoreRequest(BaseModel):
 
     combo: str = Field(
         ...,
-        description="Model combo key: Accel_CMP, Accel_nopin, Star_CMP, or Star_nopin",
+        description="Model combo key: Accel_CMP, Accel_nopin, Star_CMP, Star_nopin, or Penny_All",
     )
     values: List[float] = Field(
         ...,

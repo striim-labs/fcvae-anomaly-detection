@@ -28,6 +28,7 @@ COMBO_MAP = {
     "Accel_nopin": ("Accel", "no-pin"),
     "Star_CMP": ("Star", "CMP"),
     "Star_nopin": ("Star", "no-pin"),
+    "Penny_All": ("Penny", "All"),
 }
 
 WINDOW_SIZE = 24
@@ -40,6 +41,7 @@ ORACLE_THRESHOLDS = {
     "Accel_nopin": -0.9271,   # P=1.00  R=1.00  F1=1.00
     "Star_CMP": -1.4831,      # P=1.00  R=1.00  F1=1.00
     "Star_nopin": -0.6914,    # P=0.88  R=1.00  F1=0.93
+    "Penny_All": -21.3322,    # P=0.93  R=1.00  F1=0.97
 }
 
 BOLD = "\033[1m"
@@ -82,11 +84,47 @@ def load_and_aggregate(file_path: str, combo_key: str, split: str) -> pd.DataFra
     return hourly
 
 
+def load_and_aggregate_penny(file_path: str, split: str) -> pd.DataFrame:
+    """Load CSV, filter to amount < 1.00 across all combos, aggregate to hourly counts."""
+    df = pd.read_csv(file_path, parse_dates=["timestamp"])
+    if "split" in df.columns:
+        df = df[df["split"] == split]
+    df = df[df["amount"] < 1.00]
+
+    if df.empty:
+        return pd.DataFrame()
+
+    # Use penny_is_anomaly if available, fall back to is_anomaly
+    anomaly_col = "penny_is_anomaly" if "penny_is_anomaly" in df.columns else "is_anomaly"
+
+    df["hour_bucket"] = df["timestamp"].dt.floor("h")
+    hourly = (
+        df.groupby("hour_bucket")
+        .agg(value=("timestamp", "size"), is_anomaly=(anomaly_col, "max"))
+        .reset_index()
+    )
+
+    full_hours = pd.date_range(
+        start=hourly["hour_bucket"].min(),
+        end=hourly["hour_bucket"].max(),
+        freq="h",
+    )
+    full_df = pd.DataFrame({"hour_bucket": full_hours})
+    hourly = full_df.merge(hourly, on="hour_bucket", how="left")
+    hourly["value"] = hourly["value"].fillna(0).astype(int)
+    hourly["is_anomaly"] = hourly["is_anomaly"].fillna(0).astype(int)
+    hourly = hourly.rename(columns={"hour_bucket": "timestamp"})
+    return hourly
+
+
 def seed_combo(api_url: str, combo_key: str, data_path: str, split: str = "test"):
     """Score all test windows for a combo via the API to seed the data store."""
     print(f"\n  {CYAN}[{combo_key}]{RESET} Loading {split} split...")
 
-    hourly = load_and_aggregate(data_path, combo_key, split)
+    if combo_key == "Penny_All":
+        hourly = load_and_aggregate_penny(data_path, split)
+    else:
+        hourly = load_and_aggregate(data_path, combo_key, split)
     if hourly.empty:
         print(f"    {YELLOW}No data for {combo_key} split={split}{RESET}")
         return
@@ -153,6 +191,10 @@ def main():
         help="Path to oracle_thresholds.json (default: models/fcvae/oracle_thresholds.json)",
     )
     parser.add_argument(
+        "--include-penny", action="store_true",
+        help="Include Penny_All combo in calibration and seeding",
+    )
+    parser.add_argument(
         "--skip-calibration", action="store_true",
         help="Seed data store only, don't update oracle thresholds",
     )
@@ -168,7 +210,13 @@ def main():
         print(f"API not reachable at {args.api_url}: {e}")
         sys.exit(1)
 
-    combos = list(COMBO_MAP.keys()) if (args.all_combos or args.combo is None) else [args.combo]
+    # Build combo list: default is all 4 combo models, --include-penny adds Penny_All
+    if args.combo is not None:
+        combos = [args.combo]
+    elif args.all_combos or args.combo is None:
+        combos = [k for k in COMBO_MAP if k != "Penny_All"]
+    if args.include_penny and "Penny_All" not in combos:
+        combos.append("Penny_All")
 
     # Write oracle thresholds before seeding so the API uses them
     if not args.skip_calibration:
