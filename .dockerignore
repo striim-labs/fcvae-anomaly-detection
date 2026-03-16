@@ -1,0 +1,12 @@
+**/.venv
+**/__pycache__
+**/*.pyc
+.git
+*.md
+images/
+plots/
+data/
+producer/
+striim/
+.env
+.env.example

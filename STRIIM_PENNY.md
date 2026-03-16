@@ -17,7 +17,7 @@ If you are starting from a completely clean Striim install with no prior FCVAE s
 ## Table of Contents
 
 1. [Prerequisites](#1-prerequisites)
-2. [Verify the Scoring API](#2-verify-the-scoring-api)
+2. [Start the Scoring API](#2-start-the-scoring-api)
 3. [Prepare the Data Directory](#3-prepare-the-data-directory)
 4. [Verify Existing Types and Load the OP Module](#4-verify-existing-types-and-load-the-op-module)
 5. [Create the Penny Application via TQL](#5-create-the-penny-application-via-tql)
@@ -34,6 +34,32 @@ If you are starting from a completely clean Striim install with no prior FCVAE s
 
 ## 1. Prerequisites
 
+### 1.1 Clone the Repository
+
+This project lives on the `penny-transactions` branch. Clone it directly:
+
+```bash
+git clone -b penny-transactions https://github.com/striim-labs/fcvae-anomaly-detection.git
+cd fcvae-anomaly-detection
+```
+
+**Git LFS is required.** The synthetic transaction CSV files in `data/` are tracked with Git LFS. If you already cloned without LFS installed, pull the real files now:
+
+```bash
+git lfs pull
+```
+
+Verify LFS files were fetched correctly (should show real file sizes, not tiny pointer files):
+
+```bash
+ls -lh data/synthetic_transactions.csv
+# Expected: ~50-100 MB, NOT 130 bytes
+```
+
+This guide assumes the repo is at `/Users/<your-username>/Documents/Striim/fcvae-anomaly-detection/`. Replace `<your-username>` with your actual macOS username throughout this guide.
+
+### 1.2 Striim Platform
+
 **Striim Platform** installed and running (tested on 5.2.0.4). Verify Striim is accessible at your web UI (e.g., `http://<your-ip>:9080`).
 
 Set `STRIIM_HOME` to your Striim installation directory:
@@ -45,30 +71,45 @@ Set `STRIIM_HOME` to your Striim installation directory:
 export STRIIM_HOME="/path/to/Striim"
 ```
 
-**The FCVAE repo** cloned locally. This guide assumes the repo is at:
-```
-/Users/<your-username>/Documents/Striim/fcvae-anomaly-detection/
-```
-Replace `<your-username>` with your actual macOS username throughout this guide.
+### 1.3 Docker
+
+**Docker** and **Docker Compose v2+** are required to run the scoring API (see [Step 2](#2-start-the-scoring-api)).
+
+### 1.4 Prior FCVAE Setup
 
 **Prior FCVAE setup completed.** The `fcvae` namespace and types (`fcvae.ScorerResult`, `fcvae.DailyPayloadStream_Type`) must already exist in Striim from a prior `FCVAE` or `FCVAE_RT` deployment. The `FCVAEScoreCaller.scm` module must be installed in `$STRIIM_HOME/modules/`.
 
-**Penny model trained.** The `Penny_All` model artifacts must exist at `models/fcvae/Penny_All/` (model.pt, scaler.pkl, scorer.pkl) and the oracle threshold must be in `models/fcvae/oracle_thresholds.json`. See [PLAN.md](PLAN.md) Phases 1-2 for training instructions.
+If the module is not already installed, the pre-built JAR is included in the repo. Copy it to Striim's modules directory (Striim expects the `.scm` extension):
 
-**Synthetic data with penny distribution.** The CSV at `data/synthetic_transactions.csv` must include penny-amount transactions (generated with `--include-penny`). The CSV columns are: `timestamp,network_type,transaction_type,amount,is_anomaly,split,penny_is_anomaly`.
+```bash
+cp striim/fcvae-score-caller/target/FCVAEScoreCaller.jar "$STRIIM_HOME/modules/FCVAEScoreCaller.scm"
+```
+
+### 1.5 Model and Data (already in repo)
+
+**Penny model artifacts** are included in the repo at `models/fcvae/Penny_All/` (model.pt, scaler.pkl, scorer.pkl). The oracle threshold is in `models/fcvae/oracle_thresholds.json`. No training is required.
+
+**Synthetic data with penny distribution** is included at `data/synthetic_transactions.csv` (fetched via Git LFS in Step 1.1). The CSV columns are: `timestamp,network_type,transaction_type,amount,is_anomaly,split,penny_is_anomaly`.
 
 ---
 
-## 2. Verify the Scoring API
+## 2. Start the Scoring API
 
-The FCVAE scoring API must be running with the `Penny_All` detector loaded before starting the Striim application.
+The FCVAE scoring API must be running with the `Penny_All` detector loaded before starting the Striim application. No local Python virtual environment is needed if you use Docker.
+
+### Docker 
 
 ```bash
 cd /Users/<your-username>/Documents/Striim/fcvae-anomaly-detection
-PYTHONPATH=app:. api/.venv/bin/uvicorn api.main:app --port 8000
+docker compose build api
+docker compose up -d api
 ```
 
-Verify `Penny_All` is loaded:
+The container installs all dependencies automatically. The API will be available at `http://localhost:8000`.
+
+### Verify the API
+
+Regardless of which option you chose, verify `Penny_All` is loaded:
 
 ```bash
 curl -s http://localhost:8000/v1/model/info | python3 -m json.tool
