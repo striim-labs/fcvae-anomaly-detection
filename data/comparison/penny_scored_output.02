@@ -1,0 +1,23 @@
+[
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.45699572563171387",
+  "threshold":"-21.3322",
+  "window_end":"2025\/03\/06 20:32:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7074752449989319",
+  "threshold":"-21.3322",
+  "window_end":"2025\/03\/06 21:32:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4697510302066803",
+  "threshold":"-21.3322",
+  "window_end":"2025\/03\/06 22:32:38.000"
+ }
+]

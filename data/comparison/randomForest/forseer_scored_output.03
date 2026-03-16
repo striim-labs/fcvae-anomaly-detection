@@ -1,0 +1,506 @@
+[
+ {
+  "forecast":"[ predictedValue: 118.91393207606752, actualValue: 107.0, adjustedSymmetricPercentageError: 0.03365790310173853, nextPredictedValue: 107.83799440563492, predictedValueList: [107.83799440563492], timestampList: [2025-02-19T10:25:26.000-08:00], percentageErrorBound: 0.1435069760099496, isAnomaly: false, currentTimestamp: 2025-02-19T09:25:26.000-08:00, nextTimestamp: 2025-02-19T10:25:26.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 107.83799440563492, actualValue: 106.0, adjustedSymmetricPercentageError: 0.005252222958482532, nextPredictedValue: 103.01207817416493, predictedValueList: [103.01207817416493], timestampList: [2025-02-19T11:27:07.000-08:00], percentageErrorBound: 0.14351252278425453, isAnomaly: false, currentTimestamp: 2025-02-19T10:27:07.000-08:00, nextTimestamp: 2025-02-19T11:27:07.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 103.01207817416493, actualValue: 106.0, adjustedSymmetricPercentageError: 0.008577666865981638, nextPredictedValue: 112.85740789624649, predictedValueList: [112.85740789624649], timestampList: [2025-02-19T12:27:14.000-08:00], percentageErrorBound: 0.143516292115939, isAnomaly: false, currentTimestamp: 2025-02-19T11:27:14.000-08:00, nextTimestamp: 2025-02-19T12:27:14.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 112.85740789624649, actualValue: 108.0, adjustedSymmetricPercentageError: 0.013788259021381857, nextPredictedValue: 105.02347232248636, predictedValueList: [105.02347232248636], timestampList: [2025-02-19T13:27:38.000-08:00], percentageErrorBound: 0.14319506757494088, isAnomaly: false, currentTimestamp: 2025-02-19T12:27:38.000-08:00, nextTimestamp: 2025-02-19T13:27:38.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 105.02347232248636, actualValue: 63.0, adjustedSymmetricPercentageError: 0.12556520882508404, nextPredictedValue: 72.62159695562148, predictedValueList: [72.62159695562148], timestampList: [2025-02-19T14:27:39.000-08:00], percentageErrorBound: 0.143354891060152, isAnomaly: false, currentTimestamp: 2025-02-19T13:27:39.000-08:00, nextTimestamp: 2025-02-19T14:27:39.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 72.62159695562148, actualValue: 68.0, adjustedSymmetricPercentageError: 0.01419668673116032, nextPredictedValue: 92.79124613190915, predictedValueList: [92.79124613190915], timestampList: [2025-02-19T15:32:36.000-08:00], percentageErrorBound: 0.14335617127964095, isAnomaly: false, currentTimestamp: 2025-02-19T14:32:36.000-08:00, nextTimestamp: 2025-02-19T15:32:36.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 92.79124613190915, actualValue: 145.0, adjustedSymmetricPercentageError: 0.14586285944170563, nextPredictedValue: 138.38954936579174, predictedValueList: [138.38954936579174], timestampList: [2025-02-19T16:32:46.000-08:00], percentageErrorBound: 0.14357589608570848, isAnomaly: true, currentTimestamp: 2025-02-19T15:32:46.000-08:00, nextTimestamp: 2025-02-19T16:32:46.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 138.38954936579174, actualValue: 136.0, adjustedSymmetricPercentageError: 0.006455975834309292, nextPredictedValue: 138.03217860548227, predictedValueList: [138.03217860548227], timestampList: [2025-02-19T17:32:46.000-08:00], percentageErrorBound: 0.14330625921811144, isAnomaly: false, currentTimestamp: 2025-02-19T16:32:46.000-08:00, nextTimestamp: 2025-02-19T17:32:46.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 138.03217860548227, actualValue: 96.0, adjustedSymmetricPercentageError: 0.11784368576726537, nextPredictedValue: 104.01106641824443, predictedValueList: [104.01106641824443], timestampList: [2025-02-19T18:34:14.000-08:00], percentageErrorBound: 0.1434158845545656, isAnomaly: false, currentTimestamp: 2025-02-19T17:34:14.000-08:00, nextTimestamp: 2025-02-19T18:34:14.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 104.01106641824443, actualValue: 118.0, adjustedSymmetricPercentageError: 0.03966574838138491, nextPredictedValue: 109.22919676994734, predictedValueList: [109.22919676994734], timestampList: [2025-02-19T19:34:30.000-08:00], percentageErrorBound: 0.14340070682964495, isAnomaly: false, currentTimestamp: 2025-02-19T18:34:30.000-08:00, nextTimestamp: 2025-02-19T19:34:30.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 109.22919676994734, actualValue: 113.0, adjustedSymmetricPercentageError: 0.010689942901487691, nextPredictedValue: 103.41209855079208, predictedValueList: [103.41209855079208], timestampList: [2025-02-19T20:34:33.000-08:00], percentageErrorBound: 0.14340269697647548, isAnomaly: false, currentTimestamp: 2025-02-19T19:34:33.000-08:00, nextTimestamp: 2025-02-19T20:34:33.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 103.41209855079208, actualValue: 110.0, adjustedSymmetricPercentageError: 0.018833120348923996, nextPredictedValue: 110.26357648784878, predictedValueList: [110.26357648784878], timestampList: [2025-02-19T21:34:38.000-08:00], percentageErrorBound: 0.14339457781605486, isAnomaly: false, currentTimestamp: 2025-02-19T20:34:38.000-08:00, nextTimestamp: 2025-02-19T21:34:38.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 110.26357648784878, actualValue: 163.0, adjustedSymmetricPercentageError: 0.1426254984747413, nextPredictedValue: 163.80749162012958, predictedValueList: [163.80749162012958], timestampList: [2025-02-19T22:34:50.000-08:00], percentageErrorBound: 0.14359022548312556, isAnomaly: false, currentTimestamp: 2025-02-19T21:34:50.000-08:00, nextTimestamp: 2025-02-19T22:34:50.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 163.80749162012958, actualValue: 204.0, adjustedSymmetricPercentageError: 0.10016346133328481, nextPredictedValue: 184.9778079914909, predictedValueList: [184.9778079914909], timestampList: [2025-02-19T23:34:56.000-08:00], percentageErrorBound: 0.1436706451420356, isAnomaly: false, currentTimestamp: 2025-02-19T22:34:56.000-08:00, nextTimestamp: 2025-02-19T23:34:56.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 184.9778079914909, actualValue: 185.0, adjustedSymmetricPercentageError: 5.520501711233756E-5, nextPredictedValue: 182.1983856274105, predictedValueList: [182.1983856274105], timestampList: [2025-02-20T00:34:56.000-08:00], percentageErrorBound: 0.14367114117275537, isAnomaly: false, currentTimestamp: 2025-02-19T23:34:56.000-08:00, nextTimestamp: 2025-02-20T00:34:56.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 182.1983856274105, actualValue: 159.0, adjustedSymmetricPercentageError: 0.059119310501890746, nextPredictedValue: 137.09639071318313, predictedValueList: [137.09639071318313], timestampList: [2025-02-20T01:35:04.000-08:00], percentageErrorBound: 0.14367791278835393, isAnomaly: false, currentTimestamp: 2025-02-20T00:35:04.000-08:00, nextTimestamp: 2025-02-20T01:35:04.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 137.09639071318313, actualValue: 149.0, adjustedSymmetricPercentageError: 0.03182509823220579, nextPredictedValue: 128.55179894117802, predictedValueList: [128.55179894117802], timestampList: [2025-02-20T02:35:33.000-08:00], percentageErrorBound: 0.14367572863994563, isAnomaly: false, currentTimestamp: 2025-02-20T01:35:33.000-08:00, nextTimestamp: 2025-02-20T02:35:33.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 128.55179894117802, actualValue: 116.0, adjustedSymmetricPercentageError: 0.03484830330247225, nextPredictedValue: 132.73775601524005, predictedValueList: [132.73775601524005], timestampList: [2025-02-20T03:35:49.000-08:00], percentageErrorBound: 0.14367380509809616, isAnomaly: false, currentTimestamp: 2025-02-20T02:35:49.000-08:00, nextTimestamp: 2025-02-20T03:35:49.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 132.73775601524005, actualValue: 102.0, adjustedSymmetricPercentageError: 0.08612124446689227, nextPredictedValue: 118.85506455481918, predictedValueList: [118.85506455481918], timestampList: [2025-02-20T04:35:53.000-08:00], percentageErrorBound: 0.14352406970801548, isAnomaly: false, currentTimestamp: 2025-02-20T03:35:53.000-08:00, nextTimestamp: 2025-02-20T04:35:53.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 118.85506455481918, actualValue: 111.0, adjustedSymmetricPercentageError: 0.022109191435235265, nextPredictedValue: 118.40380016799435, predictedValueList: [118.40380016799435], timestampList: [2025-02-20T05:35:59.000-08:00], percentageErrorBound: 0.14347559521044342, isAnomaly: false, currentTimestamp: 2025-02-20T04:35:59.000-08:00, nextTimestamp: 2025-02-20T05:35:59.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 118.40380016799435, actualValue: 119.0, adjustedSymmetricPercentageError: 0.0016662876503109312, nextPredictedValue: 139.19639825991771, predictedValueList: [139.19639825991771], timestampList: [2025-02-20T06:36:20.000-08:00], percentageErrorBound: 0.14348081344851848, isAnomaly: false, currentTimestamp: 2025-02-20T05:36:20.000-08:00, nextTimestamp: 2025-02-20T06:36:20.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 139.19639825991771, actualValue: 137.0, adjustedSymmetricPercentageError: 0.00592448850766124, nextPredictedValue: 136.5969199917399, predictedValueList: [136.5969199917399], timestampList: [2025-02-20T07:36:40.000-08:00], percentageErrorBound: 0.14348369122770338, isAnomaly: false, currentTimestamp: 2025-02-20T06:36:40.000-08:00, nextTimestamp: 2025-02-20T07:36:40.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 136.5969199917399, actualValue: 112.0, adjustedSymmetricPercentageError: 0.06803519225905752, nextPredictedValue: 114.27157942310048, predictedValueList: [114.27157942310048], timestampList: [2025-02-20T08:36:40.000-08:00], percentageErrorBound: 0.14351355824734235, isAnomaly: false, currentTimestamp: 2025-02-20T07:36:40.000-08:00, nextTimestamp: 2025-02-20T08:36:40.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 114.27157942310048, actualValue: 96.0, adjustedSymmetricPercentageError: 0.05239054500507949, nextPredictedValue: 93.33151537123885, predictedValueList: [93.33151537123885], timestampList: [2025-02-20T09:36:53.000-08:00], percentageErrorBound: 0.14350556984977916, isAnomaly: false, currentTimestamp: 2025-02-20T08:36:53.000-08:00, nextTimestamp: 2025-02-20T09:36:53.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 93.33151537123885, actualValue: 75.0, adjustedSymmetricPercentageError: 0.05475736375094076, nextPredictedValue: 79.25443081953635, predictedValueList: [79.25443081953635], timestampList: [2025-02-20T10:38:48.000-08:00], percentageErrorBound: 0.1435178863209616, isAnomaly: false, currentTimestamp: 2025-02-20T09:38:48.000-08:00, nextTimestamp: 2025-02-20T10:38:48.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 79.25443081953635, actualValue: 64.0, adjustedSymmetricPercentageError: 0.0467327908032131, nextPredictedValue: 73.85795613723306, predictedValueList: [73.85795613723306], timestampList: [2025-02-20T11:38:54.000-08:00], percentageErrorBound: 0.1435227417147401, isAnomaly: false, currentTimestamp: 2025-02-20T10:38:54.000-08:00, nextTimestamp: 2025-02-20T11:38:54.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 73.85795613723306, actualValue: 84.0, adjustedSymmetricPercentageError: 0.030614165133372034, nextPredictedValue: 89.27075474333326, predictedValueList: [89.27075474333326], timestampList: [2025-02-20T12:39:12.000-08:00], percentageErrorBound: 0.1434810332369754, isAnomaly: false, currentTimestamp: 2025-02-20T11:39:12.000-08:00, nextTimestamp: 2025-02-20T12:39:12.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 89.27075474333326, actualValue: 82.0, adjustedSymmetricPercentageError: 0.021654817363935052, nextPredictedValue: 94.21600936074869, predictedValueList: [94.21600936074869], timestampList: [2025-02-20T13:41:44.000-08:00], percentageErrorBound: 0.14348068374432296, isAnomaly: false, currentTimestamp: 2025-02-20T12:41:44.000-08:00, nextTimestamp: 2025-02-20T13:41:44.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 94.21600936074869, actualValue: 95.0, adjustedSymmetricPercentageError: 0.0022941232835609017, nextPredictedValue: 101.94830135951065, predictedValueList: [101.94830135951065], timestampList: [2025-02-20T14:42:01.000-08:00], percentageErrorBound: 0.1434589633230433, isAnomaly: false, currentTimestamp: 2025-02-20T13:42:01.000-08:00, nextTimestamp: 2025-02-20T14:42:01.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 101.94830135951065, actualValue: 134.0, adjustedSymmetricPercentageError: 0.08970124380020754, nextPredictedValue: 135.13238517800485, predictedValueList: [135.13238517800485], timestampList: [2025-02-20T15:42:10.000-08:00], percentageErrorBound: 0.1435011074470649, isAnomaly: false, currentTimestamp: 2025-02-20T14:42:10.000-08:00, nextTimestamp: 2025-02-20T15:42:10.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 135.13238517800485, actualValue: 122.0, adjustedSymmetricPercentageError: 0.03604060776920346, nextPredictedValue: 121.57782984065537, predictedValueList: [121.57782984065537], timestampList: [2025-02-20T16:42:15.000-08:00], percentageErrorBound: 0.1434099687606062, isAnomaly: false, currentTimestamp: 2025-02-20T15:42:15.000-08:00, nextTimestamp: 2025-02-20T16:42:15.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 121.57782984065537, actualValue: 86.0, adjustedSymmetricPercentageError: 0.1022765015411101, nextPredictedValue: 93.48295360570106, predictedValueList: [93.48295360570106], timestampList: [2025-02-20T17:42:35.000-08:00], percentageErrorBound: 0.14349043286827745, isAnomaly: false, currentTimestamp: 2025-02-20T16:42:35.000-08:00, nextTimestamp: 2025-02-20T17:42:35.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 93.48295360570106, actualValue: 115.0, adjustedSymmetricPercentageError: 0.06180200352725448, nextPredictedValue: 97.04589274967658, predictedValueList: [97.04589274967658], timestampList: [2025-02-20T18:43:23.000-08:00], percentageErrorBound: 0.14351047111092938, isAnomaly: false, currentTimestamp: 2025-02-20T17:43:23.000-08:00, nextTimestamp: 2025-02-20T18:43:23.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 97.04589274967658, actualValue: 121.0, adjustedSymmetricPercentageError: 0.06817760236558953, nextPredictedValue: 112.00203627492614, predictedValueList: [112.00203627492614], timestampList: [2025-02-20T19:43:25.000-08:00], percentageErrorBound: 0.14354002381817937, isAnomaly: false, currentTimestamp: 2025-02-20T18:43:25.000-08:00, nextTimestamp: 2025-02-20T19:43:25.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 112.00203627492614, actualValue: 147.0, adjustedSymmetricPercentageError: 0.09588465381525592, nextPredictedValue: 134.50955851277953, predictedValueList: [134.50955851277953], timestampList: [2025-02-20T20:43:35.000-08:00], percentageErrorBound: 0.14358976959689115, isAnomaly: false, currentTimestamp: 2025-02-20T19:43:35.000-08:00, nextTimestamp: 2025-02-20T20:43:35.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 134.50955851277953, actualValue: 157.0, adjustedSymmetricPercentageError: 0.05984102214677288, nextPredictedValue: 169.34255403459116, predictedValueList: [169.34255403459116], timestampList: [2025-02-20T21:43:52.000-08:00], percentageErrorBound: 0.1436015518426383, isAnomaly: false, currentTimestamp: 2025-02-20T20:43:52.000-08:00, nextTimestamp: 2025-02-20T21:43:52.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 169.34255403459116, actualValue: 151.0, adjustedSymmetricPercentageError: 0.0475876823107275, nextPredictedValue: 132.29213106064566, predictedValueList: [132.29213106064566], timestampList: [2025-02-20T22:44:49.000-08:00], percentageErrorBound: 0.1436097586487613, isAnomaly: false, currentTimestamp: 2025-02-20T21:44:49.000-08:00, nextTimestamp: 2025-02-20T22:44:49.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 132.29213106064566, actualValue: 191.0, adjustedSymmetricPercentageError: 0.151923404031843, nextPredictedValue: 159.11676481172313, predictedValueList: [159.11676481172313], timestampList: [2025-02-20T23:45:37.000-08:00], percentageErrorBound: 0.14385346978659114, isAnomaly: true, currentTimestamp: 2025-02-20T22:45:37.000-08:00, nextTimestamp: 2025-02-20T23:45:37.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 159.11676481172313, actualValue: 227.0, adjustedSymmetricPercentageError: 0.16663686435575956, nextPredictedValue: 167.00195362409576, predictedValueList: [167.00195362409576], timestampList: [2025-02-21T00:45:59.000-08:00], percentageErrorBound: 0.14416541822051937, isAnomaly: true, currentTimestamp: 2025-02-20T23:45:59.000-08:00, nextTimestamp: 2025-02-21T00:45:59.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 167.00195362409576, actualValue: 195.0, adjustedSymmetricPercentageError: 0.07011185488773253, nextPredictedValue: 152.482052838476, predictedValueList: [152.482052838476], timestampList: [2025-02-21T01:46:01.000-08:00], percentageErrorBound: 0.1441960222518855, isAnomaly: false, currentTimestamp: 2025-02-21T00:46:01.000-08:00, nextTimestamp: 2025-02-21T01:46:01.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 152.482052838476, actualValue: 201.0, adjustedSymmetricPercentageError: 0.12236741288969849, nextPredictedValue: 166.62204804151256, predictedValueList: [166.62204804151256], timestampList: [2025-02-21T02:46:17.000-08:00], percentageErrorBound: 0.14434337182298254, isAnomaly: false, currentTimestamp: 2025-02-21T01:46:17.000-08:00, nextTimestamp: 2025-02-21T02:46:17.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 166.62204804151256, actualValue: 167.0, adjustedSymmetricPercentageError: 9.694207435308032E-4, nextPredictedValue: 154.5868792467066, predictedValueList: [154.5868792467066], timestampList: [2025-02-21T03:46:21.000-08:00], percentageErrorBound: 0.14434408420935904, isAnomaly: false, currentTimestamp: 2025-02-21T02:46:21.000-08:00, nextTimestamp: 2025-02-21T03:46:21.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 154.5868792467066, actualValue: 145.0, adjustedSymmetricPercentageError: 0.025326673164098264, nextPredictedValue: 152.76952108666998, predictedValueList: [152.76952108666998], timestampList: [2025-02-21T04:46:21.000-08:00], percentageErrorBound: 0.14433789736494151, isAnomaly: false, currentTimestamp: 2025-02-21T03:46:21.000-08:00, nextTimestamp: 2025-02-21T04:46:21.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 152.76952108666998, actualValue: 162.0, adjustedSymmetricPercentageError: 0.024063408208657815, nextPredictedValue: 149.03176089588666, predictedValueList: [149.03176089588666], timestampList: [2025-02-21T05:47:49.000-08:00], percentageErrorBound: 0.14432796789293384, isAnomaly: false, currentTimestamp: 2025-02-21T04:47:49.000-08:00, nextTimestamp: 2025-02-21T05:47:49.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 149.03176089588666, actualValue: 144.0, adjustedSymmetricPercentageError: 0.013370113410876787, nextPredictedValue: 149.53657196650371, predictedValueList: [149.53657196650371], timestampList: [2025-02-21T06:47:57.000-08:00], percentageErrorBound: 0.14432904777937955, isAnomaly: false, currentTimestamp: 2025-02-21T05:47:57.000-08:00, nextTimestamp: 2025-02-21T06:47:57.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 149.53657196650371, actualValue: 148.0, adjustedSymmetricPercentageError: 0.004066667113804585, nextPredictedValue: 134.6730896508432, predictedValueList: [134.6730896508432], timestampList: [2025-02-21T07:48:09.000-08:00], percentageErrorBound: 0.14432869141915605, isAnomaly: false, currentTimestamp: 2025-02-21T06:48:09.000-08:00, nextTimestamp: 2025-02-21T07:48:09.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 134.6730896508432, actualValue: 214.0, adjustedSymmetricPercentageError: 0.2008830394869608, nextPredictedValue: 192.5285964714099, predictedValueList: [192.5285964714099], timestampList: [2025-02-21T08:48:28.000-08:00], percentageErrorBound: 0.14475979875326273, isAnomaly: true, currentTimestamp: 2025-02-21T07:48:28.000-08:00, nextTimestamp: 2025-02-21T08:48:28.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 192.5285964714099, actualValue: 312.0, adjustedSymmetricPercentageError: 0.2673678215662104, nextPredictedValue: 235.0958599540379, predictedValueList: [235.0958599540379], timestampList: [2025-02-21T09:48:31.000-08:00], percentageErrorBound: 0.1456639164455929, isAnomaly: true, currentTimestamp: 2025-02-21T08:48:31.000-08:00, nextTimestamp: 2025-02-21T09:48:31.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 235.0958599540379, actualValue: 360.0, adjustedSymmetricPercentageError: 0.261836003180053, nextPredictedValue: 307.3151413839762, predictedValueList: [307.3151413839762], timestampList: [2025-02-21T10:48:34.000-08:00], percentageErrorBound: 0.14647211494807916, isAnomaly: true, currentTimestamp: 2025-02-21T09:48:34.000-08:00, nextTimestamp: 2025-02-21T10:48:34.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 307.3151413839762, actualValue: 381.0, adjustedSymmetricPercentageError: 0.14501894644133018, nextPredictedValue: 240.33048892887143, predictedValueList: [240.33048892887143], timestampList: [2025-02-21T11:48:38.000-08:00], percentageErrorBound: 0.14668677840892297, isAnomaly: false, currentTimestamp: 2025-02-21T10:48:38.000-08:00, nextTimestamp: 2025-02-21T11:48:38.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 240.33048892887143, actualValue: 153.0, adjustedSymmetricPercentageError: 0.2131171960234145, nextPredictedValue: 147.29949717199307, predictedValueList: [147.29949717199307], timestampList: [2025-02-21T12:49:00.000-08:00], percentageErrorBound: 0.147207498030971, isAnomaly: true, currentTimestamp: 2025-02-21T11:49:00.000-08:00, nextTimestamp: 2025-02-21T12:49:00.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 147.29949717199307, actualValue: 128.0, adjustedSymmetricPercentageError: 0.0520998089743744, nextPredictedValue: 97.80223720882724, predictedValueList: [97.80223720882724], timestampList: [2025-02-21T13:49:00.000-08:00], percentageErrorBound: 0.14721889382345296, isAnomaly: false, currentTimestamp: 2025-02-21T12:49:00.000-08:00, nextTimestamp: 2025-02-21T13:49:00.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 97.80223720882724, actualValue: 146.0, adjustedSymmetricPercentageError: 0.13390719466119672, nextPredictedValue: 121.6262169091035, predictedValueList: [121.6262169091035], timestampList: [2025-02-21T14:49:29.000-08:00], percentageErrorBound: 0.14739892563122117, isAnomaly: false, currentTimestamp: 2025-02-21T13:49:29.000-08:00, nextTimestamp: 2025-02-21T14:49:29.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 121.6262169091035, actualValue: 128.0, adjustedSymmetricPercentageError: 0.01761319777918597, nextPredictedValue: 119.18836632638516, predictedValueList: [119.18836632638516], timestampList: [2025-02-21T15:50:24.000-08:00], percentageErrorBound: 0.14739940813105806, isAnomaly: false, currentTimestamp: 2025-02-21T14:50:24.000-08:00, nextTimestamp: 2025-02-21T15:50:24.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 119.18836632638516, actualValue: 121.0, adjustedSymmetricPercentageError: 0.005050139167919809, nextPredictedValue: 121.85175035778059, predictedValueList: [121.85175035778059], timestampList: [2025-02-21T16:50:41.000-08:00], percentageErrorBound: 0.14740461531649682, isAnomaly: false, currentTimestamp: 2025-02-21T15:50:41.000-08:00, nextTimestamp: 2025-02-21T16:50:41.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 121.85175035778059, actualValue: 139.0, adjustedSymmetricPercentageError: 0.046902189753425985, nextPredictedValue: 161.35384164151003, predictedValueList: [161.35384164151003], timestampList: [2025-02-21T17:51:05.000-08:00], percentageErrorBound: 0.14730574149875225, isAnomaly: false, currentTimestamp: 2025-02-21T16:51:05.000-08:00, nextTimestamp: 2025-02-21T17:51:05.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 161.35384164151003, actualValue: 169.0, adjustedSymmetricPercentageError: 0.01966682344286409, nextPredictedValue: 236.54372206494008, predictedValueList: [236.54372206494008], timestampList: [2025-02-21T18:51:05.000-08:00], percentageErrorBound: 0.1472718165523343, isAnomaly: false, currentTimestamp: 2025-02-21T17:51:05.000-08:00, nextTimestamp: 2025-02-21T18:51:05.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 236.54372206494008, actualValue: 131.0, adjustedSymmetricPercentageError: 0.2630823960857615, nextPredictedValue: 146.4040830357302, predictedValueList: [146.4040830357302], timestampList: [2025-02-21T19:51:35.000-08:00], percentageErrorBound: 0.1481277994230937, isAnomaly: true, currentTimestamp: 2025-02-21T18:51:35.000-08:00, nextTimestamp: 2025-02-21T19:51:35.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 146.4040830357302, actualValue: 134.0, adjustedSymmetricPercentageError: 0.033332240245846384, nextPredictedValue: 134.8655609509411, predictedValueList: [134.8655609509411], timestampList: [2025-02-21T20:52:24.000-08:00], percentageErrorBound: 0.14812311027440833, isAnomaly: false, currentTimestamp: 2025-02-21T19:52:24.000-08:00, nextTimestamp: 2025-02-21T20:52:24.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 134.8655609509411, actualValue: 178.0, adjustedSymmetricPercentageError: 0.11263573523786966, nextPredictedValue: 217.62937028911222, predictedValueList: [217.62937028911222], timestampList: [2025-02-21T21:52:24.000-08:00], percentageErrorBound: 0.14822671646501034, isAnomaly: false, currentTimestamp: 2025-02-21T20:52:24.000-08:00, nextTimestamp: 2025-02-21T21:52:24.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 217.62937028911222, actualValue: 189.0, adjustedSymmetricPercentageError: 0.06911804349784013, nextPredictedValue: 168.10214403156175, predictedValueList: [168.10214403156175], timestampList: [2025-02-21T22:52:38.000-08:00], percentageErrorBound: 0.14824866718463092, isAnomaly: false, currentTimestamp: 2025-02-21T21:52:38.000-08:00, nextTimestamp: 2025-02-21T22:52:38.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 168.10214403156175, actualValue: 240.0, adjustedSymmetricPercentageError: 0.17337287692982442, nextPredictedValue: 173.27084418226437, predictedValueList: [173.27084418226437], timestampList: [2025-02-21T23:52:45.000-08:00], percentageErrorBound: 0.14857211942847326, isAnomaly: true, currentTimestamp: 2025-02-21T22:52:45.000-08:00, nextTimestamp: 2025-02-21T23:52:45.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 173.27084418226437, actualValue: 220.0, adjustedSymmetricPercentageError: 0.11404115546762406, nextPredictedValue: 177.7105981546859, predictedValueList: [177.7105981546859], timestampList: [2025-02-22T00:52:48.000-08:00], percentageErrorBound: 0.14868982858336127, isAnomaly: false, currentTimestamp: 2025-02-21T23:52:48.000-08:00, nextTimestamp: 2025-02-22T00:52:48.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 177.7105981546859, actualValue: 197.0, adjustedSymmetricPercentageError: 0.0477968935137287, nextPredictedValue: 174.5050367733143, predictedValueList: [174.5050367733143], timestampList: [2025-02-22T01:53:06.000-08:00], percentageErrorBound: 0.1486890870847571, isAnomaly: false, currentTimestamp: 2025-02-22T00:53:06.000-08:00, nextTimestamp: 2025-02-22T01:53:06.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 174.5050367733143, actualValue: 176.0, adjustedSymmetricPercentageError: 0.0037799162591451952, nextPredictedValue: 154.40014345563463, predictedValueList: [154.40014345563463], timestampList: [2025-02-22T02:53:34.000-08:00], percentageErrorBound: 0.14860933501628762, isAnomaly: false, currentTimestamp: 2025-02-22T01:53:34.000-08:00, nextTimestamp: 2025-02-22T02:53:34.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 154.40014345563463, actualValue: 125.0, adjustedSymmetricPercentageError: 0.07907514705319021, nextPredictedValue: 130.5343980048503, predictedValueList: [130.5343980048503], timestampList: [2025-02-22T03:53:41.000-08:00], percentageErrorBound: 0.14863503389319332, isAnomaly: false, currentTimestamp: 2025-02-22T02:53:41.000-08:00, nextTimestamp: 2025-02-22T03:53:41.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 130.5343980048503, actualValue: 85.0, adjustedSymmetricPercentageError: 0.12990844072598845, nextPredictedValue: 106.82250132175497, predictedValueList: [106.82250132175497], timestampList: [2025-02-22T04:54:15.000-08:00], percentageErrorBound: 0.1484339153450465, isAnomaly: false, currentTimestamp: 2025-02-22T03:54:15.000-08:00, nextTimestamp: 2025-02-22T04:54:15.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 106.82250132175497, actualValue: 86.0, adjustedSymmetricPercentageError: 0.06071747447690083, nextPredictedValue: 100.07591207194844, predictedValueList: [100.07591207194844], timestampList: [2025-02-22T05:58:14.000-08:00], percentageErrorBound: 0.14827751712195023, isAnomaly: false, currentTimestamp: 2025-02-22T04:58:14.000-08:00, nextTimestamp: 2025-02-22T05:58:14.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 100.07591207194844, actualValue: 131.0, adjustedSymmetricPercentageError: 0.08694064099340229, nextPredictedValue: 137.8803610160021, predictedValueList: [137.8803610160021], timestampList: [2025-02-22T06:58:42.000-08:00], percentageErrorBound: 0.14824888838599365, isAnomaly: false, currentTimestamp: 2025-02-22T05:58:42.000-08:00, nextTimestamp: 2025-02-22T06:58:42.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 137.8803610160021, actualValue: 103.0, adjustedSymmetricPercentageError: 0.09900939302856637, nextPredictedValue: 117.25127001991666, predictedValueList: [117.25127001991666], timestampList: [2025-02-22T07:58:59.000-08:00], percentageErrorBound: 0.1505017453637395, isAnomaly: false, currentTimestamp: 2025-02-22T06:58:59.000-08:00, nextTimestamp: 2025-02-22T07:58:59.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 117.25127001991666, actualValue: 76.0, adjustedSymmetricPercentageError: 0.1226194246526021, nextPredictedValue: 97.48548720083497, predictedValueList: [97.48548720083497], timestampList: [2025-02-22T08:59:09.000-08:00], percentageErrorBound: 0.15061358905837716, isAnomaly: false, currentTimestamp: 2025-02-22T07:59:09.000-08:00, nextTimestamp: 2025-02-22T08:59:09.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 97.48548720083497, actualValue: 81.0, adjustedSymmetricPercentageError: 0.0497307021962778, nextPredictedValue: 86.12592007754647, predictedValueList: [86.12592007754647], timestampList: [2025-02-22T09:59:27.000-08:00], percentageErrorBound: 0.15056168916269053, isAnomaly: false, currentTimestamp: 2025-02-22T08:59:27.000-08:00, nextTimestamp: 2025-02-22T09:59:27.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 86.12592007754647, actualValue: 90.0, adjustedSymmetricPercentageError: 0.011714480523250916, nextPredictedValue: 77.39297876299315, predictedValueList: [77.39297876299315], timestampList: [2025-02-22T11:00:08.000-08:00], percentageErrorBound: 0.15056367324224593, isAnomaly: false, currentTimestamp: 2025-02-22T10:00:08.000-08:00, nextTimestamp: 2025-02-22T11:00:08.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 77.39297876299315, actualValue: 78.0, adjustedSymmetricPercentageError: 0.0018746930962375771, nextPredictedValue: 78.48903318640617, predictedValueList: [78.48903318640617], timestampList: [2025-02-22T12:00:31.000-08:00], percentageErrorBound: 0.15056279949667936, isAnomaly: false, currentTimestamp: 2025-02-22T11:00:31.000-08:00, nextTimestamp: 2025-02-22T12:00:31.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 78.48903318640617, actualValue: 77.0, adjustedSymmetricPercentageError: 0.004598198648282193, nextPredictedValue: 74.93782427774028, predictedValueList: [74.93782427774028], timestampList: [2025-02-22T13:00:41.000-08:00], percentageErrorBound: 0.1505625273656309, isAnomaly: false, currentTimestamp: 2025-02-22T12:00:41.000-08:00, nextTimestamp: 2025-02-22T13:00:41.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 74.93782427774028, actualValue: 80.0, adjustedSymmetricPercentageError: 0.01564109131094578, nextPredictedValue: 88.92812418350425, predictedValueList: [88.92812418350425], timestampList: [2025-02-22T14:00:47.000-08:00], percentageErrorBound: 0.1504824825309998, isAnomaly: false, currentTimestamp: 2025-02-22T13:00:47.000-08:00, nextTimestamp: 2025-02-22T14:00:47.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 88.92812418350425, actualValue: 110.0, adjustedSymmetricPercentageError: 0.06228581703787483, nextPredictedValue: 106.65421843795454, predictedValueList: [106.65421843795454], timestampList: [2025-02-22T15:02:02.000-08:00], percentageErrorBound: 0.1505026437615901, isAnomaly: false, currentTimestamp: 2025-02-22T14:02:02.000-08:00, nextTimestamp: 2025-02-22T15:02:02.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 106.65421843795454, actualValue: 115.0, adjustedSymmetricPercentageError: 0.024128793813247947, nextPredictedValue: 107.24024296883078, predictedValueList: [107.24024296883078], timestampList: [2025-02-22T16:02:30.000-08:00], percentageErrorBound: 0.15049539810807344, isAnomaly: false, currentTimestamp: 2025-02-22T15:02:30.000-08:00, nextTimestamp: 2025-02-22T16:02:30.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 107.24024296883078, actualValue: 146.0, adjustedSymmetricPercentageError: 0.10874943386965027, nextPredictedValue: 143.55867242567183, predictedValueList: [143.55867242567183], timestampList: [2025-02-22T17:03:01.000-08:00], percentageErrorBound: 0.15059144295017635, isAnomaly: false, currentTimestamp: 2025-02-22T16:03:01.000-08:00, nextTimestamp: 2025-02-22T17:03:01.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 143.55867242567183, actualValue: 117.0, adjustedSymmetricPercentageError: 0.07400991633599678, nextPredictedValue: 111.26099194249599, predictedValueList: [111.26099194249599], timestampList: [2025-02-22T18:03:25.000-08:00], percentageErrorBound: 0.1505349675063366, isAnomaly: false, currentTimestamp: 2025-02-22T17:03:25.000-08:00, nextTimestamp: 2025-02-22T18:03:25.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 111.26099194249599, actualValue: 122.0, adjustedSymmetricPercentageError: 0.030704490512764155, nextPredictedValue: 105.48644362678652, predictedValueList: [105.48644362678652], timestampList: [2025-02-22T19:04:12.000-08:00], percentageErrorBound: 0.1505286352080631, isAnomaly: false, currentTimestamp: 2025-02-22T18:04:12.000-08:00, nextTimestamp: 2025-02-22T19:04:12.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 105.48644362678652, actualValue: 80.0, adjustedSymmetricPercentageError: 0.07634584708253189, nextPredictedValue: 98.48809416465109, predictedValueList: [98.48809416465109], timestampList: [2025-02-22T20:04:39.000-08:00], percentageErrorBound: 0.15056271978175734, isAnomaly: false, currentTimestamp: 2025-02-22T19:04:39.000-08:00, nextTimestamp: 2025-02-22T20:04:39.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 98.48809416465109, actualValue: 105.0, adjustedSymmetricPercentageError: 0.019162281166269054, nextPredictedValue: 117.51157070650595, predictedValueList: [117.51157070650595], timestampList: [2025-02-22T21:05:09.000-08:00], percentageErrorBound: 0.15046339455050262, isAnomaly: false, currentTimestamp: 2025-02-22T20:05:09.000-08:00, nextTimestamp: 2025-02-22T21:05:09.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 117.51157070650595, actualValue: 152.0, adjustedSymmetricPercentageError: 0.09531477201402991, nextPredictedValue: 162.38883510611672, predictedValueList: [162.38883510611672], timestampList: [2025-02-22T22:05:36.000-08:00], percentageErrorBound: 0.15053015341119075, isAnomaly: false, currentTimestamp: 2025-02-22T21:05:36.000-08:00, nextTimestamp: 2025-02-22T22:05:36.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 162.38883510611672, actualValue: 166.0, adjustedSymmetricPercentageError: 0.009466620391001459, nextPredictedValue: 168.359053024044, predictedValueList: [168.359053024044], timestampList: [2025-02-22T23:06:10.000-08:00], percentageErrorBound: 0.15046740562165975, isAnomaly: false, currentTimestamp: 2025-02-22T22:06:10.000-08:00, nextTimestamp: 2025-02-22T23:06:10.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 168.359053024044, actualValue: 255.0, adjustedSymmetricPercentageError: 0.20972359889868458, nextPredictedValue: 190.65978853031035, predictedValueList: [190.65978853031035], timestampList: [2025-02-23T00:06:12.000-08:00], percentageErrorBound: 0.15096391184424235, isAnomaly: true, currentTimestamp: 2025-02-22T23:06:12.000-08:00, nextTimestamp: 2025-02-23T00:06:12.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 190.65978853031035, actualValue: 170.0, adjustedSymmetricPercentageError: 0.05267398970805787, nextPredictedValue: 172.4096864881028, predictedValueList: [172.4096864881028], timestampList: [2025-02-23T01:07:01.000-08:00], percentageErrorBound: 0.1509740319944578, isAnomaly: false, currentTimestamp: 2025-02-23T00:07:01.000-08:00, nextTimestamp: 2025-02-23T01:07:01.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 172.4096864881028, actualValue: 164.0, adjustedSymmetricPercentageError: 0.021892439607300314, nextPredictedValue: 149.138004539664, predictedValueList: [149.138004539664], timestampList: [2025-02-23T02:07:07.000-08:00], percentageErrorBound: 0.15097275258310475, isAnomaly: false, currentTimestamp: 2025-02-23T01:07:07.000-08:00, nextTimestamp: 2025-02-23T02:07:07.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 149.138004539664, actualValue: 119.0, adjustedSymmetricPercentageError: 0.08339714431225258, nextPredictedValue: 112.70754524516335, predictedValueList: [112.70754524516335], timestampList: [2025-02-23T03:07:38.000-08:00], percentageErrorBound: 0.15101649799850905, isAnomaly: false, currentTimestamp: 2025-02-23T02:07:38.000-08:00, nextTimestamp: 2025-02-23T03:07:38.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 112.70754524516335, actualValue: 90.0, adjustedSymmetricPercentageError: 0.06687163166058163, nextPredictedValue: 100.03242602779385, predictedValueList: [100.03242602779385], timestampList: [2025-02-23T04:08:49.000-08:00], percentageErrorBound: 0.15099255091980346, isAnomaly: false, currentTimestamp: 2025-02-23T03:08:49.000-08:00, nextTimestamp: 2025-02-23T04:08:49.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 100.03242602779385, actualValue: 88.0, adjustedSymmetricPercentageError: 0.03595230308067991, nextPredictedValue: 112.95604459686793, predictedValueList: [112.95604459686793], timestampList: [2025-02-23T05:09:44.000-08:00], percentageErrorBound: 0.15060415891071124, isAnomaly: false, currentTimestamp: 2025-02-23T04:09:44.000-08:00, nextTimestamp: 2025-02-23T05:09:44.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 112.95604459686793, actualValue: 85.0, adjustedSymmetricPercentageError: 0.08271377663510877, nextPredictedValue: 108.00213974221083, predictedValueList: [108.00213974221083], timestampList: [2025-02-23T06:10:52.000-08:00], percentageErrorBound: 0.15062275394320399, isAnomaly: false, currentTimestamp: 2025-02-23T05:10:52.000-08:00, nextTimestamp: 2025-02-23T06:10:52.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 108.00213974221083, actualValue: 104.0, adjustedSymmetricPercentageError: 0.011679371824696068, nextPredictedValue: 120.76629982601054, predictedValueList: [120.76629982601054], timestampList: [2025-02-23T07:11:16.000-08:00], percentageErrorBound: 0.15062536582404312, isAnomaly: false, currentTimestamp: 2025-02-23T06:11:16.000-08:00, nextTimestamp: 2025-02-23T07:11:16.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 120.76629982601054, actualValue: 108.0, adjustedSymmetricPercentageError: 0.03665786260947526, nextPredictedValue: 108.32013559151696, predictedValueList: [108.32013559151696], timestampList: [2025-02-23T08:11:29.000-08:00], percentageErrorBound: 0.15062221690123972, isAnomaly: false, currentTimestamp: 2025-02-23T07:11:29.000-08:00, nextTimestamp: 2025-02-23T08:11:29.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 108.32013559151696, actualValue: 116.0, adjustedSymmetricPercentageError: 0.022146637786981876, nextPredictedValue: 108.1305734566108, predictedValueList: [108.1305734566108], timestampList: [2025-02-23T09:11:31.000-08:00], percentageErrorBound: 0.1505832714108839, isAnomaly: false, currentTimestamp: 2025-02-23T08:11:31.000-08:00, nextTimestamp: 2025-02-23T09:11:31.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 108.1305734566108, actualValue: 82.0, adjustedSymmetricPercentageError: 0.07791406248645621, nextPredictedValue: 85.2912475145394, predictedValueList: [85.2912475145394], timestampList: [2025-02-23T10:11:57.000-08:00], percentageErrorBound: 0.15060314107780198, isAnomaly: false, currentTimestamp: 2025-02-23T09:11:57.000-08:00, nextTimestamp: 2025-02-23T10:11:57.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 85.2912475145394, actualValue: 71.0, adjustedSymmetricPercentageError: 0.04409557594313033, nextPredictedValue: 83.03408644660635, predictedValueList: [83.03408644660635], timestampList: [2025-02-23T11:12:01.000-08:00], percentageErrorBound: 0.15056750084228232, isAnomaly: false, currentTimestamp: 2025-02-23T10:12:01.000-08:00, nextTimestamp: 2025-02-23T11:12:01.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 83.03408644660635, actualValue: 88.0, adjustedSymmetricPercentageError: 0.015093440910246498, nextPredictedValue: 88.52843598411309, predictedValueList: [88.52843598411309], timestampList: [2025-02-23T12:12:05.000-08:00], percentageErrorBound: 0.15056892009932676, isAnomaly: false, currentTimestamp: 2025-02-23T11:12:05.000-08:00, nextTimestamp: 2025-02-23T12:12:05.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 88.52843598411309, actualValue: 119.0, adjustedSymmetricPercentageError: 0.08931329002087418, nextPredictedValue: 112.11720869420311, predictedValueList: [112.11720869420311], timestampList: [2025-02-23T13:12:47.000-08:00], percentageErrorBound: 0.1506250272847384, isAnomaly: false, currentTimestamp: 2025-02-23T12:12:47.000-08:00, nextTimestamp: 2025-02-23T13:12:47.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 112.11720869420311, actualValue: 109.0, adjustedSymmetricPercentageError: 0.009016942351562772, nextPredictedValue: 110.72072037685908, predictedValueList: [110.72072037685908], timestampList: [2025-02-23T14:13:31.000-08:00], percentageErrorBound: 0.1506278628130368, isAnomaly: false, currentTimestamp: 2025-02-23T13:13:31.000-08:00, nextTimestamp: 2025-02-23T14:13:31.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 110.72072037685908, actualValue: 135.0, adjustedSymmetricPercentageError: 0.06860357669535629, nextPredictedValue: 132.12890346638488, predictedValueList: [132.12890346638488], timestampList: [2025-02-23T15:14:19.000-08:00], percentageErrorBound: 0.1506212548986743, isAnomaly: false, currentTimestamp: 2025-02-23T14:14:19.000-08:00, nextTimestamp: 2025-02-23T15:14:19.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 132.12890346638488, actualValue: 113.0, adjustedSymmetricPercentageError: 0.05408080979765036, nextPredictedValue: 106.4572397618615, predictedValueList: [106.4572397618615], timestampList: [2025-02-23T16:16:27.000-08:00], percentageErrorBound: 0.15060136728838508, isAnomaly: false, currentTimestamp: 2025-02-23T15:16:27.000-08:00, nextTimestamp: 2025-02-23T16:16:27.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 106.4572397618615, actualValue: 139.0, adjustedSymmetricPercentageError: 0.09197570760016523, nextPredictedValue: 131.4481178905537, predictedValueList: [131.4481178905537], timestampList: [2025-02-23T17:16:33.000-08:00], percentageErrorBound: 0.1506437314282244, isAnomaly: false, currentTimestamp: 2025-02-23T16:16:33.000-08:00, nextTimestamp: 2025-02-23T17:16:33.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 131.4481178905537, actualValue: 94.0, adjustedSymmetricPercentageError: 0.10787321206092719, nextPredictedValue: 99.72679788253424, predictedValueList: [99.72679788253424], timestampList: [2025-02-23T18:16:41.000-08:00], percentageErrorBound: 0.15073707026422978, isAnomaly: false, currentTimestamp: 2025-02-23T17:16:41.000-08:00, nextTimestamp: 2025-02-23T18:16:41.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 99.72679788253424, actualValue: 94.0, adjustedSymmetricPercentageError: 0.017014893220256424, nextPredictedValue: 91.06163415813545, predictedValueList: [91.06163415813545], timestampList: [2025-02-23T19:17:29.000-08:00], percentageErrorBound: 0.15073806353897864, isAnomaly: false, currentTimestamp: 2025-02-23T18:17:29.000-08:00, nextTimestamp: 2025-02-23T19:17:29.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 91.06163415813545, actualValue: 90.0, adjustedSymmetricPercentageError: 0.003194288462513623, nextPredictedValue: 104.89246622340247, predictedValueList: [104.89246622340247], timestampList: [2025-02-23T20:18:18.000-08:00], percentageErrorBound: 0.15074437239206856, isAnomaly: false, currentTimestamp: 2025-02-23T19:18:18.000-08:00, nextTimestamp: 2025-02-23T20:18:18.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 104.89246622340247, actualValue: 106.0, adjustedSymmetricPercentageError: 0.003235588378608098, nextPredictedValue: 120.43705723074136, predictedValueList: [120.43705723074136], timestampList: [2025-02-23T21:18:56.000-08:00], percentageErrorBound: 0.15066690304157485, isAnomaly: false, currentTimestamp: 2025-02-23T20:18:56.000-08:00, nextTimestamp: 2025-02-23T21:18:56.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 120.43705723074136, actualValue: 130.0, adjustedSymmetricPercentageError: 0.026901567338885803, nextPredictedValue: 136.45776270908152, predictedValueList: [136.45776270908152], timestampList: [2025-02-23T22:19:22.000-08:00], percentageErrorBound: 0.150659075818233, isAnomaly: false, currentTimestamp: 2025-02-23T21:19:22.000-08:00, nextTimestamp: 2025-02-23T22:19:22.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 136.45776270908152, actualValue: 178.0, adjustedSymmetricPercentageError: 0.11024446554650047, nextPredictedValue: 176.25246699101777, predictedValueList: [176.25246699101777], timestampList: [2025-02-23T23:19:42.000-08:00], percentageErrorBound: 0.15076486004462478, isAnomaly: false, currentTimestamp: 2025-02-23T22:19:42.000-08:00, nextTimestamp: 2025-02-23T23:19:42.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 176.25246699101777, actualValue: 173.0, adjustedSymmetricPercentageError: 0.008373636829320994, nextPredictedValue: 172.2984511715954, predictedValueList: [172.2984511715954], timestampList: [2025-02-24T00:20:13.000-08:00], percentageErrorBound: 0.1507465271018588, isAnomaly: false, currentTimestamp: 2025-02-23T23:20:13.000-08:00, nextTimestamp: 2025-02-24T00:20:13.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 172.2984511715954, actualValue: 156.0, adjustedSymmetricPercentageError: 0.04272954618152669, nextPredictedValue: 144.94282469259687, predictedValueList: [144.94282469259687], timestampList: [2025-02-24T01:20:15.000-08:00], percentageErrorBound: 0.15065368919913308, isAnomaly: false, currentTimestamp: 2025-02-24T00:20:15.000-08:00, nextTimestamp: 2025-02-24T01:20:15.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 144.94282469259687, actualValue: 128.0, adjustedSymmetricPercentageError: 0.046676898846493106, nextPredictedValue: 121.02440538182591, predictedValueList: [121.02440538182591], timestampList: [2025-02-24T02:21:06.000-08:00], percentageErrorBound: 0.15056834123213378, isAnomaly: false, currentTimestamp: 2025-02-24T01:21:06.000-08:00, nextTimestamp: 2025-02-24T02:21:06.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 121.02440538182591, actualValue: 100.0, adjustedSymmetricPercentageError: 0.06082134211899712, nextPredictedValue: 100.9863498540373, predictedValueList: [100.9863498540373], timestampList: [2025-02-24T03:23:00.000-08:00], percentageErrorBound: 0.1505869425058381, isAnomaly: false, currentTimestamp: 2025-02-24T02:23:00.000-08:00, nextTimestamp: 2025-02-24T03:23:00.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 100.9863498540373, actualValue: 100.0, adjustedSymmetricPercentageError: 0.002909625642995633, nextPredictedValue: 111.70966100032894, predictedValueList: [111.70966100032894], timestampList: [2025-02-24T04:23:05.000-08:00], percentageErrorBound: 0.15058526534781508, isAnomaly: false, currentTimestamp: 2025-02-24T03:23:05.000-08:00, nextTimestamp: 2025-02-24T04:23:05.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 111.70966100032894, actualValue: 102.0, adjustedSymmetricPercentageError: 0.02828854006544837, nextPredictedValue: 128.14858693085438, predictedValueList: [128.14858693085438], timestampList: [2025-02-24T05:23:06.000-08:00], percentageErrorBound: 0.15056185990189822, isAnomaly: false, currentTimestamp: 2025-02-24T04:23:06.000-08:00, nextTimestamp: 2025-02-24T05:23:06.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 128.14858693085438, actualValue: 122.0, adjustedSymmetricPercentageError: 0.017301303982086978, nextPredictedValue: 135.2277741154866, predictedValueList: [135.2277741154866], timestampList: [2025-02-24T06:23:28.000-08:00], percentageErrorBound: 0.15055625321541566, isAnomaly: false, currentTimestamp: 2025-02-24T05:23:28.000-08:00, nextTimestamp: 2025-02-24T06:23:28.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 135.2277741154866, actualValue: 100.0, adjustedSymmetricPercentageError: 0.10053322880988641, nextPredictedValue: 126.45168778905861, predictedValueList: [126.45168778905861], timestampList: [2025-02-24T07:23:47.000-08:00], percentageErrorBound: 0.15061498300860915, isAnomaly: false, currentTimestamp: 2025-02-24T06:23:47.000-08:00, nextTimestamp: 2025-02-24T07:23:47.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 126.45168778905861, actualValue: 93.0, adjustedSymmetricPercentageError: 0.09691911708740211, nextPredictedValue: 104.67400719595776, predictedValueList: [104.67400719595776], timestampList: [2025-02-24T08:24:25.000-08:00], percentageErrorBound: 0.15065084902350204, isAnomaly: false, currentTimestamp: 2025-02-24T07:24:25.000-08:00, nextTimestamp: 2025-02-24T08:24:25.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 104.67400719595776, actualValue: 75.0, adjustedSymmetricPercentageError: 0.08940880342812128, nextPredictedValue: 86.92458604076907, predictedValueList: [86.92458604076907], timestampList: [2025-02-24T09:24:44.000-08:00], percentageErrorBound: 0.15070251680463398, isAnomaly: false, currentTimestamp: 2025-02-24T08:24:44.000-08:00, nextTimestamp: 2025-02-24T09:24:44.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 86.92458604076907, actualValue: 83.0, adjustedSymmetricPercentageError: 0.011941844527468062, nextPredictedValue: 87.25022349146869, predictedValueList: [87.25022349146869], timestampList: [2025-02-24T10:26:30.000-08:00], percentageErrorBound: 0.15069609343942386, isAnomaly: false, currentTimestamp: 2025-02-24T09:26:30.000-08:00, nextTimestamp: 2025-02-24T10:26:30.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 87.25022349146869, actualValue: 76.0, adjustedSymmetricPercentageError: 0.03446582871747522, nextPredictedValue: 85.68715879214662, predictedValueList: [85.68715879214662], timestampList: [2025-02-24T11:26:43.000-08:00], percentageErrorBound: 0.15069271173257412, isAnomaly: false, currentTimestamp: 2025-02-24T10:26:43.000-08:00, nextTimestamp: 2025-02-24T11:26:43.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 85.68715879214662, actualValue: 107.0, adjustedSymmetricPercentageError: 0.0633878631905289, nextPredictedValue: 115.75793863036363, predictedValueList: [115.75793863036363], timestampList: [2025-02-24T12:26:44.000-08:00], percentageErrorBound: 0.15071325896607043, isAnomaly: false, currentTimestamp: 2025-02-24T11:26:44.000-08:00, nextTimestamp: 2025-02-24T12:26:44.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 115.75793863036363, actualValue: 97.0, adjustedSymmetricPercentageError: 0.05470073549664283, nextPredictedValue: 115.69577127361659, predictedValueList: [115.69577127361659], timestampList: [2025-02-24T13:28:09.000-08:00], percentageErrorBound: 0.15069562388009272, isAnomaly: false, currentTimestamp: 2025-02-24T12:28:09.000-08:00, nextTimestamp: 2025-02-24T13:28:09.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 115.69577127361659, actualValue: 93.0, adjustedSymmetricPercentageError: 0.06644636947825272, nextPredictedValue: 98.97310077448093, predictedValueList: [98.97310077448093], timestampList: [2025-02-24T14:29:00.000-08:00], percentageErrorBound: 0.15071133615738758, isAnomaly: false, currentTimestamp: 2025-02-24T13:29:00.000-08:00, nextTimestamp: 2025-02-24T14:29:00.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 98.97310077448093, actualValue: 116.0, adjustedSymmetricPercentageError: 0.04954610128836992, nextPredictedValue: 106.60932106153338, predictedValueList: [106.60932106153338], timestampList: [2025-02-24T15:29:19.000-08:00], percentageErrorBound: 0.15070642126168066, isAnomaly: false, currentTimestamp: 2025-02-24T14:29:19.000-08:00, nextTimestamp: 2025-02-24T15:29:19.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 106.60932106153338, actualValue: 96.0, adjustedSymmetricPercentageError: 0.031246487270930066, nextPredictedValue: 98.39640490501256, predictedValueList: [98.39640490501256], timestampList: [2025-02-24T16:30:16.000-08:00], percentageErrorBound: 0.15063618259583753, isAnomaly: false, currentTimestamp: 2025-02-24T15:30:16.000-08:00, nextTimestamp: 2025-02-24T16:30:16.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 98.39640490501256, actualValue: 87.0, adjustedSymmetricPercentageError: 0.03414153930209157, nextPredictedValue: 93.77579763863137, predictedValueList: [93.77579763863137], timestampList: [2025-02-24T17:31:12.000-08:00], percentageErrorBound: 0.1506364387390404, isAnomaly: false, currentTimestamp: 2025-02-24T16:31:12.000-08:00, nextTimestamp: 2025-02-24T17:31:12.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 93.77579763863137, actualValue: 98.0, adjustedSymmetricPercentageError: 0.012574827768040902, nextPredictedValue: 108.14644013799982, predictedValueList: [108.14644013799982], timestampList: [2025-02-24T18:31:17.000-08:00], percentageErrorBound: 0.1506363182909443, isAnomaly: false, currentTimestamp: 2025-02-24T17:31:17.000-08:00, nextTimestamp: 2025-02-24T18:31:17.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 108.14644013799982, actualValue: 82.0, adjustedSymmetricPercentageError: 0.07796014306152191, nextPredictedValue: 98.90263905525887, predictedValueList: [98.90263905525887], timestampList: [2025-02-24T19:31:19.000-08:00], percentageErrorBound: 0.1505609653060869, isAnomaly: false, currentTimestamp: 2025-02-24T18:31:19.000-08:00, nextTimestamp: 2025-02-24T19:31:19.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 98.90263905525887, actualValue: 128.0, adjustedSymmetricPercentageError: 0.08370108537964702, nextPredictedValue: 135.97428774321952, predictedValueList: [135.97428774321952], timestampList: [2025-02-24T20:32:31.000-08:00], percentageErrorBound: 0.15058447916958323, isAnomaly: false, currentTimestamp: 2025-02-24T19:32:31.000-08:00, nextTimestamp: 2025-02-24T20:32:31.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 135.97428774321952, actualValue: 141.0, adjustedSymmetricPercentageError: 0.013794594199899198, nextPredictedValue: 136.42207902831714, predictedValueList: [136.42207902831714], timestampList: [2025-02-24T21:33:02.000-08:00], percentageErrorBound: 0.1505677404295056, isAnomaly: false, currentTimestamp: 2025-02-24T20:33:02.000-08:00, nextTimestamp: 2025-02-24T21:33:02.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 136.42207902831714, actualValue: 210.0, adjustedSymmetricPercentageError: 0.18989123391355645, nextPredictedValue: 175.9695129089718, predictedValueList: [175.9695129089718], timestampList: [2025-02-24T22:33:10.000-08:00], percentageErrorBound: 0.150872238518684, isAnomaly: true, currentTimestamp: 2025-02-24T21:33:10.000-08:00, nextTimestamp: 2025-02-24T22:33:10.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 175.9695129089718, actualValue: 153.0, adjustedSymmetricPercentageError: 0.060183732361434164, nextPredictedValue: 141.39344009213, predictedValueList: [141.39344009213], timestampList: [2025-02-24T23:33:10.000-08:00], percentageErrorBound: 0.1508891314129545, isAnomaly: false, currentTimestamp: 2025-02-24T22:33:10.000-08:00, nextTimestamp: 2025-02-24T23:33:10.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 141.39344009213, actualValue: 164.0, adjustedSymmetricPercentageError: 0.06047804213839336, nextPredictedValue: 148.47938563245057, predictedValueList: [148.47938563245057], timestampList: [2025-02-25T00:33:44.000-08:00], percentageErrorBound: 0.1508954260133174, isAnomaly: false, currentTimestamp: 2025-02-24T23:33:44.000-08:00, nextTimestamp: 2025-02-25T00:33:44.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 148.47938563245057, actualValue: 197.0, adjustedSymmetricPercentageError: 0.12532451707990214, nextPredictedValue: 180.55098521679093, predictedValueList: [180.55098521679093], timestampList: [2025-02-25T01:33:59.000-08:00], percentageErrorBound: 0.15104286049749854, isAnomaly: false, currentTimestamp: 2025-02-25T00:33:59.000-08:00, nextTimestamp: 2025-02-25T01:33:59.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 180.55098521679093, actualValue: 198.0, adjustedSymmetricPercentageError: 0.04382152373356174, nextPredictedValue: 175.88394998465606, predictedValueList: [175.88394998465606], timestampList: [2025-02-25T02:34:26.000-08:00], percentageErrorBound: 0.15104321988041824, isAnomaly: false, currentTimestamp: 2025-02-25T01:34:26.000-08:00, nextTimestamp: 2025-02-25T02:34:26.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 175.88394998465606, actualValue: 139.0, adjustedSymmetricPercentageError: 0.09784545085768498, nextPredictedValue: 144.65603202014353, predictedValueList: [144.65603202014353], timestampList: [2025-02-25T03:34:48.000-08:00], percentageErrorBound: 0.15111634757423525, isAnomaly: false, currentTimestamp: 2025-02-25T02:34:48.000-08:00, nextTimestamp: 2025-02-25T03:34:48.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 144.65603202014353, actualValue: 101.0, adjustedSymmetricPercentageError: 0.12336207972296015, nextPredictedValue: 108.35974731053041, predictedValueList: [108.35974731053041], timestampList: [2025-02-25T04:35:16.000-08:00], percentageErrorBound: 0.151256597203679, isAnomaly: false, currentTimestamp: 2025-02-25T03:35:16.000-08:00, nextTimestamp: 2025-02-25T04:35:16.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 108.35974731053041, actualValue: 100.0, adjustedSymmetricPercentageError: 0.02448284598983607, nextPredictedValue: 114.91198198165534, predictedValueList: [114.91198198165534], timestampList: [2025-02-25T05:36:29.000-08:00], percentageErrorBound: 0.15102296753185135, isAnomaly: false, currentTimestamp: 2025-02-25T04:36:29.000-08:00, nextTimestamp: 2025-02-25T05:36:29.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 114.91198198165534, actualValue: 103.0, adjustedSymmetricPercentageError: 0.034563818359540185, nextPredictedValue: 115.41780967841814, predictedValueList: [115.41780967841814], timestampList: [2025-02-25T06:36:41.000-08:00], percentageErrorBound: 0.1510201065519707, isAnomaly: false, currentTimestamp: 2025-02-25T05:36:41.000-08:00, nextTimestamp: 2025-02-25T06:36:41.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 115.41780967841814, actualValue: 114.0, adjustedSymmetricPercentageError: 0.0040686403042653725, nextPredictedValue: 132.1048070543003, predictedValueList: [132.1048070543003], timestampList: [2025-02-25T07:37:28.000-08:00], percentageErrorBound: 0.15091598053690253, isAnomaly: false, currentTimestamp: 2025-02-25T06:37:28.000-08:00, nextTimestamp: 2025-02-25T07:37:28.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 132.1048070543003, actualValue: 107.0, adjustedSymmetricPercentageError: 0.07138098571758757, nextPredictedValue: 108.38579758181532, predictedValueList: [108.38579758181532], timestampList: [2025-02-25T08:37:32.000-08:00], percentageErrorBound: 0.1509471714410665, isAnomaly: false, currentTimestamp: 2025-02-25T07:37:32.000-08:00, nextTimestamp: 2025-02-25T08:37:32.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 108.38579758181532, actualValue: 100.0, adjustedSymmetricPercentageError: 0.024558513799032556, nextPredictedValue: 101.0595966871108, predictedValueList: [101.0595966871108], timestampList: [2025-02-25T09:38:31.000-08:00], percentageErrorBound: 0.15094665336046825, isAnomaly: false, currentTimestamp: 2025-02-25T08:38:31.000-08:00, nextTimestamp: 2025-02-25T09:38:31.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 101.0595966871108, actualValue: 93.0, adjustedSymmetricPercentageError: 0.02393798360080549, nextPredictedValue: 87.43332068650487, predictedValueList: [87.43332068650487], timestampList: [2025-02-25T10:39:32.000-08:00], percentageErrorBound: 0.15094286293721243, isAnomaly: false, currentTimestamp: 2025-02-25T09:39:32.000-08:00, nextTimestamp: 2025-02-25T10:39:32.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 87.43332068650487, actualValue: 91.0, adjustedSymmetricPercentageError: 0.010759935048333676, nextPredictedValue: 86.26728175830577, predictedValueList: [86.26728175830577], timestampList: [2025-02-25T11:40:07.000-08:00], percentageErrorBound: 0.1509084315381246, isAnomaly: false, currentTimestamp: 2025-02-25T10:40:07.000-08:00, nextTimestamp: 2025-02-25T11:40:07.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 86.26728175830577, actualValue: 78.0, adjustedSymmetricPercentageError: 0.02530110484808832, nextPredictedValue: 79.26541577644504, predictedValueList: [79.26541577644504], timestampList: [2025-02-25T12:41:08.000-08:00], percentageErrorBound: 0.15088895703072655, isAnomaly: false, currentTimestamp: 2025-02-25T11:41:08.000-08:00, nextTimestamp: 2025-02-25T12:41:08.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 79.26541577644504, actualValue: 67.0, adjustedSymmetricPercentageError: 0.038239187157780616, nextPredictedValue: 76.69418738242766, predictedValueList: [76.69418738242766], timestampList: [2025-02-25T13:42:09.000-08:00], percentageErrorBound: 0.15089126629803412, isAnomaly: false, currentTimestamp: 2025-02-25T12:42:09.000-08:00, nextTimestamp: 2025-02-25T13:42:09.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 76.69418738242766, actualValue: 75.0, adjustedSymmetricPercentageError: 0.005252240029498194, nextPredictedValue: 82.77642610830914, predictedValueList: [82.77642610830914], timestampList: [2025-02-25T14:42:09.000-08:00], percentageErrorBound: 0.15089295405408923, isAnomaly: false, currentTimestamp: 2025-02-25T13:42:09.000-08:00, nextTimestamp: 2025-02-25T14:42:09.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 82.77642610830914, actualValue: 95.0, adjustedSymmetricPercentageError: 0.03690037387853666, nextPredictedValue: 108.87491784435946, predictedValueList: [108.87491784435946], timestampList: [2025-02-25T15:42:30.000-08:00], percentageErrorBound: 0.15089308542214055, isAnomaly: false, currentTimestamp: 2025-02-25T14:42:30.000-08:00, nextTimestamp: 2025-02-25T15:42:30.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 108.87491784435946, actualValue: 138.0, adjustedSymmetricPercentageError: 0.0822065183776559, nextPredictedValue: 152.28927176732708, predictedValueList: [152.28927176732708], timestampList: [2025-02-25T16:43:24.000-08:00], percentageErrorBound: 0.15094056464901945, isAnomaly: false, currentTimestamp: 2025-02-25T15:43:24.000-08:00, nextTimestamp: 2025-02-25T16:43:24.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 152.28927176732708, actualValue: 118.0, adjustedSymmetricPercentageError: 0.09469652142897586, nextPredictedValue: 115.28959181772184, predictedValueList: [115.28959181772184], timestampList: [2025-02-25T17:43:40.000-08:00], percentageErrorBound: 0.1510002935376533, isAnomaly: false, currentTimestamp: 2025-02-25T16:43:40.000-08:00, nextTimestamp: 2025-02-25T17:43:40.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 115.28959181772184, actualValue: 120.0, adjustedSymmetricPercentageError: 0.01344180010609739, nextPredictedValue: 109.67458387842419, predictedValueList: [109.67458387842419], timestampList: [2025-02-25T18:43:55.000-08:00], percentageErrorBound: 0.15100185753648288, isAnomaly: false, currentTimestamp: 2025-02-25T17:43:55.000-08:00, nextTimestamp: 2025-02-25T18:43:55.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 109.67458387842419, actualValue: 116.0, adjustedSymmetricPercentageError: 0.018217059970949988, nextPredictedValue: 100.20176230383838, predictedValueList: [100.20176230383838], timestampList: [2025-02-25T19:44:10.000-08:00], percentageErrorBound: 0.15100239123508827, isAnomaly: false, currentTimestamp: 2025-02-25T18:44:10.000-08:00, nextTimestamp: 2025-02-25T19:44:10.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 100.20176230383838, actualValue: 129.0, adjustedSymmetricPercentageError: 0.08265840740456948, nextPredictedValue: 117.78923445949361, predictedValueList: [117.78923445949361], timestampList: [2025-02-25T20:45:34.000-08:00], percentageErrorBound: 0.15103056869373757, isAnomaly: false, currentTimestamp: 2025-02-25T19:45:34.000-08:00, nextTimestamp: 2025-02-25T20:45:34.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 117.78923445949361, actualValue: 146.0, adjustedSymmetricPercentageError: 0.0783785334402627, nextPredictedValue: 126.93684366327209, predictedValueList: [126.93684366327209], timestampList: [2025-02-25T21:45:52.000-08:00], percentageErrorBound: 0.15106822770856412, isAnomaly: false, currentTimestamp: 2025-02-25T20:45:52.000-08:00, nextTimestamp: 2025-02-25T21:45:52.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 126.93684366327209, actualValue: 199.0, adjustedSymmetricPercentageError: 0.18931823612649162, nextPredictedValue: 185.70774574145415, predictedValueList: [185.70774574145415], timestampList: [2025-02-25T22:45:53.000-08:00], percentageErrorBound: 0.15138541870032524, isAnomaly: true, currentTimestamp: 2025-02-25T21:45:53.000-08:00, nextTimestamp: 2025-02-25T22:45:53.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 185.70774574145415, actualValue: 191.0, adjustedSymmetricPercentageError: 0.013311528186452419, nextPredictedValue: 172.85913068151558, predictedValueList: [172.85913068151558], timestampList: [2025-02-25T23:46:46.000-08:00], percentageErrorBound: 0.15137966768187897, isAnomaly: false, currentTimestamp: 2025-02-25T22:46:46.000-08:00, nextTimestamp: 2025-02-25T23:46:46.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 172.85913068151558, actualValue: 216.0, adjustedSymmetricPercentageError: 0.10741721140648763, nextPredictedValue: 176.82798315945922, predictedValueList: [176.82798315945922], timestampList: [2025-02-26T00:47:48.000-08:00], percentageErrorBound: 0.1514656477560576, isAnomaly: false, currentTimestamp: 2025-02-25T23:47:48.000-08:00, nextTimestamp: 2025-02-26T00:47:48.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 176.82798315945922, actualValue: 193.0, adjustedSymmetricPercentageError: 0.04091322789698278, nextPredictedValue: 174.82668563300228, predictedValueList: [174.82668563300228], timestampList: [2025-02-26T01:47:51.000-08:00], percentageErrorBound: 0.15146827894683468, isAnomaly: false, currentTimestamp: 2025-02-26T00:47:51.000-08:00, nextTimestamp: 2025-02-26T01:47:51.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 174.82668563300228, actualValue: 171.0, adjustedSymmetricPercentageError: 0.009881040813546155, nextPredictedValue: 144.49414392377025, predictedValueList: [144.49414392377025], timestampList: [2025-02-26T02:47:57.000-08:00], percentageErrorBound: 0.15143258536982648, isAnomaly: false, currentTimestamp: 2025-02-26T01:47:57.000-08:00, nextTimestamp: 2025-02-26T02:47:57.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 144.49414392377025, actualValue: 144.0, adjustedSymmetricPercentageError: 0.0013421816489170772, nextPredictedValue: 136.81576948527032, predictedValueList: [136.81576948527032], timestampList: [2025-02-26T03:48:33.000-08:00], percentageErrorBound: 0.15134708386729717, isAnomaly: false, currentTimestamp: 2025-02-26T02:48:33.000-08:00, nextTimestamp: 2025-02-26T03:48:33.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 136.81576948527032, actualValue: 114.0, adjustedSymmetricPercentageError: 0.06416038308923397, nextPredictedValue: 113.54182991678637, predictedValueList: [113.54182991678637], timestampList: [2025-02-26T04:48:53.000-08:00], percentageErrorBound: 0.15135103039537146, isAnomaly: false, currentTimestamp: 2025-02-26T03:48:53.000-08:00, nextTimestamp: 2025-02-26T04:48:53.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 113.54182991678637, actualValue: 119.0, adjustedSymmetricPercentageError: 0.015616458764396952, nextPredictedValue: 131.45200199659055, predictedValueList: [131.45200199659055], timestampList: [2025-02-26T05:49:15.000-08:00], percentageErrorBound: 0.15134992152231955, isAnomaly: false, currentTimestamp: 2025-02-26T04:49:15.000-08:00, nextTimestamp: 2025-02-26T05:49:15.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 131.45200199659055, actualValue: 118.0, adjustedSymmetricPercentageError: 0.037876887850552834, nextPredictedValue: 123.17498769882432, predictedValueList: [123.17498769882432], timestampList: [2025-02-26T06:49:59.000-08:00], percentageErrorBound: 0.1513513598122872, isAnomaly: false, currentTimestamp: 2025-02-26T05:49:59.000-08:00, nextTimestamp: 2025-02-26T06:49:59.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 123.17498769882432, actualValue: 121.0, adjustedSymmetricPercentageError: 0.006154609542935591, nextPredictedValue: 129.45156961534119, predictedValueList: [129.45156961534119], timestampList: [2025-02-26T07:49:59.000-08:00], percentageErrorBound: 0.15134984795277365, isAnomaly: false, currentTimestamp: 2025-02-26T06:49:59.000-08:00, nextTimestamp: 2025-02-26T07:49:59.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 129.45156961534119, actualValue: 127.0, adjustedSymmetricPercentageError: 0.006857847062186235, nextPredictedValue: 122.37960216345519, predictedValueList: [122.37960216345519], timestampList: [2025-02-26T08:50:05.000-08:00], percentageErrorBound: 0.15135149901845185, isAnomaly: false, currentTimestamp: 2025-02-26T07:50:05.000-08:00, nextTimestamp: 2025-02-26T08:50:05.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 122.37960216345519, actualValue: 99.0, adjustedSymmetricPercentageError: 0.0676115149595106, nextPredictedValue: 101.87439901792136, predictedValueList: [101.87439901792136], timestampList: [2025-02-26T09:50:28.000-08:00], percentageErrorBound: 0.15137344896582897, isAnomaly: false, currentTimestamp: 2025-02-26T08:50:28.000-08:00, nextTimestamp: 2025-02-26T09:50:28.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 101.87439901792136, actualValue: 77.0, adjustedSymmetricPercentageError: 0.07500765637092247, nextPredictedValue: 83.30457588721265, predictedValueList: [83.30457588721265], timestampList: [2025-02-26T10:51:50.000-08:00], percentageErrorBound: 0.1514023958353156, isAnomaly: false, currentTimestamp: 2025-02-26T09:51:50.000-08:00, nextTimestamp: 2025-02-26T10:51:50.000-08:00, intervalSeconds: 3600]"
+ }
+]

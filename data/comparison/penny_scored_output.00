@@ -1,0 +1,3929 @@
+[
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4081253111362457",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/06 23:08:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4654117822647095",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 00:08:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39789414405822754",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 01:09:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.567597508430481",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 02:09:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.35134100914001465",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 03:09:50.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32746419310569763",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 04:10:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3135243058204651",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 05:10:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.26639699935913086",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 06:10:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3770708441734314",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 07:10:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3452548682689667",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 08:11:22.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36437615752220154",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 09:11:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3550836443901062",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 10:11:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32175710797309875",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 11:12:10.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32815253734588623",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 12:12:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28806382417678833",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 13:12:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31938406825065613",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 14:14:14.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.29446667432785034",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 15:14:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3878825306892395",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 16:14:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37376073002815247",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 17:15:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4032769501209259",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 18:15:26.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.43126222491264343",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 19:15:49.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4002310037612915",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 20:16:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36871474981307983",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 21:16:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4830523431301117",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 22:16:16.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6923547983169556",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/07 23:16:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.9551655054092407",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 00:16:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7265856862068176",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 01:16:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4854278564453125",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 02:18:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.45351356267929077",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 03:21:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.46221455931663513",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 04:21:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3082359731197357",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 05:21:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3195441961288452",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 06:22:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.47234708070755005",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 07:22:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3194243013858795",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 08:22:26.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2898833453655243",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 09:22:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3973429799079895",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 10:22:50.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4554853141307831",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 11:23:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3139248490333557",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 12:24:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28260767459869385",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 13:25:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.245024636387825",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 14:25:49.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5847548842430115",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 15:25:50.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5417497754096985",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 16:26:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37293991446495056",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 17:26:24.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4262559711933136",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 18:26:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.44413745403289795",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 19:27:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4830504357814789",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 20:28:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39840126037597656",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 21:28:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38581231236457825",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 22:28:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.9505878686904907",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/08 23:28:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4720880687236786",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 00:28:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4051421284675598",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 01:29:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38320860266685486",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 02:29:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5141850113868713",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 03:30:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37186020612716675",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 04:31:21.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36626771092414856",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 05:31:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38818231225013733",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 06:32:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32853642106056213",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 07:32:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4094279408454895",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 08:32:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5307075381278992",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 09:32:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6012978553771973",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 10:32:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3177720606327057",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 11:33:00.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2697446346282959",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 12:33:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4141922891139984",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 13:34:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7770876884460449",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 14:36:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33127278089523315",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 15:37:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3834640383720398",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 16:38:00.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5526813864707947",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 17:38:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39587506651878357",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 18:39:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38171541690826416",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 19:40:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.394787460565567",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 20:41:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3607383966445923",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 21:41:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5794021487236023",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 22:41:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.8374717235565186",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/09 23:41:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5552342534065247",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 00:41:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.42293864488601685",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 01:42:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5028736591339111",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 02:43:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.29599934816360474",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 03:44:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31234198808670044",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 04:44:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.26620998978614807",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 05:44:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2712947726249695",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 06:44:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33665236830711365",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 07:45:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37400951981544495",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 08:45:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32305359840393066",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 09:45:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.324746698141098",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 10:45:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3451935648918152",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 11:45:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.22807252407073975",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 12:45:39.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.29829394817352295",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 13:45:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2533011734485626",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 14:46:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31206974387168884",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 15:46:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40982961654663086",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 16:46:26.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4573238790035248",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 17:47:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.409008651971817",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 18:47:16.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3215777575969696",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 19:47:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.48653677105903625",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 20:47:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33120661973953247",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 21:47:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4522121548652649",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 22:47:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.46720007061958313",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/10 23:47:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3655239939689636",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 00:47:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41095101833343506",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 01:48:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39927181601524353",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 02:49:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4342527389526367",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 03:49:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3378600776195526",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 04:51:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6184306144714355",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 05:51:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2002420872449875",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 06:51:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2510814964771271",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 07:51:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27969294786453247",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 08:52:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27971068024635315",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 09:52:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.265297532081604",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 10:53:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3641391694545746",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 11:54:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.12919165194034576",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 12:55:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.24811971187591553",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 13:55:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.49441686272621155",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 14:55:26.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.25166600942611694",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 15:56:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2761758267879486",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 16:56:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4173249304294586",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 17:57:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7782552242279053",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 18:57:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32743990421295166",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 19:58:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3216373920440674",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 20:58:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.25789767503738403",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 21:58:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3265440762042999",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 22:58:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.737907350063324",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/11 23:59:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4625951051712036",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 00:59:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36628732085227966",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 01:59:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4469088315963745",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 03:00:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40268048644065857",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 04:01:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36440086364746094",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 05:01:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.13556525111198425",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 06:03:16.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3238544464111328",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 07:04:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.24395400285720825",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 08:04:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4318859279155731",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 09:05:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.45750004053115845",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 10:05:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37727126479148865",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 11:06:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2612764835357666",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 12:06:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.13807307183742523",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 13:07:10.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.08074085414409637",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 14:08:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.17053326964378357",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 15:08:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.16932745277881622",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 16:09:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.23053845763206482",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 17:09:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.29751139879226685",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 18:10:34.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6166820526123047",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 19:11:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28963103890419006",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 20:11:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.1723179966211319",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 21:12:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5032950639724731",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 22:12:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-1.6121810674667358",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/12 23:12:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39487969875335693",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 00:13:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3472704291343689",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 01:13:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3383863866329193",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 02:13:56.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2793309986591339",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 03:14:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.22794200479984283",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 04:14:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19094525277614594",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 05:16:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.29048746824264526",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 06:16:56.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.13155627250671387",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 07:18:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3191593885421753",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 08:18:55.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3155255615711212",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 09:19:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36218252778053284",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 10:21:21.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3327782452106476",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 11:23:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.22765128314495087",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 12:23:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.20549489557743073",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 13:23:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4520755708217621",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 14:23:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30904027819633484",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 15:24:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32173582911491394",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 16:25:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4735211730003357",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 17:26:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.585667610168457",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 18:27:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37867119908332825",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 19:28:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34393996000289917",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 20:29:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19669459760189056",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 21:29:22.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5035066604614258",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 22:29:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5063660740852356",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/13 23:29:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4657944142818451",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 00:30:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38063499331474304",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 01:30:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3545877933502197",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 02:30:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4946921765804291",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 03:30:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4188159108161926",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 04:30:49.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2537768483161926",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 05:31:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.20863322913646698",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 06:31:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31951195001602173",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 07:32:10.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3475037217140198",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 08:32:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4276832342147827",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 09:33:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3367712199687958",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 10:34:14.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3037257492542267",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 11:35:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2142249345779419",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 12:36:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19990621507167816",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 13:37:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2090962827205658",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 14:38:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4638153314590454",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 15:38:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3293429911136627",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 16:39:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3830617666244507",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 17:39:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3952445089817047",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 18:39:55.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38317734003067017",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 19:40:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4452725946903229",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 20:40:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31208205223083496",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 21:40:46.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4992663562297821",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 22:41:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4854721426963806",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/14 23:41:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3985181748867035",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 00:41:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39829859137535095",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 01:41:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36129114031791687",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 02:42:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31188952922821045",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 03:42:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3247324526309967",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 04:42:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2872942090034485",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 05:43:32.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27476078271865845",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 06:43:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30689385533332825",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 07:44:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.377819299697876",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 08:44:51.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.45965567231178284",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 09:45:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3578920066356659",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 10:47:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3302464485168457",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 11:48:51.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4431430399417877",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 12:49:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3114575445652008",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 13:50:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28742915391921997",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 14:51:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3794293701648712",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 15:51:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40579256415367126",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 16:52:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4345409870147705",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 17:53:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.42856794595718384",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 18:55:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34255266189575195",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 19:55:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5092167854309082",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 20:58:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4334182143211365",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 21:58:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.49044060707092285",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 22:58:39.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6080285310745239",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/15 23:58:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40907591581344604",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 00:59:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39279571175575256",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 01:59:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31334012746810913",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 02:59:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.44778403639793396",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 04:00:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3345944881439209",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 05:00:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31968098878860474",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 06:00:34.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30343014001846313",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 07:01:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36931145191192627",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 08:01:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4504241943359375",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 09:02:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39972376823425293",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 10:03:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37564221024513245",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 11:04:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33510908484458923",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 12:04:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3136545419692993",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 13:05:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.47008615732192993",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 14:05:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5209149718284607",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 15:05:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3863290846347809",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 16:06:32.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4031056761741638",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 17:06:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4266570210456848",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 18:07:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39425626397132874",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 19:07:50.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.610723614692688",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 20:08:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.47347843647003174",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 21:08:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6456643342971802",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 22:08:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5961461067199707",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/16 23:09:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7085279822349548",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 00:09:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.924349308013916",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 01:10:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4674012064933777",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 02:10:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.369302362203598",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 03:11:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.380975604057312",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 04:11:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.322664350271225",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 05:12:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30493393540382385",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 06:12:24.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34942349791526794",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 07:13:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3493026793003082",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 08:14:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2859817147254944",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 09:15:26.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.47255268692970276",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 10:15:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5743842720985413",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 11:16:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38533660769462585",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 12:16:49.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2055966854095459",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 13:17:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4351610243320465",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 14:17:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37059855461120605",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 15:17:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4277375340461731",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 16:17:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3880874812602997",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 17:17:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3960476517677307",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 18:17:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41046398878097534",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 19:21:46.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5611103773117065",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 20:22:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7045195698738098",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 21:22:50.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.54523766040802",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 22:22:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5908669829368591",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/17 23:23:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38013574481010437",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 00:23:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5160397887229919",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 01:23:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5466378331184387",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 02:23:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4026881754398346",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 03:24:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3619815409183502",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 04:25:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3073559105396271",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 05:25:49.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.17593130469322205",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 06:26:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.23564602434635162",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 07:26:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32069364190101624",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 08:28:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3595767021179199",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 09:28:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.35390645265579224",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 10:29:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.20794866979122162",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 11:32:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.1726146787405014",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 12:32:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.18891409039497375",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 13:33:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36152565479278564",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 14:34:21.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31782788038253784",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 15:35:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3257720470428467",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 16:35:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30959007143974304",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 17:36:34.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5035536289215088",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 18:36:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40247106552124023",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 19:36:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2369982749223709",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 20:37:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6772395968437195",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 21:37:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2697047293186188",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 22:38:24.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.500639021396637",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/18 23:39:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6955282092094421",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 00:39:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4437759518623352",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 01:39:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2595836818218231",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 02:40:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2879554331302643",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 03:40:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2753535807132721",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 04:40:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.25386950373649597",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 05:40:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.0910566970705986",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 06:41:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19553622603416443",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 07:42:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.18596762418746948",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 08:42:55.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.23048430681228638",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 09:43:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2567082941532135",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 10:43:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30557677149772644",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 11:43:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.16048111021518707",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 12:44:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.22906607389450073",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 13:45:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.09576988220214844",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 14:45:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2404509335756302",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 15:46:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.26672065258026123",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 16:46:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36636701226234436",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 17:47:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4018206298351288",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 18:48:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3051438629627228",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 19:49:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37618955969810486",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 20:50:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.24286557734012604",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 21:51:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7216607928276062",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 22:51:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36757540702819824",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/19 23:51:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5548505783081055",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 00:52:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2973823547363281",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 01:53:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.306469589471817",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 02:53:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2603553831577301",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 03:53:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.25239822268486023",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 04:54:21.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.25197091698646545",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 05:55:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2596716582775116",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 06:55:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2316218614578247",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 07:55:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3265168070793152",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 08:55:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.35426250100135803",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 09:55:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3472994267940521",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 10:56:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28156590461730957",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 11:56:56.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4007991552352905",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 12:57:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.14686153829097748",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 13:57:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27127641439437866",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 14:57:51.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3687896132469177",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 15:58:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.46364572644233704",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 16:58:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3598000705242157",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 17:59:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.562545120716095",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 18:59:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3242063820362091",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 20:00:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3124760389328003",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 21:00:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7656926512718201",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 22:00:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-1.2973335981369019",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/20 23:00:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38927870988845825",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 00:00:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34624311327934265",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 01:01:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34887194633483887",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 02:01:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3565824329853058",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 03:02:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27861925959587097",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 04:02:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.23705513775348663",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 05:02:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3465917408466339",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 06:02:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.23549698293209076",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 07:03:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.309439480304718",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 08:05:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5914979577064514",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 09:05:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4186517000198364",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 10:06:00.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3825116753578186",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 11:07:21.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32540395855903625",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 12:07:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3442438840866089",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 13:08:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.24864697456359863",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 14:10:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.48377394676208496",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 15:11:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3524746000766754",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 16:11:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4264480769634247",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 17:11:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4012373685836792",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 18:12:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5547571182250977",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 19:13:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3642565906047821",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 20:13:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.47730326652526855",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 21:14:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5168824195861816",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 22:14:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3444303572177887",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/21 23:14:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37111547589302063",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 00:15:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39246049523353577",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 01:15:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4422992765903473",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 02:16:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4083893299102783",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 03:16:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33486783504486084",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 04:16:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2913099229335785",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 05:17:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3301173448562622",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 06:17:22.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34647032618522644",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 07:17:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.44928938150405884",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 08:19:10.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4627259075641632",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 09:23:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40818753838539124",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 10:24:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3214796185493469",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 11:26:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.48330041766166687",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 12:27:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4913291037082672",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 13:27:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2932060956954956",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 14:27:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4425259828567505",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 15:28:10.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5434819459915161",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 16:28:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38555479049682617",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 17:28:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3895461857318878",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 18:28:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4220276176929474",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 19:30:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3245883882045746",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 20:30:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3103136718273163",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 21:30:32.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6060928702354431",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 22:30:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7292020916938782",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/22 23:30:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3989447057247162",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 00:31:16.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5083646178245544",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 01:31:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.43830251693725586",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 02:31:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2785516381263733",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 03:31:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.26820218563079834",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 04:32:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30455827713012695",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 05:32:14.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3129347264766693",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 06:33:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3063291311264038",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 07:33:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40959450602531433",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 08:34:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41633227467536926",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 09:35:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4166243374347687",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 10:37:22.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3623430132865906",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 11:38:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2711838483810425",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 12:38:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.21903863549232483",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 13:38:45.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32193416357040405",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 14:39:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4190685749053955",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 15:39:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41652536392211914",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 16:40:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41108331084251404",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 17:40:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4571644365787506",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 18:40:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4966350495815277",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 19:41:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.351004421710968",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 20:42:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.994181215763092",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 21:42:10.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.8441601395606995",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 22:42:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-1.147597074508667",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/23 23:43:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4190308153629303",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 00:43:26.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41636890172958374",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 01:43:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3756035566329956",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 02:43:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3281983435153961",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 03:43:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31129106879234314",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 04:44:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3368680477142334",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 05:44:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2660081088542938",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 06:45:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.48220929503440857",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 07:45:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.392992228269577",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 08:45:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4314781725406647",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 09:46:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40820202231407166",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 10:47:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34384867548942566",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 11:47:16.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5720632076263428",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 12:47:21.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3183787763118744",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 13:47:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40258511900901794",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 14:48:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.43413811922073364",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 15:49:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3902895450592041",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 16:50:12.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3765319585800171",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 17:50:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4415383040904999",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 18:51:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.47295576333999634",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 19:52:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.40985748171806335",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 20:52:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.45959919691085815",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 21:52:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3946683406829834",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 22:52:34.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7914767265319824",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/24 23:52:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5352503061294556",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 00:52:55.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3996754288673401",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 01:53:34.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3851770758628845",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 02:53:39.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39867666363716125",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 03:53:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3672696053981781",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 04:54:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4943321943283081",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 05:54:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4497051537036896",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 06:54:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.255317360162735",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 07:56:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.500573992729187",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 08:56:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.30193620920181274",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 09:56:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.366639643907547",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 10:57:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4021387994289398",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 11:58:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.201654314994812",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 13:01:46.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.39897117018699646",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 14:01:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.22981370985507965",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 15:02:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3135066330432892",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 16:02:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.43847012519836426",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 17:02:52.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6336808204650879",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 18:03:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33735689520835876",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 19:05:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.29393547773361206",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 20:05:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2750254273414612",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 21:05:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.9568398594856262",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 22:05:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5366931557655334",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/25 23:06:18.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27141112089157104",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 00:06:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2663050591945648",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 01:06:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3250660300254822",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 02:07:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.26102739572525024",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 03:09:01.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3238302171230316",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 04:09:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3648075461387634",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 05:09:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.062058158218860626",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 06:09:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19918543100357056",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 07:10:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.21506662666797638",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 08:10:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2584257423877716",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 09:10:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.29303207993507385",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 10:10:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19826649129390717",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 11:10:46.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.18125446140766144",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 12:12:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.1183122918009758",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 13:12:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.188465878367424",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 14:12:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2831597924232483",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 15:13:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.25136464834213257",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 16:13:32.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2478562444448471",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 17:13:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5208438634872437",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 18:13:44.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6396953463554382",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 19:15:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.501396894454956",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 20:15:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32969212532043457",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 21:15:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19829659163951874",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 22:16:16.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.20568661391735077",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/26 23:16:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.6468755602836609",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 00:16:39.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.445522278547287",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 01:17:07.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28642624616622925",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 02:17:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2945355474948883",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 03:17:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.25435295701026917",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 04:18:39.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2606029510498047",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 05:19:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27492043375968933",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 06:19:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.20097918808460236",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 07:19:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2795654833316803",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 08:23:03.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.299555242061615",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 09:23:58.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5802099704742432",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 10:24:40.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2652089595794678",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 11:25:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28566640615463257",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 12:26:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19164155423641205",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 13:26:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.1998782902956009",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 14:26:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.19380499422550201",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 15:27:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.24092157185077667",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 16:27:14.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31088748574256897",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 17:28:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4075774848461151",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 18:28:21.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.34051546454429626",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 19:28:36.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33846235275268555",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 20:28:53.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5274711847305298",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 21:29:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.7724282741546631",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 22:29:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.789269745349884",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/27 23:29:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4240909218788147",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 00:29:50.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38890182971954346",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 01:30:02.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37367668747901917",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 02:30:10.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3586260974407196",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 03:30:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31394004821777344",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 04:30:25.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.26524606347084045",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 05:31:50.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.24196839332580566",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 06:32:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.397945761680603",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 07:32:19.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4109300971031189",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 08:32:42.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.387215256690979",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 09:33:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5101622939109802",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 10:34:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3112540543079376",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 11:37:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.587229311466217",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 12:38:08.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.27001121640205383",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 13:38:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3110477328300476",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 14:39:38.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33222711086273193",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 15:40:29.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3979693055152893",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 16:40:35.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.49746888875961304",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 17:40:37.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4986829459667206",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 18:40:43.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3721543848514557",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 19:41:13.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28831520676612854",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 20:41:20.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.35123568773269653",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 21:42:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5576483607292175",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 22:42:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.48708346486091614",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/28 23:43:15.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4300983250141144",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 00:43:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3876877725124359",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 01:43:31.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32734835147857666",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 02:43:59.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3253099024295807",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 03:44:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3799748718738556",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 04:44:28.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2819729745388031",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 05:44:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.28345316648483276",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 06:44:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3450022041797638",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 07:45:39.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.48568376898765564",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 08:45:55.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.42004454135894775",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 09:46:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3744390308856964",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 10:46:24.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3334994614124298",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 11:47:09.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3527922034263611",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 12:49:00.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3470665216445923",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 13:49:49.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4300324022769928",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 14:49:49.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3419032394886017",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 15:50:06.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3963494300842285",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 16:50:23.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41063421964645386",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 17:50:54.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.41388314962387085",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 18:52:17.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.36230677366256714",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 19:52:32.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.32839980721473694",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 20:53:30.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.33774200081825256",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 21:53:48.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.5064549446105957",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 22:53:56.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.4785172939300537",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/29 23:53:57.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.9966183304786682",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 00:54:27.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.48177164793014526",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 01:54:34.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.37590667605400085",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 02:54:55.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.35125258564949036",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 03:55:04.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.44512343406677246",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 04:55:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.31275224685668945",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 05:55:47.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.2988394796848297",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 06:56:05.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3030897378921509",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 07:56:55.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3321472704410553",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 08:57:33.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3594039976596832",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 09:59:11.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.3848763406276703",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 10:59:41.000"
+ },
+ {
+  "combo_key":"Penny_All",
+  "is_anomaly":"false",
+  "anomaly_score":"-0.38225796818733215",
+  "threshold":"-21.3322",
+  "window_end":"2025\/01\/30 11:59:56.000"
+ }
+]

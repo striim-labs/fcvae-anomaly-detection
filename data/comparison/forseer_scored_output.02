@@ -1,0 +1,11 @@
+[
+ {
+  "forecast":"[ predictedValue: 141.41675977456208, actualValue: 179.0, adjustedSymmetricPercentageError: 0.0100926352827253, nextPredictedValue: 184.7739685193351, predictedValueList: [184.7739685193351], timestampList: [2025-03-06T21:32:35.000-08:00], percentageErrorBound: 0.062456823877228604, isAnomaly: false, currentTimestamp: 2025-03-06T20:32:35.000-08:00, nextTimestamp: 2025-03-06T21:32:35.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 184.7739685193351, actualValue: 199.0, adjustedSymmetricPercentageError: 0.00379872674456426, nextPredictedValue: 199.40358490813827, predictedValueList: [199.40358490813827], timestampList: [2025-03-06T22:32:36.000-08:00], percentageErrorBound: 0.062450923105890066, isAnomaly: false, currentTimestamp: 2025-03-06T21:32:36.000-08:00, nextTimestamp: 2025-03-06T22:32:36.000-08:00, intervalSeconds: 3600]"
+ },
+ {
+  "forecast":"[ predictedValue: 199.40358490813827, actualValue: 200.0, adjustedSymmetricPercentageError: 1.5903735866303187E-4, nextPredictedValue: 196.47256693633668, predictedValueList: [196.47256693633668], timestampList: [2025-03-06T23:32:38.000-08:00], percentageErrorBound: 0.062434549514790674, isAnomaly: false, currentTimestamp: 2025-03-06T22:32:38.000-08:00, nextTimestamp: 2025-03-06T23:32:38.000-08:00, intervalSeconds: 3600]"
+ }
+]
