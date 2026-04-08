@@ -48,7 +48,7 @@ fcvae-anomaly-detection/
 ├── Dockerfile                         # Container for scoring API
 ├── docker-compose.yml                 # Scoring API service
 ├── pyproject.toml                     # All dependencies
-├── STRIIM_PENNY.md                    # Striim penny pipeline setup
+├── STRIIM_FCVAE.md                    # Striim FCVAE pipeline setup
 └── TECHNICAL.md                       # Architecture reference
 ```
 
