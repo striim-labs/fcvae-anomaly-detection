@@ -12,11 +12,11 @@ RUN uv pip install --system \
     "scikit-learn>=1.6.0"
 
 COPY src/ src/
-COPY code/5_streaming_app.py code/5_streaming_app.py
+COPY code/7_streaming_app.py code/7_streaming_app.py
 COPY models/ models/
 
 ENV PYTHONPATH=/app
 
 EXPOSE 8000
 
-CMD ["python", "-u", "code/5_streaming_app.py"]
+CMD ["python", "-u", "code/7_streaming_app.py"]

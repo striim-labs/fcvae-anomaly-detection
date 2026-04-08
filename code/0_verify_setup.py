@@ -47,6 +47,7 @@ def check_data():
     data_dir = PROJECT_ROOT / "data"
     files = {
         "synthetic_transactions.csv": data_dir / "synthetic_transactions.csv",
+        "synthetic_transactions_phase2.csv": data_dir / "synthetic_transactions_phase2.csv",
         "generate_transactions.py": data_dir / "generate_transactions.py",
     }
 
@@ -62,21 +63,21 @@ def check_data():
 
 
 def check_model_artifacts():
-    """Verify pre-trained model artifacts exist."""
-    model_dir = PROJECT_ROOT / "models" / "fcvae" / "Penny_All"
-    files = {
-        "model.pt": model_dir / "model.pt",
-        "scaler.pkl": model_dir / "scaler.pkl",
-        "scorer.pkl": model_dir / "scorer.pkl",
-    }
+    """Verify pre-trained model artifacts exist for all 5 models."""
+    model_names = ["Penny_All", "Accel_CMP", "Accel_nopin", "Star_CMP", "Star_nopin"]
+    required_files = ["model.pt", "scaler.pkl", "scorer.pkl"]
 
     results = {}
-    for name, path in files.items():
-        if path.exists():
-            size_kb = path.stat().st_size / 1024
-            results[name] = ("OK", f"{size_kb:.1f} KB")
-        else:
-            results[name] = ("MISSING", None)
+    for model_name in model_names:
+        model_dir = PROJECT_ROOT / "models" / "fcvae" / model_name
+        for fname in required_files:
+            key = f"{model_name}/{fname}"
+            path = model_dir / fname
+            if path.exists():
+                size_kb = path.stat().st_size / 1024
+                results[key] = ("OK", f"{size_kb:.1f} KB")
+            else:
+                results[key] = ("MISSING", None)
 
     return results
 
@@ -99,7 +100,7 @@ def check_src_modules():
 
 def main():
     print("=" * 60)
-    print("FCVAE Penny Anomaly Detection — Setup Verification")
+    print("FCVAE Transaction Anomaly Detection — Setup Verification")
     print("=" * 60)
     print(f"\nProject root: {PROJECT_ROOT}")
     print(f"Python: {sys.version}")
@@ -127,13 +128,13 @@ def main():
             all_ok = False
 
     # Model artifacts
-    print("\n--- Model Artifacts (Penny_All) ---")
+    print("\n--- Model Artifacts (5 models) ---")
     model_results = check_model_artifacts()
     for name, (status, info) in model_results.items():
         if status == "OK":
-            print(f"  [OK] models/fcvae/Penny_All/{name} ({info})")
+            print(f"  [OK] models/fcvae/{name} ({info})")
         else:
-            print(f"  [MISSING] models/fcvae/Penny_All/{name}")
+            print(f"  [MISSING] models/fcvae/{name}")
             all_ok = False
 
     # src modules
@@ -161,7 +162,6 @@ def main():
         print("All checks passed! Ready to run.")
         print("\nNext steps:")
         print("  uv run jupyter notebook code/   # Explore notebooks")
-        print("  uv run python code/3_train_model.py  # Train model")
         print("  uv run python code/5_streaming_app.py  # Start API")
     else:
         print("Some checks failed. Install missing dependencies with: uv sync")

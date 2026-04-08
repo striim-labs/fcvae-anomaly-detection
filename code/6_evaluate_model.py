@@ -1,11 +1,16 @@
 """
-Step 4: Evaluate FCVAE Penny Transaction Model
+Step 4: Evaluate FCVAE Model (Penny and Combo Modes)
 
-Load trained model, score test set, compute F1/precision/recall,
+Load trained model(s), score test set, compute F1/precision/recall,
 plot NLL distributions, reconstruction plots, per-hour heatmaps.
+
+Modes:
+    --mode penny   Evaluate Penny_All model only (default)
+    --mode combo   Evaluate all 4 combo models
 
 Usage:
     uv run python code/4_evaluate_model.py
+    uv run python code/4_evaluate_model.py --mode combo
     uv run python code/4_evaluate_model.py --from-saved
     uv run python code/4_evaluate_model.py --model-dir models/fcvae/Penny_All
 """
@@ -34,10 +39,21 @@ sys.modules["attention"] = src.model
 
 from src.model import FCVAE, FCVAEConfig
 from src.scorer import FCVAEScorer, FCVAEScorerConfig
-from src.preprocess import load_penny_data, create_sliding_windows, create_splits, normalize, create_dataloaders
+from src.preprocess import (
+    load_penny_data, load_combo_data, COMBO_KEYS,
+    create_sliding_windows, create_splits, normalize, create_dataloaders,
+)
 from src.utils import auto_device
 
 logger = logging.getLogger(__name__)
+
+# Maps combo key tuples to directory-safe names
+combo_dir_names = {
+    ("Accel", "CMP"): "Accel_CMP",
+    ("Accel", "no-pin"): "Accel_nopin",
+    ("Star", "CMP"): "Star_CMP",
+    ("Star", "no-pin"): "Star_nopin",
+}
 
 try:
     import matplotlib
@@ -224,10 +240,10 @@ def plot_reconstruction(
         std_orig = std_np * scaler.scale_[0]
 
         ax.plot(hours, orig, "b-o", markersize=4, label="Original", linewidth=1.5)
-        ax.plot(hours, mu_orig, "r--", label="Reconstruction (μ)", linewidth=1.5)
+        ax.plot(hours, mu_orig, "r--", label="Reconstruction (mu)", linewidth=1.5)
         ax.fill_between(hours, mu_orig - 2 * std_orig, mu_orig + 2 * std_orig,
-                        alpha=0.2, color="red", label="±2σ")
-        ax.set_ylabel("Penny Count")
+                        alpha=0.2, color="red", label="+/-2 sigma")
+        ax.set_ylabel("Count")
         ax.legend(loc="upper right", fontsize=8)
         ax.set_title(f"Window {idx}")
 
@@ -269,54 +285,47 @@ def plot_training_history(history: dict, output_path: Path):
     print(f"  Saved: {output_path}")
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Evaluate FCVAE penny model")
-    parser.add_argument("--model-dir", type=str, default="models/fcvae/Penny_All")
-    parser.add_argument("--data-path", type=str, default="data/synthetic_transactions.csv")
-    parser.add_argument("--output-dir", type=str, default="plots/penny_eval")
-    parser.add_argument("--from-saved", action="store_true",
-                        help="Load pre-computed scores instead of re-scoring")
-    parser.add_argument("--device", type=str, default=None)
-    args = parser.parse_args()
+def evaluate_single(name, model_dir, hourly_df, scaler, device, output_dir):
+    """Evaluate a single trained FCVAE model.
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    Args:
+        name: Model name (e.g. "Penny_All", "Accel_CMP")
+        model_dir: Path to model directory containing model.pt, scorer.pkl, scaler.pkl
+        hourly_df: Hourly DataFrame for this model's data
+        scaler: Fitted scaler (used if model scaler not available; overridden by saved scaler)
+        device: torch device
+        output_dir: Base output directory (plots saved to output_dir/name/)
+    """
+    print(f"\n{'=' * 60}")
+    print(f"EVALUATING: {name}")
+    print(f"{'=' * 60}")
 
-    print("\n" + "=" * 60)
-    print("FCVAE PENNY MODEL EVALUATION")
-    print("=" * 60)
-
-    device = auto_device(args.device)
-    model_dir = PROJECT_ROOT / args.model_dir
-    data_path = PROJECT_ROOT / args.data_path
-    output_dir = PROJECT_ROOT / args.output_dir
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    print(f"\nDevice: {device}")
-    print(f"Model: {model_dir}")
+    print(f"\nModel: {model_dir}")
 
     # Load model
     print("\n--- Loading Model ---")
-    model, scorer, scaler, config, history = load_model_artifacts(model_dir, device)
+    model, scorer, saved_scaler, config, history = load_model_artifacts(model_dir, device)
+    # Use saved scaler from model dir
+    scaler = saved_scaler
 
     print(f"  Config: window={config.window}, latent_dim={config.latent_dim}")
     print(f"  Last-point threshold: {scorer.last_point_threshold}")
     print(f"  Point threshold: {scorer.point_threshold}")
 
-    # Load and preprocess data
+    # Preprocess data
     print("\n--- Loading Data ---")
-    hourly_df = load_penny_data(data_path)
     windows, labels, timestamps = create_sliding_windows(hourly_df)
     splits = create_splits(windows, labels, timestamps, hourly_df)
 
     # Normalize using the saved scaler
     normalized_splits = {}
-    for name, (w, l) in splits.items():
+    for split_name, (w, l) in splits.items():
         if len(w) == 0:
-            normalized_splits[name] = (w, l)
+            normalized_splits[split_name] = (w, l)
             continue
         flat = w.flatten().reshape(-1, 1)
         normalized = scaler.transform(flat)
-        normalized_splits[name] = (normalized.reshape(w.shape), l)
+        normalized_splits[split_name] = (normalized.reshape(w.shape), l)
 
     loaders = create_dataloaders(normalized_splits, batch_size=64, shuffle_train=False)
 
@@ -399,50 +408,110 @@ def main():
     print(f"  Segments: {pa_all['tp_segments']}/{pa_all['total_segments']} detected")
 
     # Generate plots
+    eval_output_dir = output_dir / name
+    eval_output_dir.mkdir(parents=True, exist_ok=True)
+
     print("\n--- Generating Plots ---")
 
-    # Score distribution
     plot_score_distribution(
         normal_scores=lp_scores[lp_labels == 0],
         anomaly_scores=lp_scores[lp_labels == 1],
         threshold=threshold,
-        output_path=output_dir / "score_distribution_lastpoint.png",
-        title="Last-Point NLL Score Distribution (Penny_All)",
+        output_path=eval_output_dir / "score_distribution_lastpoint.png",
+        title=f"Last-Point NLL Score Distribution ({name})",
     )
 
     plot_score_distribution(
         normal_scores=normal_scores,
         anomaly_scores=anomaly_scores,
         threshold=scorer.point_threshold or threshold,
-        output_path=output_dir / "score_distribution_all.png",
-        title="All-Position NLL Score Distribution (Penny_All)",
+        output_path=eval_output_dir / "score_distribution_all.png",
+        title=f"All-Position NLL Score Distribution ({name})",
     )
 
     # Reconstruction plots (test normal + anomaly)
     test_norm_windows = normalized_splits["test"][0]
     if len(test_norm_windows) > 0:
-        # Normal windows
         normal_mask = all_test_labels.sum(axis=1) == 0
         if normal_mask.sum() > 0:
             plot_reconstruction(
                 model, test_norm_windows[normal_mask][:5], scaler, device,
-                output_dir / "reconstruction_normal.png"
+                eval_output_dir / "reconstruction_normal.png"
             )
 
-        # Anomaly windows
         anomaly_mask = all_test_labels.sum(axis=1) > 0
         if anomaly_mask.sum() > 0:
             plot_reconstruction(
                 model, test_norm_windows[anomaly_mask][:5], scaler, device,
-                output_dir / "reconstruction_anomaly.png"
+                eval_output_dir / "reconstruction_anomaly.png"
             )
 
     # Training history
-    plot_training_history(history, output_dir / "training_history.png")
+    plot_training_history(history, eval_output_dir / "training_history.png")
+
+    print(f"\n  {name} EVALUATION COMPLETE")
+    print(f"  Plots saved to: {eval_output_dir}/")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Evaluate FCVAE model(s)")
+    parser.add_argument("--mode", choices=["penny", "combo"], default="penny",
+                        help="Evaluation mode: penny (Penny_All only) or combo (4 combo models)")
+    parser.add_argument("--model-dir", type=str, default="models/fcvae/Penny_All")
+    parser.add_argument("--data-path", type=str, default="data/synthetic_transactions.csv")
+    parser.add_argument("--output-dir", type=str, default="plots/penny_eval")
+    parser.add_argument("--from-saved", action="store_true",
+                        help="Load pre-computed scores instead of re-scoring")
+    parser.add_argument("--device", type=str, default=None)
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+    device = auto_device(args.device)
+    data_path = PROJECT_ROOT / args.data_path
+
+    if args.mode == "penny":
+        print("\n" + "=" * 60)
+        print("FCVAE PENNY MODEL EVALUATION")
+        print("=" * 60)
+
+        print(f"\nDevice: {device}")
+
+        model_dir = PROJECT_ROOT / args.model_dir
+        output_dir = PROJECT_ROOT / args.output_dir
+
+        hourly_df = load_penny_data(data_path)
+        evaluate_single("Penny_All", model_dir, hourly_df, None, device, output_dir)
+
+    elif args.mode == "combo":
+        print("\n" + "=" * 60)
+        print("FCVAE COMBO MODEL EVALUATION")
+        print("=" * 60)
+
+        print(f"\nDevice: {device}")
+
+        models_root = PROJECT_ROOT / "models" / "fcvae"
+        output_dir = PROJECT_ROOT / "plots" / "combo_eval"
+
+        combo_data = load_combo_data(data_path)
+
+        for combo_key in COMBO_KEYS:
+            dir_name = combo_dir_names[combo_key]
+            model_dir = models_root / dir_name
+            hourly_df = combo_data[combo_key]
+
+            if not model_dir.exists():
+                print(f"\nSkipping {dir_name}: model directory not found at {model_dir}")
+                continue
+
+            evaluate_single(dir_name, model_dir, hourly_df, None, device, output_dir)
+
+        print(f"\n{'=' * 60}")
+        print("ALL COMBO EVALUATIONS COMPLETE")
+        print(f"{'=' * 60}")
 
     print("\n" + "=" * 60)
     print("EVALUATION COMPLETE")
-    print(f"Plots saved to: {output_dir}/")
     print("=" * 60)
 
 

@@ -1,11 +1,16 @@
 """
-Step 3: Train FCVAE Model for Penny Transactions
+Step 3: Train FCVAE Model for Penny Transactions (and Combo Models)
 
 Full training pipeline: load data -> create windows -> train with KL annealing
 + augmentation -> calibrate threshold (F1-max) -> save artifacts.
 
+Modes:
+    --mode penny   Train Penny_All model only (default)
+    --mode combo   Train all 4 combo models (Accel_CMP, Accel_nopin, Star_CMP, Star_nopin)
+
 Usage:
     uv run python code/3_train_model.py
+    uv run python code/3_train_model.py --mode combo
     uv run python code/3_train_model.py --epochs 50 --lr 5e-4
     uv run python code/3_train_model.py --data-path data/synthetic_transactions.csv
 """
@@ -25,7 +30,10 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.model import FCVAE, FCVAEConfig
 from src.scorer import FCVAEScorer, FCVAEScorerConfig
-from src.preprocess import load_penny_data, create_sliding_windows, create_splits, normalize, create_dataloaders
+from src.preprocess import (
+    load_penny_data, load_combo_data, COMBO_KEYS,
+    create_sliding_windows, create_splits, normalize, create_dataloaders,
+)
 from src.train import (
     AugmentConfig, compute_kl_weight, train_epoch, validate_epoch,
     EarlyStopping,
@@ -33,6 +41,14 @@ from src.train import (
 from src.utils import auto_device
 
 logger = logging.getLogger(__name__)
+
+# Maps combo key tuples to directory-safe names
+combo_dir_names = {
+    ("Accel", "CMP"): "Accel_CMP",
+    ("Accel", "no-pin"): "Accel_nopin",
+    ("Star", "CMP"): "Star_CMP",
+    ("Star", "no-pin"): "Star_nopin",
+}
 
 
 def optimize_threshold_f1(
@@ -140,80 +156,27 @@ def optimize_threshold_f1(
     return metrics
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Train FCVAE model for penny transaction anomaly detection"
-    )
-    parser.add_argument("--data-path", type=str,
-                        default="data/synthetic_transactions.csv",
-                        help="Path to synthetic transactions CSV")
-    parser.add_argument("--output-dir", type=str,
-                        default="models/fcvae",
-                        help="Directory to save trained models")
-    parser.add_argument("--window-size", type=int, default=24)
-    parser.add_argument("--stride", type=int, default=1)
-    parser.add_argument("--latent-dim", type=int, default=8)
-    parser.add_argument("--epochs", type=int, default=30)
-    parser.add_argument("--lr", type=float, default=5e-4)
-    parser.add_argument("--patience", type=int, default=5)
-    parser.add_argument("--batch-size", type=int, default=64)
-    parser.add_argument("--grad-clip", type=float, default=2.0)
-    parser.add_argument("--kl-warmup-epochs", type=int, default=10)
-    parser.add_argument("--no-augmentation", action="store_true")
-    parser.add_argument("--score-mode", choices=["single_pass", "mcmc"], default="single_pass")
-    parser.add_argument("--pool-train-val", action="store_true", default=False,
-                        help="Pool train+val splits for training")
-    parser.add_argument("--device", type=str, default=None, help="Force device (cuda/mps/cpu)")
-    parser.add_argument("--skip-save", action="store_true")
-    args = parser.parse_args()
+def train_single(name, loaders, args, device, output_dir, scaler=None):
+    """Train a single FCVAE model end-to-end and save artifacts.
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-
-    print("\n" + "=" * 60)
-    print("FCVAE PENNY TRANSACTION ANOMALY DETECTION")
-    print("Training Pipeline")
-    print("=" * 60)
-
-    device = auto_device(args.device)
-    print(f"\nDevice: {device}")
-
-    # Resolve paths relative to project root
-    data_path = PROJECT_ROOT / args.data_path
-    output_dir = PROJECT_ROOT / args.output_dir
-
-    # Step 1: Preprocess data
-    print("\n" + "-" * 40)
-    print("Step 1: Preprocessing penny transaction data")
-    print("-" * 40)
-
-    hourly_df = load_penny_data(data_path)
-    windows, labels, timestamps = create_sliding_windows(
-        hourly_df, window_size=args.window_size, stride=args.stride
-    )
-    splits = create_splits(windows, labels, timestamps, hourly_df)
-
-    # Pool train+val if requested
-    if args.pool_train_val:
-        train_w, train_l = splits["train"]
-        val_w, val_l = splits["val"]
-        if len(train_w) > 0 and len(val_w) > 0:
-            pooled_w = np.concatenate([train_w, val_w])
-            pooled_l = np.concatenate([train_l, val_l])
-            splits["train"] = (pooled_w, pooled_l)
-            print(f"  Pooled train+val: {len(train_w)} + {len(val_w)} = {len(pooled_w)} windows")
-
-    normalized, scaler = normalize(splits)
-    loaders = create_dataloaders(normalized, batch_size=args.batch_size)
+    Args:
+        name: Model name (e.g. "Penny_All", "Accel_CMP")
+        loaders: Dict with 'train', 'val', 'test' DataLoaders
+        args: Parsed CLI arguments
+        device: torch device
+        output_dir: Base output directory (model saved to output_dir/name/)
+        scaler: Fitted StandardScaler for this model's data
+    """
+    print(f"\n{'=' * 60}")
+    print(f"TRAINING: {name}")
+    print(f"{'=' * 60}")
 
     for split_name in ["train", "val", "test"]:
         if loaders.get(split_name) is not None:
             print(f"  {split_name}: {len(loaders[split_name].dataset)} windows")
 
-    # Step 2: Initialize model
-    print("\n" + "-" * 40)
-    print("Step 2: Initializing FCVAE model")
-    print("-" * 40)
-
+    # Initialize model
+    print(f"\n--- Initializing FCVAE model ---")
     model_config = FCVAEConfig(window=args.window_size, latent_dim=args.latent_dim)
     model = FCVAE(model_config).to(device)
 
@@ -233,11 +196,8 @@ def main():
               f"segment={augment_config.seg_ano_rate}, "
               f"missing={augment_config.missing_data_rate}")
 
-    # Step 3: Train
-    print("\n" + "-" * 40)
-    print("Step 3: Training FCVAE model")
-    print("-" * 40)
-
+    # Train
+    print(f"\n--- Training ---")
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     scheduler = CosineAnnealingLR(optimizer, T_max=10)
     early_stopping = EarlyStopping(patience=args.patience)
@@ -284,11 +244,8 @@ def main():
     history["best_epoch"] = early_stopping.best_epoch
     print(f"  Best val loss: {early_stopping.best_loss:.6f} at epoch {early_stopping.best_epoch}")
 
-    # Step 4: Calibrate threshold
-    print("\n" + "-" * 40)
-    print("Step 4: Calibrating threshold (F1-max)")
-    print("-" * 40)
-
+    # Calibrate threshold
+    print(f"\n--- Calibrating threshold (F1-max) ---")
     scorer.fit(model, loaders["val"], device)
 
     if loaders.get("val") is not None:
@@ -298,22 +255,17 @@ def main():
         if "last_point_f1" in metrics:
             print(f"  Last-point F1: {metrics['last_point_f1']:.4f}")
 
-    # Step 5: Evaluate on test set
-    print("\n" + "-" * 40)
-    print("Step 5: Quick evaluation on test set")
-    print("-" * 40)
-
+    # Quick evaluation on test set
+    print(f"\n--- Quick evaluation on test set ---")
     if loaders.get("test") is not None:
         test_point_scores, test_window_scores = scorer.score_batch(model, loaders["test"], device)
 
-        # Collect test labels
         all_test_labels = []
         for batch in loaders["test"]:
             _, labels_batch, _ = batch
             all_test_labels.append(labels_batch.numpy())
         all_test_labels = np.concatenate(all_test_labels)
 
-        # Last-point metrics
         lp_scores = test_point_scores[:, -1]
         lp_labels = all_test_labels[:, -1].astype(int)
 
@@ -330,29 +282,23 @@ def main():
             print(f"  Test last-point: P={precision:.3f}, R={recall:.3f}, F1={f1:.3f}")
             print(f"  TP={tp}, FP={fp}, FN={fn}")
 
-    # Step 6: Save artifacts
+    # Save artifacts
     if not args.skip_save:
-        print("\n" + "-" * 40)
-        print("Step 6: Saving artifacts")
-        print("-" * 40)
-
-        save_dir = output_dir / "Penny_All"
+        print(f"\n--- Saving artifacts ---")
+        save_dir = output_dir / name
         save_dir.mkdir(parents=True, exist_ok=True)
 
-        # Save model
         torch.save({
             "model_state_dict": model.state_dict(),
             "config": model_config,
         }, save_dir / "model.pt")
 
-        # Save scaler
-        with open(save_dir / "scaler.pkl", "wb") as f:
-            pickle.dump(scaler, f)
+        if scaler is not None:
+            with open(save_dir / "scaler.pkl", "wb") as f:
+                pickle.dump(scaler, f)
 
-        # Save scorer
         scorer.save(save_dir / "scorer.pkl")
 
-        # Save history
         with open(save_dir / "history.pkl", "wb") as f:
             pickle.dump(history, f)
 
@@ -361,6 +307,127 @@ def main():
         print(f"    - scaler.pkl")
         print(f"    - scorer.pkl")
         print(f"    - history.pkl")
+
+    print(f"\n  {name} TRAINING COMPLETE")
+
+
+def train_penny_mode(args, device, output_dir):
+    """Train Penny_All model."""
+    data_path = PROJECT_ROOT / args.data_path
+
+    print("\n" + "-" * 40)
+    print("Step 1: Preprocessing penny transaction data")
+    print("-" * 40)
+
+    hourly_df = load_penny_data(data_path)
+    windows, labels, timestamps = create_sliding_windows(
+        hourly_df, window_size=args.window_size, stride=args.stride
+    )
+    splits = create_splits(windows, labels, timestamps, hourly_df)
+
+    # Pool train+val if requested
+    if args.pool_train_val:
+        train_w, train_l = splits["train"]
+        val_w, val_l = splits["val"]
+        if len(train_w) > 0 and len(val_w) > 0:
+            pooled_w = np.concatenate([train_w, val_w])
+            pooled_l = np.concatenate([train_l, val_l])
+            splits["train"] = (pooled_w, pooled_l)
+            print(f"  Pooled train+val: {len(train_w)} + {len(val_w)} = {len(pooled_w)} windows")
+
+    normalized, scaler = normalize(splits)
+    loaders = create_dataloaders(normalized, batch_size=args.batch_size)
+
+    train_single("Penny_All", loaders, args, device, output_dir, scaler=scaler)
+
+
+def train_combo_mode(args, device, output_dir):
+    """Train all 4 combo models."""
+    data_path = PROJECT_ROOT / args.data_path
+
+    print("\n" + "-" * 40)
+    print("Loading combo transaction data")
+    print("-" * 40)
+
+    combo_data = load_combo_data(data_path)
+
+    for combo_key in COMBO_KEYS:
+        dir_name = combo_dir_names[combo_key]
+        hourly_df = combo_data[combo_key]
+
+        print(f"\n{'=' * 60}")
+        print(f"Preparing data for {dir_name}")
+        print(f"{'=' * 60}")
+
+        windows, labels, timestamps = create_sliding_windows(
+            hourly_df, window_size=args.window_size, stride=args.stride
+        )
+        splits = create_splits(windows, labels, timestamps, hourly_df)
+
+        if args.pool_train_val:
+            train_w, train_l = splits["train"]
+            val_w, val_l = splits["val"]
+            if len(train_w) > 0 and len(val_w) > 0:
+                pooled_w = np.concatenate([train_w, val_w])
+                pooled_l = np.concatenate([train_l, val_l])
+                splits["train"] = (pooled_w, pooled_l)
+                print(f"  Pooled train+val: {len(train_w)} + {len(val_w)} = {len(pooled_w)} windows")
+
+        normalized, scaler = normalize(splits)
+        loaders = create_dataloaders(normalized, batch_size=args.batch_size)
+
+        train_single(dir_name, loaders, args, device, output_dir, scaler=scaler)
+
+    print(f"\n{'=' * 60}")
+    print("ALL COMBO MODELS TRAINED")
+    print(f"{'=' * 60}")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Train FCVAE model for penny transaction anomaly detection"
+    )
+    parser.add_argument("--mode", choices=["penny", "combo"], default="penny",
+                        help="Training mode: penny (Penny_All only) or combo (4 combo models)")
+    parser.add_argument("--data-path", type=str,
+                        default="data/synthetic_transactions.csv",
+                        help="Path to synthetic transactions CSV")
+    parser.add_argument("--output-dir", type=str,
+                        default="models/fcvae",
+                        help="Directory to save trained models")
+    parser.add_argument("--window-size", type=int, default=24)
+    parser.add_argument("--stride", type=int, default=1)
+    parser.add_argument("--latent-dim", type=int, default=8)
+    parser.add_argument("--epochs", type=int, default=30)
+    parser.add_argument("--lr", type=float, default=5e-4)
+    parser.add_argument("--patience", type=int, default=5)
+    parser.add_argument("--batch-size", type=int, default=64)
+    parser.add_argument("--grad-clip", type=float, default=2.0)
+    parser.add_argument("--kl-warmup-epochs", type=int, default=10)
+    parser.add_argument("--no-augmentation", action="store_true")
+    parser.add_argument("--score-mode", choices=["single_pass", "mcmc"], default="single_pass")
+    parser.add_argument("--pool-train-val", action="store_true", default=False,
+                        help="Pool train+val splits for training")
+    parser.add_argument("--device", type=str, default=None, help="Force device (cuda/mps/cpu)")
+    parser.add_argument("--skip-save", action="store_true")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+    print("\n" + "=" * 60)
+    print("FCVAE TRANSACTION ANOMALY DETECTION")
+    print(f"Training Pipeline — mode: {args.mode}")
+    print("=" * 60)
+
+    device = auto_device(args.device)
+    print(f"\nDevice: {device}")
+
+    output_dir = PROJECT_ROOT / args.output_dir
+
+    if args.mode == "penny":
+        train_penny_mode(args, device, output_dir)
+    elif args.mode == "combo":
+        train_combo_mode(args, device, output_dir)
 
     print("\n" + "=" * 60)
     print("TRAINING COMPLETE")

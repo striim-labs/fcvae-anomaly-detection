@@ -1,11 +1,15 @@
 """
-Penny Transaction Data Preprocessing
+Transaction Data Preprocessing
 
 Procedural functions for loading, aggregating, windowing, and normalizing
-penny transaction data for FCVAE anomaly detection.
+transaction data for FCVAE anomaly detection.
 
-Pipeline: load_penny_data() -> create_sliding_windows() -> create_splits()
-          -> normalize() -> create_dataloaders()
+Two aggregation modes:
+- Penny: pool all combos, filter amount < $1, count hourly penny transactions
+- Combo: split by (network_type, transaction_type), count hourly volume per combo
+
+Pipeline: load_penny_data() / load_combo_data() -> create_sliding_windows()
+          -> create_splits() -> normalize() -> create_dataloaders()
 """
 import logging
 from pathlib import Path
@@ -21,6 +25,14 @@ logger = logging.getLogger(__name__)
 
 SAMPLES_PER_DAY = 24
 WINDOW_SIZE = 24
+
+# Network/transaction type combinations (4 independent models)
+COMBO_KEYS = [
+    ("Accel", "CMP"),
+    ("Accel", "no-pin"),
+    ("Star", "CMP"),
+    ("Star", "no-pin"),
+]
 
 
 class SlidingWindowDataset(Dataset):
@@ -128,6 +140,90 @@ def load_penny_data(csv_path: Path) -> pd.DataFrame:
     )
 
     return hourly_df
+
+
+def load_combo_data(csv_path: Path) -> Dict[Tuple[str, str], pd.DataFrame]:
+    """Load transaction CSV, aggregate to hourly counts per network/txn-type combo.
+
+    Produces 4 independent hourly time series — one per (network_type, transaction_type)
+    combination — for volume-based anomaly detection (spikes AND dips).
+
+    Args:
+        csv_path: Path to synthetic_transactions.csv
+
+    Returns:
+        Dict mapping combo tuple to DataFrame with columns:
+        hour_bucket, count, is_anomaly, split (if available)
+    """
+    csv_path = Path(csv_path)
+    if not csv_path.exists():
+        raise FileNotFoundError(f"Data file not found: {csv_path}")
+
+    logger.info(f"Loading transaction data from {csv_path}...")
+    df = pd.read_csv(csv_path, parse_dates=["timestamp"])
+    logger.info(f"Loaded {len(df):,} transactions")
+
+    df["hour_bucket"] = df["timestamp"].dt.floor("h")
+
+    if "is_anomaly" not in df.columns:
+        df["is_anomaly"] = 0
+
+    has_split_col = "split" in df.columns
+
+    # Full hourly index
+    data_start = df["timestamp"].min().floor("h")
+    data_end = df["timestamp"].max().floor("h")
+    full_hours = pd.date_range(start=data_start, end=data_end, freq="h")
+    logger.info(f"Date range: {data_start} to {data_end} ({len(full_hours)} hours, {len(full_hours) // 24} days)")
+
+    # Aggregate per hour per combo
+    agg_dict = {"timestamp": "count", "is_anomaly": "max"}
+    if has_split_col:
+        agg_dict["split"] = "first"
+
+    counts = df.groupby(
+        ["hour_bucket", "network_type", "transaction_type"]
+    ).agg(agg_dict).reset_index()
+
+    if has_split_col:
+        counts.columns = ["hour_bucket", "network_type", "transaction_type", "count", "is_anomaly", "split"]
+    else:
+        counts.columns = ["hour_bucket", "network_type", "transaction_type", "count", "is_anomaly"]
+
+    combo_data = {}
+    for combo in COMBO_KEYS:
+        network_type, transaction_type = combo
+
+        cols = ["hour_bucket", "count", "is_anomaly"]
+        if has_split_col:
+            cols.append("split")
+
+        combo_counts = counts[
+            (counts["network_type"] == network_type) &
+            (counts["transaction_type"] == transaction_type)
+        ][cols].copy()
+
+        # Reindex to full hourly range
+        hourly_df = pd.DataFrame({"hour_bucket": full_hours})
+        hourly_df = hourly_df.merge(combo_counts, on="hour_bucket", how="left")
+        hourly_df["count"] = hourly_df["count"].fillna(0).astype(int)
+        hourly_df["is_anomaly"] = hourly_df["is_anomaly"].fillna(0).astype(int)
+
+        if has_split_col:
+            hourly_df["split"] = hourly_df["split"].ffill().bfill()
+
+        combo_key = f"{network_type}_{transaction_type.replace('-', '')}"
+        total_txns = hourly_df["count"].sum()
+        mean_hourly = hourly_df["count"].mean()
+        anomaly_hours = hourly_df["is_anomaly"].sum()
+        logger.info(
+            f"  {combo_key}: {len(hourly_df)} hours, {total_txns:,} total, "
+            f"{mean_hourly:.1f} mean/hour, {anomaly_hours} anomaly hours"
+        )
+
+        combo_data[combo] = hourly_df
+
+    return combo_data
 
 
 def create_sliding_windows(

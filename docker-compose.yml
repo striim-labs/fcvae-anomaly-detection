@@ -7,7 +7,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      FCVAE_MODEL_PATH: /app/models/fcvae/Penny_All
+      FCVAE_MODELS_ROOT: /app/models/fcvae
       FCVAE_DEVICE: cpu
     volumes:
       - ./models:/app/models:ro
