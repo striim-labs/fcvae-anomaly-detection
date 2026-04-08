@@ -117,3 +117,8 @@ curl -X POST http://localhost:8000/score \
 | 8 | `code/8_optimize.py` | Tune hyperparameters |
 
 > **Note:** Do not run `code/5_train_model.py` or `code/6_evaluate_model.py` directly. Training and evaluation are demonstrated interactively in the notebooks. The standalone scripts exist for automated/CI use and support `--mode penny` (default) or `--mode combo`.
+
+## Further Reading
+
+- **[TECHNICAL.md](TECHNICAL.md)** — FCVAE architecture reference: model equations, frequency conditioning (GFM/LFM), last-point masking, NLL scoring, KL annealing, and data augmentation details.
+- **[STRIIM_FCVAE.md](STRIIM_FCVAE.md)** — Step-by-step guide for deploying the FCVAE scoring pipeline on Striim Platform, including the Open Processor, typed streams, and the TQL application definition.
