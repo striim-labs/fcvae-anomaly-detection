@@ -25,14 +25,6 @@ wheels/
 .installed.cfg
 *.egg
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -47,18 +39,12 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
-# Translations
-*.mo
-*.pot
-
 # Environments
 .env
 .venv
 env/
 venv/
 ENV/
-env.bak/
-venv.bak/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -72,10 +58,6 @@ venv.bak/
 
 # macOS
 .DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
 ._*
 
 # Project specific
@@ -92,14 +74,5 @@ logs/
 # Docker
 .docker/
 
-# Models
-models/fcvae_60_kl
-
-PLAN.md
-Striim_FCVAE_Report.md
-production.md
-retrain_demo.md
-plots/
-Striim_retrain_demo.md
-models/fcvae_backup
-models/fcvae_staging
+# UV
+uv.lock
