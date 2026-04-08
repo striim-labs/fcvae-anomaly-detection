@@ -154,6 +154,10 @@ LIST OPENPROCESSORS;
    - **Output Stream:** `ScorerResultStream`
 4. Click **Save**
 
+The completed pipeline in Flow Designer:
+
+![Striim FCVAE Pipeline](images/striim-op.png)
+
 ---
 
 ## 5. Run and Verify
