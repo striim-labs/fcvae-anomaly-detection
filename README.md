@@ -48,7 +48,7 @@ fcvae-anomaly-detection/
 ├── Dockerfile                         # Container for scoring API
 ├── docker-compose.yml                 # Scoring API service
 ├── pyproject.toml                     # All dependencies
-├── STRIIM_FCVAE.md                    # Striim FCVAE pipeline setup
+├── STRIIM.md                    # Striim FCVAE pipeline setup
 └── TECHNICAL.md                       # Architecture reference
 ```
 
@@ -121,4 +121,4 @@ curl -X POST http://localhost:8000/score \
 ## Further Reading
 
 - **[TECHNICAL.md](TECHNICAL.md)** — FCVAE architecture reference: model equations, frequency conditioning (GFM/LFM), last-point masking, NLL scoring, KL annealing, and data augmentation details.
-- **[STRIIM_FCVAE.md](STRIIM_FCVAE.md)** — Step-by-step guide for deploying the FCVAE scoring pipeline on Striim Platform, including the Open Processor, typed streams, and the TQL application definition.
+- **[STRIIM.md](STRIIM.md)** — Step-by-step guide for deploying the FCVAE scoring pipeline on Striim Platform, including the Open Processor, typed streams, and the TQL application definition.
