@@ -60,6 +60,10 @@ ENV/
 .DS_Store
 ._*
 
+# Backup/alternative model directories
+models/fcvae_backup/
+models/fcvae_60_kl/
+
 # Project specific
 *.csv
 !data/*.csv
