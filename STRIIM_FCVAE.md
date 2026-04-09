@@ -45,7 +45,7 @@ Pre-built artifacts in this repo:
 | Types JAR | `striim/lib/fcvae_types.jar` | Striim-exported `_1_0` type classes for `$STRIIM_HOME/lib/` |
 | TQL | `striim/FCVAE.tql` | Striim application definition |
 | Data | `data/synthetic_transactions_phase2.csv` | Synthetic transaction data (~27.5 hours, 4 combos) |
-| Scoring API | `api/main.py` | FastAPI service wrapping the FCVAE model |
+| Scoring API | `code/7_streaming_app.py` | FastAPI service wrapping all 5 FCVAE models |
 
 ---
 
@@ -53,14 +53,13 @@ Pre-built artifacts in this repo:
 
 ```bash
 cd <repo>
-cd api && uv sync && cd ..
-api/.venv/bin/uvicorn api.main:app --port 8000
+uv run python code/7_streaming_app.py
 ```
 
 Or with Docker:
 
 ```bash
-docker compose build api && docker compose up api
+docker compose up --build
 ```
 
 Verify:
@@ -275,7 +274,7 @@ Then start from [Step 3](#3-deploy-to-striim).
 ## Deployment Order (Quick Reference)
 
 ```
- 1. Start scoring API         uvicorn api.main:app --port 8000
+ 1. Start scoring API         uv run python code/7_streaming_app.py
  2. Copy .scm + types JAR     cp to $STRIIM_HOME/modules/ and $STRIIM_HOME/lib/
  3. Stop Striim               Ctrl+C
  4. Remove types JAR           mv $STRIIM_HOME/lib/fcvae_types.jar /tmp/
@@ -341,7 +340,7 @@ ResultFile (FileWriter + JSONFormatter -> /tmp/fcvae_test/scored_output)
 | Component | Detail |
 |---|---|
 | Striim Platform | 5.2.0.4 at `$STRIIM_HOME` |
-| Scoring API | `http://localhost:8000` (endpoint: `/v1/score`) |
+| Scoring API | `http://localhost:8000` (endpoint: `/score`) |
 | Namespace | `fcvae` |
 | Application | `fcvae.FCVAE` |
 | OP module | `FCVAEScoreCaller` |

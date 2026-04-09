@@ -36,6 +36,33 @@ mvn install:install-file \
     -DgeneratePom=true
 
 echo ""
+echo "=== Step 1b: Install FCVAE types JAR into local Maven repo ==="
+echo ""
+
+TYPES_JAR="$(cd "$(dirname "$0")" && pwd)/../lib/fcvae_types.jar"
+
+if [ ! -f "$TYPES_JAR" ]; then
+    echo "ERROR: Types jar not found at $TYPES_JAR"
+    exit 1
+fi
+
+mvn install:install-file \
+    -DgroupId=com.striim.fcvae \
+    -DartifactId=fcvae-types \
+    -Dversion=1.0.0-SNAPSHOT \
+    -Dpackaging=jar \
+    -Dfile="$TYPES_JAR" \
+    -DgeneratePom=true
+
+mvn install:install-file \
+    -DgroupId=com.striim.fcvae \
+    -DartifactId=FCVAETypes \
+    -Dversion=1.0.0-SNAPSHOT \
+    -Dpackaging=jar \
+    -Dfile="$TYPES_JAR" \
+    -DgeneratePom=true
+
+echo ""
 echo "=== Step 2: Build the Open Processor ==="
 echo ""
 

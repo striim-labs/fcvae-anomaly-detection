@@ -34,13 +34,8 @@ import org.apache.logging.log4j.Logger;
  *   data[3] = window_start (String, timestamp of first hour)
  *   data[4] = window_end   (String, timestamp of last hour)
  *
- * Output is sent via send(Object) as an Object[] with:
- *   [0] = combo_key        (String)
- *   [1] = is_anomaly       (String, "true" or "false")
- *   [2] = last_point_score (String)
- *   [3] = threshold        (String)
- *   [4] = model_version    (String)
- *   [5] = window_end       (String, echoed)
+ * Output is a typed ScorerResult_1_0 with:
+ *   combo_key, is_anomaly, anomaly_score, threshold, window_end
  */
 @PropertyTemplate(
     name = "FCVAEScoreCaller",
@@ -48,11 +43,10 @@ import org.apache.logging.log4j.Logger;
     properties = {
         @PropertyTemplateProperty(name = "apiEndpoint", type = String.class, required = false, defaultValue = "http://localhost:8000/v1/score"),
         @PropertyTemplateProperty(name = "apiKey", type = String.class, required = false, defaultValue = ""),
-        @PropertyTemplateProperty(name = "timeoutMs", type = Integer.class, required = false, defaultValue = "5000"),
-        @PropertyTemplateProperty(name = "maxRetries", type = Integer.class, required = false, defaultValue = "3")
+        @PropertyTemplateProperty(name = "timeoutMs", type = Integer.class, required = false, defaultValue = "5000")
     },
-    outputType = DailyPayloadStream_Type_1_0.class,  // Striim sends typed DailyPayload to us
-    inputType = ScorerResult_1_0.class                // We send ScorerResult back to Striim
+    outputType = DailyPayloadStream_Type_1_0.class,
+    inputType = ScorerResult_1_0.class
 )
 public class FCVAEScoreCaller extends StriimOpenProcessor {
 
@@ -60,23 +54,16 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
 
     private HttpClient httpClient;
 
-    // Property fields populated by Striim from @PropertyTemplateProperty values
     private String apiEndpoint;
     private String apiKey;
     private int timeoutMs;
-    private int maxRetries;
-
-    // No init() method -- StriimOpenProcessor does not have one.
-    // We lazily initialize the HttpClient on first run() call instead.
+    private int maxRetries = 3;  // Hardcoded default (removed from annotation -- causes TQL syntax error)
 
     @Override
     public void run() {
-        // Lazy init the HTTP client on first invocation
         if (httpClient == null) {
             int effectiveTimeout = (timeoutMs > 0) ? timeoutMs : 5000;
-            int effectiveRetries = (maxRetries > 0) ? maxRetries : 3;
             this.timeoutMs = effectiveTimeout;
-            this.maxRetries = effectiveRetries;
             httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofMillis(effectiveTimeout))
                 .build();
@@ -85,7 +72,7 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
                 logger.warn("apiEndpoint was null/empty, using default: {}", apiEndpoint);
             }
             logger.info("FCVAEScoreCaller initialized. Endpoint: {}, Timeout: {}ms, Retries: {}",
-                apiEndpoint, effectiveTimeout, effectiveRetries);
+                apiEndpoint, effectiveTimeout, maxRetries);
         }
 
         IBatch<WAEvent> batch = getAdded();
@@ -96,18 +83,11 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
             WAEvent inputEvent = it.next();
 
             try {
-                // The data field on WAEvent is a generic Object.
-                // When coming from a CQ with typed output, it will be
-                // the generated type. When coming from a CQ that produces
-                // a WAEvent (e.g. from a DSVParser source), data is Object[].
-                // We handle it by converting to string representation.
                 Object eventData = inputEvent.data;
                 String comboKey;
                 String valuesJson;
                 String windowEnd;
 
-                // If data is itself a WAEvent (possibly a different WAEvent class),
-                // unwrap it by accessing its 'data' field via reflection
                 if (eventData != null && eventData.getClass().getName().contains("WAEvent")) {
                     try {
                         java.lang.reflect.Field dataField = eventData.getClass().getField("data");
@@ -122,13 +102,12 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
                 }
 
                 if (eventData instanceof Object[]) {
-                        Object[] arr = (Object[]) eventData;
-                        comboKey = arr.length > 0 ? String.valueOf(arr[0]).trim() : "";
-                        String rawValues = arr.length > 1 ? String.valueOf(arr[1]).trim() : "[]";
-                        // data[2] is window_size (skip), data[3] is window_start (skip)
-                        windowEnd = arr.length > 4 ? String.valueOf(arr[4]).trim() : "";
-                        valuesJson = normalizeValuesList(rawValues);
-                    }else {
+                    Object[] arr = (Object[]) eventData;
+                    comboKey = arr.length > 0 ? String.valueOf(arr[0]).trim() : "";
+                    String rawValues = arr.length > 1 ? String.valueOf(arr[1]).trim() : "[]";
+                    windowEnd = arr.length > 4 ? String.valueOf(arr[4]).trim() : "";
+                    valuesJson = normalizeValuesList(rawValues);
+                } else {
                     try {
                         java.lang.reflect.Field f0 = eventData.getClass().getField("combo_key");
                         java.lang.reflect.Field f1 = eventData.getClass().getField("values_list");
@@ -143,12 +122,11 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
                         continue;
                     }
                 }
-                // Build the JSON request body for POST /v1/score
+
                 JsonObject body = new JsonObject();
                 body.addProperty("combo", comboKey);
                 body.add("values", JsonParser.parseString(valuesJson));
 
-                // Call the API
                 String responseBody = callApiWithRetry(body.toString());
 
                 if (responseBody == null) {
@@ -157,20 +135,15 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
                     continue;
                 }
 
-                // Parse the JSON response
                 JsonObject resp = JsonParser.parseString(responseBody).getAsJsonObject();
 
                 String isAnomaly = resp.get("is_anomaly").getAsBoolean() ? "true" : "false";
                 String lastPointScore = String.valueOf(resp.get("last_point_score").getAsDouble());
                 String threshold = String.valueOf(resp.get("threshold").getAsDouble());
-                String modelVersion = resp.has("model_version")
-                    ? resp.get("model_version").getAsString() : "unknown";
 
                 logger.info("Scored combo={}, is_anomaly={}, score={}, threshold={}",
                     comboKey, isAnomaly, lastPointScore, threshold);
 
-                // Emit result downstream using send(Object)
-                // The downstream CQ will receive this as WAEvent.data
                 ScorerResult_1_0 result = new ScorerResult_1_0();
                 result.combo_key = comboKey;
                 result.is_anomaly = String.valueOf(isAnomaly);
@@ -179,9 +152,6 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
                 result.window_end = windowEnd;
 
                 send(result);
-
-                logger.info("Sent typed result: combo={}, anomaly={}, score={}, threshold={}",
-                    comboKey, isAnomaly, lastPointScore, threshold);
 
             } catch (Exception e) {
                 logger.error("Error processing event: {}", e.getMessage(), e);
@@ -245,13 +215,9 @@ public class FCVAEScoreCaller extends StriimOpenProcessor {
 
     private String normalizeValuesList(String raw) {
         if (raw == null || raw.isEmpty()) return "[]";
-
         String cleaned = raw.trim();
-
-        // Strip surrounding brackets if present
         if (cleaned.startsWith("[")) cleaned = cleaned.substring(1);
         if (cleaned.endsWith("]"))   cleaned = cleaned.substring(0, cleaned.length() - 1);
-
         String[] parts = cleaned.split(",");
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < parts.length; i++) {
