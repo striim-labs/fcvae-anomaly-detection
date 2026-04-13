@@ -75,6 +75,9 @@ plots/
 logs/
 *.log
 
+# Diagrams
+diagrams/
+
 # Docker
 .docker/
 
