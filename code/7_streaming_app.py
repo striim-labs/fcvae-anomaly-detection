@@ -14,6 +14,7 @@ import logging
 import os
 import pickle
 import sys
+import warnings
 from pathlib import Path
 from typing import Dict
 
@@ -149,6 +150,7 @@ def load_models():
 # Endpoints
 # ---------------------------------------------------------------------------
 @app.post("/score", response_model=ScoreResponse)
+@app.post("/v1/score", response_model=ScoreResponse, include_in_schema=False)
 def score(request: ScoreRequest):
     """Score a 24-hour window of transaction counts.
 
@@ -230,6 +232,10 @@ if __name__ == "__main__":
     import uvicorn
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+    # Suppress noisy warnings that don't affect behavior
+    warnings.filterwarnings("ignore", message=".*output with one or more elements was resized.*")
+    logging.getLogger("uvicorn.error").setLevel(logging.ERROR)
 
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
