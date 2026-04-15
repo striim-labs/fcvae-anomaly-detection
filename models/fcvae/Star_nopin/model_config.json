@@ -1,0 +1,32 @@
+{
+  "model_name": "Star_nopin",
+  "onnx": {
+    "opset_version": 18,
+    "window_size": 24,
+    "input_name": "input",
+    "output_name": "nll",
+    "input_shape": [
+      "batch",
+      1,
+      24
+    ],
+    "output_shape": [
+      "batch",
+      24
+    ]
+  },
+  "scaler": {
+    "type": "StandardScaler",
+    "mean": 1173.0485697751324,
+    "scale": 636.871132723255
+  },
+  "thresholds": {
+    "last_point_threshold": -1.0071144354343413,
+    "point_threshold": -2.1793452870845793,
+    "window_threshold": 0.5909554079174995
+  },
+  "scorer": {
+    "normal_score_mean": null,
+    "normal_score_std": null
+  }
+}

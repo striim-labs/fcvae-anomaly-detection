@@ -1,0 +1,32 @@
+{
+  "model_name": "Accel_nopin",
+  "onnx": {
+    "opset_version": 18,
+    "window_size": 24,
+    "input_name": "input",
+    "output_name": "nll",
+    "input_shape": [
+      "batch",
+      1,
+      24
+    ],
+    "output_shape": [
+      "batch",
+      24
+    ]
+  },
+  "scaler": {
+    "type": "StandardScaler",
+    "mean": 1309.155753968254,
+    "scale": 706.8463077345012
+  },
+  "thresholds": {
+    "last_point_threshold": -0.6898632645606996,
+    "point_threshold": -0.95779386729002,
+    "window_threshold": 0.17854596734046937
+  },
+  "scorer": {
+    "normal_score_mean": null,
+    "normal_score_std": null
+  }
+}

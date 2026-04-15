@@ -15,7 +15,8 @@ fcvae-anomaly-detection/
 │   ├── 1_train_model.py                # Train penny baseline -> models/fcvae/initial/Penny_All/
 │   ├── 2_evaluate_model.py             # Evaluate saved artifacts (default: initial/Penny_All)
 │   ├── 3_streaming_app.py              # FastAPI scoring service (Docker entrypoint)
-│   └── 4_grid_sweep.py                 # Sweep + retrain winner -> models/fcvae/best/Penny_All/
+│   ├── 4_grid_sweep.py                 # Sweep + retrain winner -> models/fcvae/best/Penny_All/
+│   └── 5_export_onnx.py               # Export models to ONNX + parity validation
 │
 ├── notebooks/                           # Interactive walkthroughs
 │   ├── combo_data_exploration.ipynb     # 4 combo time series, periodicities, FFT, anomalies
@@ -29,6 +30,7 @@ fcvae-anomaly-detection/
 │   ├── preprocess.py                    # Data loading (penny + combo), windowing, normalization
 │   ├── train.py                         # Low-level training utilities, augmentation
 │   ├── training.py                      # Shared train_model() + save_training_artifacts()
+│   ├── onnx_export.py                   # ONNX inference wrapper + export utility
 │   ├── schemas.py                       # Pydantic request/response models
 │   └── utils.py                         # Device selection
 │
@@ -61,6 +63,7 @@ The numbered scripts in `code/` are the first-class reproduction path. Notebooks
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv): `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Docker (optional, for the scoring API)
+- ONNX dependencies (optional, for step 5): `uv sync --extra onnx`
 
 ## Going through the code
 
@@ -103,6 +106,15 @@ uv run python code/2_evaluate_model.py --model-dir models/fcvae/best/Penny_All
 ```
 
 Should match or closely approximate the prebuilt reference metrics.
+
+### 6. Export to ONNX
+
+```bash
+uv sync --extra onnx
+uv run python code/5_export_onnx.py
+```
+
+Exports all 5 prebuilt FCVAE models to ONNX format (opset 18, required for FFT ops) and validates parity against PyTorch using ONNX Runtime. Each model directory gets a `model.onnx` file and a `model_config.json` containing scaler parameters, anomaly thresholds, and ONNX metadata -- everything a downstream consumer (such as a JVM-based scorer using ONNX Runtime) needs to run inference without Python.
 
 ## Read through the notebooks
 
@@ -155,6 +167,7 @@ curl -X POST http://localhost:8000/score \
 | 2 | `2_evaluate_model.py` | Evaluate saved artifacts (default: initial/Penny_All) |
 | 3 | `3_streaming_app.py` | FastAPI scoring service |
 | 4 | `4_grid_sweep.py` | Sweep + retrain winner -> models/fcvae/best/Penny_All/ |
+| 5 | `5_export_onnx.py` | Export models to ONNX + parity validation |
 
 Prebuilt artifacts in `models/fcvae/Penny_All/`, `Accel_CMP/`, `Accel_nopin/`, `Star_CMP/`, and `Star_nopin/` are the reference and are never touched by any script. User output goes to gitignored `initial/` and `best/` subdirectories.
 

@@ -1,0 +1,32 @@
+{
+  "model_name": "Star_CMP",
+  "onnx": {
+    "opset_version": 18,
+    "window_size": 24,
+    "input_name": "input",
+    "output_name": "nll",
+    "input_shape": [
+      "batch",
+      1,
+      24
+    ],
+    "output_shape": [
+      "batch",
+      24
+    ]
+  },
+  "scaler": {
+    "type": "StandardScaler",
+    "mean": 1845.495205026455,
+    "scale": 1106.187274838237
+  },
+  "thresholds": {
+    "last_point_threshold": -0.5935711419582367,
+    "point_threshold": -2.4336640119552606,
+    "window_threshold": 0.7761411952972412
+  },
+  "scorer": {
+    "normal_score_mean": null,
+    "normal_score_std": null
+  }
+}

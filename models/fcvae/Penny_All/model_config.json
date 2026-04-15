@@ -1,0 +1,32 @@
+{
+  "model_name": "Penny_All",
+  "onnx": {
+    "opset_version": 18,
+    "window_size": 24,
+    "input_name": "input",
+    "output_name": "nll",
+    "input_shape": [
+      "batch",
+      1,
+      24
+    ],
+    "output_shape": [
+      "batch",
+      24
+    ]
+  },
+  "scaler": {
+    "type": "StandardScaler",
+    "mean": 126.02559027777778,
+    "scale": 42.8340232353508
+  },
+  "thresholds": {
+    "last_point_threshold": -21.3322,
+    "point_threshold": -21.3322,
+    "window_threshold": -1.3496712446212769
+  },
+  "scorer": {
+    "normal_score_mean": 0.1078435406088829,
+    "normal_score_std": 1.5638929605484009
+  }
+}
