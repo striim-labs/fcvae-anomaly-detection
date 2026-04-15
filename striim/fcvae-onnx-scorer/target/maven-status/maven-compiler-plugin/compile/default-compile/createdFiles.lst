@@ -1,0 +1,9 @@
+com/striim/fcvae/ModelConfig$ThresholdConfig.class
+com/striim/fcvae/FCVAEOnnxScorer$LoadedModel.class
+com/striim/fcvae/ModelConfig$OnnxConfig.class
+wa/fcvae_onnx/DailyPayloadStream_Type_1_0.class
+com/striim/fcvae/ModelConfig$ScalerConfig.class
+com/striim/fcvae/FCVAEOnnxScorer.class
+wa/fcvae_onnx/ScorerResult_1_0.class
+com/striim/fcvae/ModelConfig$ScorerStats.class
+com/striim/fcvae/ModelConfig.class
