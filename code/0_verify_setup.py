@@ -161,8 +161,9 @@ def main():
     if all_ok:
         print("All checks passed! Ready to run.")
         print("\nNext steps:")
-        print("  uv run jupyter notebook code/   # Explore notebooks")
-        print("  uv run python code/5_streaming_app.py  # Start API")
+        print("  uv run python code/1_train_model.py    # Train penny baseline")
+        print("  uv run jupyter notebook notebooks/     # Explore notebooks")
+        print("  docker compose up --build              # Start scoring API")
     else:
         print("Some checks failed. Install missing dependencies with: uv sync")
     print("=" * 60)

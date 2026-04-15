@@ -64,6 +64,11 @@ ENV/
 models/fcvae_backup/
 models/fcvae_60_kl/
 
+# User-trained model output (never overwrite prebuilts)
+models/fcvae/initial/
+models/fcvae/best/
+models/fcvae/optimization_results.json
+
 # Project specific
 *.csv
 !data/*.csv

@@ -45,7 +45,7 @@ Pre-built artifacts in this repo:
 | Types JAR | `striim/lib/fcvae_types.jar` | Striim-exported `_1_0` type classes for `$STRIIM_HOME/lib/` |
 | TQL | `striim/FCVAE.tql` | Striim application definition |
 | Data | `data/synthetic_transactions_phase2.csv` | Synthetic transaction data (~27.5 hours, 4 combos) |
-| Scoring API | `code/7_streaming_app.py` | FastAPI service wrapping all 5 FCVAE models |
+| Scoring API | `code/3_streaming_app.py` | FastAPI service wrapping all 5 FCVAE models |
 
 ---
 
@@ -53,7 +53,7 @@ Pre-built artifacts in this repo:
 
 ```bash
 cd <repo>
-uv run python code/7_streaming_app.py
+uv run python code/3_streaming_app.py
 ```
 
 Or with Docker:
@@ -274,7 +274,7 @@ Then start from [Step 3](#3-deploy-to-striim).
 ## Deployment Order (Quick Reference)
 
 ```
- 1. Start scoring API         uv run python code/7_streaming_app.py
+ 1. Start scoring API         uv run python code/3_streaming_app.py
  2. Copy .scm + types JAR     cp to $STRIIM_HOME/modules/ and $STRIIM_HOME/lib/
  3. Stop Striim               Ctrl+C
  4. Remove types JAR           mv $STRIIM_HOME/lib/fcvae_types.jar /tmp/

@@ -1,35 +1,47 @@
 """
-Step 4: Evaluate FCVAE Model (Penny and Combo Modes)
+Step 2: Evaluate FCVAE Model (Penny and Combo Modes)
 
 Load trained model(s), score test set, compute F1/precision/recall,
 plot NLL distributions, reconstruction plots, per-hour heatmaps.
+
+Defaults to models/fcvae/initial/Penny_All (baseline from step 1).
+Use --model-dir models/fcvae/best/Penny_All for the grid-sweep winner
+from step 4, or --model-dir models/fcvae/Penny_All for the prebuilt
+reference.
 
 Modes:
     --mode penny   Evaluate Penny_All model only (default)
     --mode combo   Evaluate all 4 combo models
 
 Usage:
-    uv run python code/4_evaluate_model.py
-    uv run python code/4_evaluate_model.py --mode combo
-    uv run python code/4_evaluate_model.py --from-saved
-    uv run python code/4_evaluate_model.py --model-dir models/fcvae/Penny_All
+    uv run python code/2_evaluate_model.py
+    uv run python code/2_evaluate_model.py --model-dir models/fcvae/best/Penny_All
+    uv run python code/2_evaluate_model.py --model-dir models/fcvae/Penny_All
+    uv run python code/2_evaluate_model.py --mode combo
+    uv run python code/2_evaluate_model.py --no-plots
 """
 import argparse
 import logging
 import pickle
 import sys
+import warnings
 from pathlib import Path
 
 import numpy as np
 import torch
+
+# Suppress PyTorch FFT resize deprecation warnings
+warnings.filterwarnings("ignore", message=".*output with one or more elements was resized.*")
 
 # Resolve project root
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 # Pickle compatibility for old module paths
+import types
 import src.model
 import src.scorer
+sys.modules["app"] = types.ModuleType("app")
 sys.modules["app.fcvae_model"] = src.model
 sys.modules["app.fcvae_scorer"] = src.scorer
 sys.modules["app.attention"] = src.model
@@ -285,7 +297,7 @@ def plot_training_history(history: dict, output_path: Path):
     print(f"  Saved: {output_path}")
 
 
-def evaluate_single(name, model_dir, hourly_df, scaler, device, output_dir):
+def evaluate_single(name, model_dir, hourly_df, scaler, device, output_dir, no_plots=False):
     """Evaluate a single trained FCVAE model.
 
     Args:
@@ -407,6 +419,10 @@ def evaluate_single(name, model_dir, hourly_df, scaler, device, output_dir):
     print(f"  All-position PA-F1: {pa_all['f1']:.4f} (P={pa_all['precision']:.4f}, R={pa_all['recall']:.4f})")
     print(f"  Segments: {pa_all['tp_segments']}/{pa_all['total_segments']} detected")
 
+    if no_plots:
+        print(f"\n  {name} EVALUATION COMPLETE (plots skipped)")
+        return
+
     # Generate plots
     eval_output_dir = output_dir / name
     eval_output_dir.mkdir(parents=True, exist_ok=True)
@@ -457,15 +473,19 @@ def main():
     parser = argparse.ArgumentParser(description="Evaluate FCVAE model(s)")
     parser.add_argument("--mode", choices=["penny", "combo"], default="penny",
                         help="Evaluation mode: penny (Penny_All only) or combo (4 combo models)")
-    parser.add_argument("--model-dir", type=str, default="models/fcvae/Penny_All")
+    parser.add_argument("--model-dir", type=str, default="models/fcvae/initial/Penny_All",
+                        help="Model directory (default: initial/Penny_All from step 1)")
     parser.add_argument("--data-path", type=str, default="data/synthetic_transactions.csv")
     parser.add_argument("--output-dir", type=str, default="plots/penny_eval")
     parser.add_argument("--from-saved", action="store_true",
                         help="Load pre-computed scores instead of re-scoring")
+    parser.add_argument("--no-plots", action="store_true", help="Skip plot generation")
     parser.add_argument("--device", type=str, default=None)
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    for mod in ["src.model", "src.scorer", "src.preprocess", "src.train", "src.training"]:
+        logging.getLogger(mod).setLevel(logging.WARNING)
 
     device = auto_device(args.device)
     data_path = PROJECT_ROOT / args.data_path
@@ -481,7 +501,8 @@ def main():
         output_dir = PROJECT_ROOT / args.output_dir
 
         hourly_df = load_penny_data(data_path)
-        evaluate_single("Penny_All", model_dir, hourly_df, None, device, output_dir)
+        evaluate_single("Penny_All", model_dir, hourly_df, None, device, output_dir,
+                        no_plots=args.no_plots)
 
     elif args.mode == "combo":
         print("\n" + "=" * 60)
@@ -504,7 +525,8 @@ def main():
                 print(f"\nSkipping {dir_name}: model directory not found at {model_dir}")
                 continue
 
-            evaluate_single(dir_name, model_dir, hourly_df, None, device, output_dir)
+            evaluate_single(dir_name, model_dir, hourly_df, None, device, output_dir,
+                            no_plots=args.no_plots)
 
         print(f"\n{'=' * 60}")
         print("ALL COMBO EVALUATIONS COMPLETE")

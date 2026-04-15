@@ -1,91 +1,133 @@
-# FCVAE Transaction Anomaly Detection
+# Striim AI Prototype: FCVAE Transaction Anomaly Detection
 
-Real-time anomaly detection on hourly transaction frequencies using a Frequency-enhanced Conditional VAE (Wang et al., WWW 2024). The FCVAE uses FFT-based conditioning (GFM + LFM) to learn periodic patterns and detects anomalies via elevated negative log-likelihood at the masked last-point position.
+Real-time anomaly detection on hourly transaction frequencies using a Frequency-enhanced Conditional VAE (FCVAE) from Wang et al. (WWW 2024). The FCVAE uses FFT-based conditioning modules (GFM and LFM) to learn periodic patterns in time series and detects anomalies via elevated negative log-likelihood at the masked last-point position.
 
-Two complementary use cases demonstrate the architecture's versatility:
+The repo demonstrates two complementary use cases that show the architecture's versatility. The **combo volume** use case trains 4 independent models that detect both spikes and dips in transaction volume across different network/transaction-type combinations -- for example, Visa vs Amex-style networks and credit (CMP) vs debit (no-pin) transaction types -- each with a distinct periodicity (24h, 12h, 8h cycles). The **penny carding** use case trains a single pooled model that detects carding attacks by identifying anomalous spikes in penny transaction (< $1) frequency. The numbered scripts walk through the penny path end-to-end; the combo path is covered in the notebooks and is well worth exploring to see how the same architecture handles multiple models with varying data patterns and anomaly types (spikes, dips, ramps).
 
-1. **Combo volume anomaly detection** — 4 independent models detect both *spikes* and *dips* in transaction volume across different network/transaction-type combinations, each with distinct periodicities (24h, 12h, 8h cycles).
-
-2. **Penny transaction carding detection** — 1 pooled model detects carding attacks by identifying anomalous spikes in penny transaction (< $1) frequency.
+The repo includes interactive notebooks for learning, production-grade source code, prebuilt reference artifacts for all 5 models, and a Dockerized scoring API that serves both use cases.
 
 ## Project Structure
 
 ```
 fcvae-anomaly-detection/
+├── code/                                # Numbered scripts -- canonical workflow
+│   ├── 0_verify_setup.py               # Env + artifact check
+│   ├── 1_train_model.py                # Train penny baseline -> models/fcvae/initial/Penny_All/
+│   ├── 2_evaluate_model.py             # Evaluate saved artifacts (default: initial/Penny_All)
+│   ├── 3_streaming_app.py              # FastAPI scoring service (Docker entrypoint)
+│   └── 4_grid_sweep.py                 # Sweep + retrain winner -> models/fcvae/best/Penny_All/
 │
-├── code/                              # Numbered workflow (start here)
-│   ├── 0_verify_setup.py             # Verify environment, data, artifacts
-│   ├── 1_combo_data_exploration.ipynb   # EDA: 4 combo time series, periodicities, FFT, anomalies
-│   ├── 2_combo_anomaly_detection.ipynb  # Combo volume: spikes, dips, ramps across 4 models
-│   ├── 3_penny_data_exploration.ipynb   # EDA: penny patterns, hourly cycles, FFT
-│   ├── 4_penny_model_design.ipynb       # FCVAE architecture walkthrough + training demo
-│   ├── 5_train_model.py              # Training pipeline (penny or combo mode)
-│   ├── 6_evaluate_model.py           # Evaluation: NLL distributions, metrics, plots
-│   ├── 7_streaming_app.py            # FastAPI REST scoring service (all 5 models)
-│   └── 8_optimize.py                 # Hyperparameter grid search
+├── notebooks/                           # Interactive walkthroughs
+│   ├── combo_data_exploration.ipynb     # 4 combo time series, periodicities, FFT, anomalies
+│   ├── combo_anomaly_detection.ipynb    # Combo spike + dip detection with 4 prebuilt models
+│   ├── penny_data_exploration.ipynb     # Penny patterns, hourly cycles
+│   └── penny_model_design.ipynb        # FCVAE architecture walkthrough + training demo
 │
-├── src/                               # Reusable library code
-│   ├── model.py                       # FCVAE architecture + attention modules
-│   ├── scorer.py                      # NLL scoring, threshold calibration
-│   ├── preprocess.py                  # Data loading (penny + combo), windowing, normalization
-│   ├── train.py                       # Training utilities, augmentation
-│   ├── schemas.py                     # Pydantic request/response models
-│   └── utils.py                       # Device selection
+├── src/                                 # Reusable library code
+│   ├── model.py                         # FCVAE architecture + attention modules
+│   ├── scorer.py                        # NLL scoring, threshold calibration
+│   ├── preprocess.py                    # Data loading (penny + combo), windowing, normalization
+│   ├── train.py                         # Low-level training utilities, augmentation
+│   ├── training.py                      # Shared train_model() + save_training_artifacts()
+│   ├── schemas.py                       # Pydantic request/response models
+│   └── utils.py                         # Device selection
 │
-├── data/                              # Dataset
-│   ├── synthetic_transactions.csv     # 60-day synthetic dataset (train/val/test)
+├── models/fcvae/                        # Pre-trained artifacts (committed, NEVER overwritten)
+│   ├── Penny_All/                       # Pooled penny transaction model
+│   ├── Accel_CMP/                       # Accel/CMP combo model (24h cycle)
+│   ├── Accel_nopin/                     # Accel/no-pin combo model (12h cycle)
+│   ├── Star_CMP/                        # Star/CMP combo model (24h cycle)
+│   ├── Star_nopin/                      # Star/no-pin combo model (8h cycle)
+│   ├── initial/Penny_All/               # gitignored -- 1_train_model.py output
+│   └── best/Penny_All/                  # gitignored -- 4_grid_sweep.py output
+│
+├── data/                                # Dataset
+│   ├── synthetic_transactions.csv       # 60-day synthetic dataset (train/val/test)
 │   ├── synthetic_transactions_phase2.csv  # 10-day test-only evaluation set
-│   └── generate_transactions.py       # Data generation script
+│   └── generate_transactions.py         # Data generation script
 │
-├── models/fcvae/                      # Pre-trained artifacts
-│   ├── Accel_CMP/                     # Accel/CMP combo model (24h cycle)
-│   ├── Accel_nopin/                   # Accel/no-pin combo model (12h cycle)
-│   ├── Star_CMP/                      # Star/CMP combo model (24h cycle)
-│   ├── Star_nopin/                    # Star/no-pin combo model (8h cycle)
-│   └── Penny_All/                     # Pooled penny transaction model
-│
-├── striim/                            # Striim platform integration
-├── Dockerfile                         # Container for scoring API
-├── docker-compose.yml                 # Scoring API service
-├── pyproject.toml                     # All dependencies
-├── STRIIM.md                    # Striim FCVAE pipeline setup
-└── TECHNICAL.md                       # Architecture reference
+├── striim/                              # Striim platform integration
+├── Dockerfile                           # Container for scoring API
+├── docker-compose.yml                   # Scoring API service
+├── pyproject.toml                       # All dependencies
+├── STRIIM.md                            # Striim FCVAE pipeline setup
+└── TECHNICAL.md                         # Architecture reference
 ```
+
+The numbered scripts in `code/` are the first-class reproduction path. Notebooks in `notebooks/` provide the deeper explanations behind each design decision. User-trained output goes to gitignored `models/fcvae/initial/` and `models/fcvae/best/` directories so the committed prebuilt artifacts are never overwritten.
 
 ## Prerequisites
 
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv): `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- Docker (optional, for the scoring API)
 
-## Quick Start
+## Going through the code
+
+### 1. Install dependencies
 
 ```bash
-# Install dependencies
 uv sync
-
-# Verify setup
-uv run python code/0_verify_setup.py
-
-# Explore notebooks
-uv run jupyter notebook code/
 ```
 
-| Notebook | What You'll Learn |
-|----------|-------------------|
-| `1_combo_data_exploration.ipynb` | 4 combo time series, diverse periodicities (24h/12h/8h), FFT analysis, spike/dip anomalies |
-| `2_combo_anomaly_detection.ipynb` | 4-combo volume models detecting spikes, dips, and ramps with pre-trained models |
-| `3_penny_data_exploration.ipynb` | Penny transaction patterns, hourly cycles, FFT analysis, anomaly periods |
-| `4_penny_model_design.ipynb` | FCVAE architecture, frequency conditioning, last-point masking, training demo |
-
-> **Notebooks 1 and 2 are sufficient for a full understanding** of the FCVAE approach. Notebooks 3 and 4 apply the same architecture to a different use case (penny carding detection) and are optional.
-
-## Scoring API
+### 2. Train the baseline
 
 ```bash
-# Recommended: run locally (faster startup, no build step)
-uv run python code/7_streaming_app.py
+uv run python code/1_train_model.py
+```
 
-# Or via Docker (slower — builds a container image first)
+Trains a penny FCVAE baseline with conservative defaults (latent_dim=4, 15 epochs, no augmentation). Output goes to `models/fcvae/initial/Penny_All/`.
+
+### 3. Evaluate the baseline
+
+```bash
+uv run python code/2_evaluate_model.py
+```
+
+Reads `models/fcvae/initial/Penny_All/` by default and prints precision, recall, and F1 metrics.
+
+> **Note:** `code/3_streaming_app.py` is intentionally skipped here -- it is the Docker entrypoint for the scoring API. See the [Docker demo](#docker-demo-scoring-api) section below.
+
+### 4. Grid sweep to find a better config
+
+```bash
+uv run python code/4_grid_sweep.py
+```
+
+Sweeps ~11 configurations over latent_dim, KL warmup, learning rate, and augmentation. After the sweep, the script automatically retrains the winning configuration end-to-end and saves artifacts to `models/fcvae/best/Penny_All/`.
+
+### 5. Evaluate the best-config model
+
+```bash
+uv run python code/2_evaluate_model.py --model-dir models/fcvae/best/Penny_All
+```
+
+Should match or closely approximate the prebuilt reference metrics.
+
+## Read through the notebooks
+
+The notebooks cover both the penny and combo use cases in depth. Start with the combo notebooks -- they show how 4 independent FCVAE models handle time series with fundamentally different periodicities (24h, 12h, 8h cycles) and detect both **spikes** and **dips**, which demonstrates the architecture's adaptability far better than the single penny model alone.
+
+| Notebook | What you'll learn |
+|----------|---|
+| `combo_data_exploration.ipynb` | 4 combo time series with diverse periodicities (24h/12h/8h), FFT analysis, spike/dip/ramp anomaly patterns |
+| `combo_anomaly_detection.ipynb` | How the same FCVAE architecture detects both spikes AND dips across the 4 combo models using the prebuilts |
+| `penny_data_exploration.ipynb` | Penny transaction patterns, hourly cycles, anomaly periods |
+| `penny_model_design.ipynb` | FCVAE architecture walkthrough, frequency conditioning (GFM/LFM), last-point masking, training demo |
+
+```bash
+uv run jupyter notebook notebooks/
+```
+
+## Docker demo (scoring API)
+
+`code/3_streaming_app.py` is a FastAPI scoring service that loads all 5 prebuilt models (penny + 4 combos) at startup. Running it directly with `uv run python code/3_streaming_app.py` is the fastest way to start the API locally. Alternatively, use Docker:
+
+```bash
+# Option 1: run directly (faster startup, no build step)
+uv run python code/3_streaming_app.py
+
+# Option 2: run via Docker
 docker compose up --build
 ```
 
@@ -108,17 +150,22 @@ curl -X POST http://localhost:8000/score \
 
 | Step | File | Purpose |
 |------|------|---------|
-| 0 | `code/0_verify_setup.py` | Verify environment and artifacts |
-| 1 | `code/1_combo_data_exploration.ipynb` | Explore combo transaction volume data |
-| 2 | `code/2_combo_anomaly_detection.ipynb` | Combo volume anomaly detection (spikes + dips) |
-| 3 | `code/3_penny_data_exploration.ipynb` | Explore penny transaction data |
-| 4 | `code/4_penny_model_design.ipynb` | Understand FCVAE architecture, train, and evaluate |
-| 7 | `code/7_streaming_app.py` | Deploy as REST API (all 5 models) |
-| 8 | `code/8_optimize.py` | Tune hyperparameters |
+| 0 | `0_verify_setup.py` | Optional troubleshooting |
+| 1 | `1_train_model.py` | Train penny baseline -> models/fcvae/initial/Penny_All/ |
+| 2 | `2_evaluate_model.py` | Evaluate saved artifacts (default: initial/Penny_All) |
+| 3 | `3_streaming_app.py` | FastAPI scoring service |
+| 4 | `4_grid_sweep.py` | Sweep + retrain winner -> models/fcvae/best/Penny_All/ |
 
-> **Note:** Do not run `code/5_train_model.py` or `code/6_evaluate_model.py` directly. Training and evaluation are demonstrated interactively in the notebooks. The standalone scripts exist for automated/CI use and support `--mode penny` (default) or `--mode combo`.
+Prebuilt artifacts in `models/fcvae/Penny_All/`, `Accel_CMP/`, `Accel_nopin/`, `Star_CMP/`, and `Star_nopin/` are the reference and are never touched by any script. User output goes to gitignored `initial/` and `best/` subdirectories.
+
+## Detection methodology
+
+The FCVAE operates on 24-point sliding windows over hourly transaction frequencies. Each window is conditioned on frequency-domain features extracted via FFT: the Global Frequency Module (GFM) applies FFT to the entire window (excluding the last point) to capture the dominant periodicity, while the Local Frequency Module (LFM) splits the window into overlapping 8-hour sub-windows, applies FFT to each, and uses multi-head self-attention to capture shorter-range trends.
+
+During inference, position [-1] (the last hour) is masked from both frequency modules, making it the only genuine prediction. The anomaly score is the negative log-likelihood (NLL) under the decoder's Gaussian output distribution at that masked position. Lower NLL means more anomalous. A threshold is calibrated via F1-max on labeled data, and points scoring below the threshold are flagged as anomalies.
 
 ## Further Reading
 
-- **[TECHNICAL.md](TECHNICAL.md)** — FCVAE architecture reference: model equations, frequency conditioning (GFM/LFM), last-point masking, NLL scoring, KL annealing, and data augmentation details.
-- **[STRIIM.md](STRIIM.md)** — Step-by-step guide for deploying the FCVAE scoring pipeline on Striim Platform, including the Open Processor, typed streams, and the TQL application definition.
+- **[TECHNICAL.md](TECHNICAL.md)** -- FCVAE architecture reference: model equations, frequency conditioning (GFM/LFM), last-point masking, NLL scoring, KL annealing, and data augmentation details.
+
+- **[STRIIM.md](STRIIM.md)** -- The FCVAE scoring service is designed to run inside Striim Platform as a real-time pipeline component. STRIIM.md walks through the full integration: packaging the scoring API as an Open Processor module, defining typed streams for the input transaction events and output anomaly scores, wiring the TQL application that connects a Kafka source to the FCVAE scorer and routes results to downstream sinks. This demonstrates that models of this complexity -- a multi-model VAE with FFT conditioning, per-window NLL scoring, and calibrated thresholds -- can be deployed as a first-class operator inside Striim's continuous processing engine, scoring transactions in real time alongside the rest of the platform's ingestion and transformation pipeline.

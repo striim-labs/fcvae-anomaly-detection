@@ -1,14 +1,16 @@
 """
-Step 5: FastAPI REST Scoring Service (Multi-Model)
+Step 3: Streaming Application (Scoring API)
 
-Loads all 5 FCVAE models (4 combo + Penny_All) at startup and routes
+FastAPI REST scoring service that loads all 5 prebuilt FCVAE models
+(4 combo + Penny_All) at startup from models/fcvae/{name}/ and routes
 scoring requests by the `combo` field in each request.
 
-Usage:
-    uv run python code/5_streaming_app.py
-    # Then: curl http://localhost:8000/health
-    # Score: curl -X POST http://localhost:8000/score -H "Content-Type: application/json" \
-    #        -d '{"values": [10,12,8,15,20,25,30,35,40,38,32,28,22,18,15,12,10,8,6,5,4,3,2,1], "combo": "Penny_All"}'
+Run directly for the fastest startup, or use Docker:
+    uv run python code/3_streaming_app.py
+    docker compose up --build
+
+It always loads the committed prebuilt models, NOT the user-trained
+models from models/fcvae/initial/ or models/fcvae/best/.
 """
 import logging
 import os
@@ -26,8 +28,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 # Pickle compatibility for old module paths
+import types
 import src.model
 import src.scorer
+sys.modules["app"] = types.ModuleType("app")
 sys.modules["app.fcvae_model"] = src.model
 sys.modules["app.fcvae_scorer"] = src.scorer
 sys.modules["app.attention"] = src.model

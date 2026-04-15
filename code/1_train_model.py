@@ -1,28 +1,34 @@
 """
-Step 3: Train FCVAE Model for Penny Transactions (and Combo Models)
+Step 1: Train FCVAE Baseline Model (Penny Transactions)
 
-Full training pipeline: load data -> create windows -> train with KL annealing
-+ augmentation -> calibrate threshold (F1-max) -> save artifacts.
+Train a penny-only FCVAE with deliberately under-specified defaults so the
+baseline catches most anomalies but leaves room for improvement. Run
+code/4_grid_sweep.py next to search for a better configuration.
+
+Output goes to models/fcvae/initial/Penny_All/ (gitignored).
+Prebuilt artifacts in models/fcvae/Penny_All/ are NEVER overwritten.
 
 Modes:
     --mode penny   Train Penny_All model only (default)
-    --mode combo   Train all 4 combo models (Accel_CMP, Accel_nopin, Star_CMP, Star_nopin)
+    --mode combo   Train all 4 combo models (advanced)
 
 Usage:
-    uv run python code/3_train_model.py
-    uv run python code/3_train_model.py --mode combo
-    uv run python code/3_train_model.py --epochs 50 --lr 5e-4
-    uv run python code/3_train_model.py --data-path data/synthetic_transactions.csv
+    uv run python code/1_train_model.py
+    uv run python code/1_train_model.py --mode combo --output-dir models/fcvae
+    uv run python code/1_train_model.py --epochs 30 --lr 5e-4 --latent-dim 8
 """
 import argparse
 import logging
-import pickle
+import random
 import sys
+import warnings
 from pathlib import Path
 
 import numpy as np
 import torch
-from torch.optim.lr_scheduler import CosineAnnealingLR
+
+# Suppress PyTorch FFT resize deprecation warnings
+warnings.filterwarnings("ignore", message=".*output with one or more elements was resized.*")
 
 # Resolve project root
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -34,10 +40,8 @@ from src.preprocess import (
     load_penny_data, load_combo_data, COMBO_KEYS,
     create_sliding_windows, create_splits, normalize, create_dataloaders,
 )
-from src.train import (
-    AugmentConfig, compute_kl_weight, train_epoch, validate_epoch,
-    EarlyStopping,
-)
+from src.train import AugmentConfig
+from src.training import TrainingConfig, train_model, save_training_artifacts
 from src.utils import auto_device
 
 logger = logging.getLogger(__name__)
@@ -82,10 +86,10 @@ def optimize_threshold_f1(
     normal_scores = flat_scores[flat_labels == 0]
     anomaly_scores = flat_scores[flat_labels == 1]
 
-    logger.info(f"  Validation: {len(normal_scores)} normal points, {len(anomaly_scores)} anomaly points")
+    logger.debug(f"  Validation: {len(normal_scores)} normal points, {len(anomaly_scores)} anomaly points")
 
     if len(anomaly_scores) == 0:
-        logger.warning("  No anomaly points in validation — falling back to percentile threshold")
+        logger.warning("  No anomaly points in validation -- falling back to percentile threshold")
         scorer.set_threshold(flat_scores, method="percentile", percentile=5.0)
         scorer.set_last_point_threshold(all_point_scores, method="percentile", percentile=5.0)
         return {"method": "percentile_fallback", "reason": "no_anomalies"}
@@ -105,7 +109,7 @@ def optimize_threshold_f1(
     lp_normal = lp_scores[lp_labels == 0]
     lp_anomaly = lp_scores[lp_labels == 1]
 
-    logger.info(f"  Last-point: {len(lp_normal)} normal, {len(lp_anomaly)} anomaly")
+    logger.debug(f"  Last-point: {len(lp_normal)} normal, {len(lp_anomaly)} anomaly")
 
     if len(lp_anomaly) > 0:
         lp_threshold, lp_metrics = scorer.find_optimal_last_point_threshold(
@@ -117,7 +121,7 @@ def optimize_threshold_f1(
         scorer.last_point_threshold = lp_threshold
         metrics["last_point_threshold"] = lp_threshold
         metrics["last_point_f1"] = lp_metrics.get("f1", 0)
-        logger.info(
+        logger.debug(
             f"  Last-point threshold: {lp_threshold:.4f} "
             f"(vs all-position: {optimal_threshold:.4f})"
         )
@@ -147,7 +151,7 @@ def optimize_threshold_f1(
         scorer.set_window_threshold(normal_window_scores, method="percentile", percentile=5.0)
         metrics["window_threshold"] = scorer.window_threshold
 
-    logger.info(
+    logger.debug(
         f"  Thresholds: all-position={scorer.point_threshold:.4f}, "
         f"last-point={scorer.last_point_threshold:.4f}, "
         f"window={scorer.window_threshold}"
@@ -157,16 +161,7 @@ def optimize_threshold_f1(
 
 
 def train_single(name, loaders, args, device, output_dir, scaler=None):
-    """Train a single FCVAE model end-to-end and save artifacts.
-
-    Args:
-        name: Model name (e.g. "Penny_All", "Accel_CMP")
-        loaders: Dict with 'train', 'val', 'test' DataLoaders
-        args: Parsed CLI arguments
-        device: torch device
-        output_dir: Base output directory (model saved to output_dir/name/)
-        scaler: Fitted StandardScaler for this model's data
-    """
+    """Train a single FCVAE model end-to-end and save artifacts."""
     print(f"\n{'=' * 60}")
     print(f"TRAINING: {name}")
     print(f"{'=' * 60}")
@@ -187,76 +182,61 @@ def train_single(name, loaders, args, device, output_dir, scaler=None):
     scorer_config = FCVAEScorerConfig(score_mode=args.score_mode)
     scorer = FCVAEScorer(config=scorer_config)
 
-    augment_config = AugmentConfig() if not args.no_augmentation else AugmentConfig(
-        missing_data_rate=0.0, point_ano_rate=0.0, seg_ano_rate=0.0
-    )
+    augment_config = AugmentConfig() if not args.no_augmentation else None
 
     if not args.no_augmentation:
         print(f"  Augmentation: point={augment_config.point_ano_rate}, "
               f"segment={augment_config.seg_ano_rate}, "
               f"missing={augment_config.missing_data_rate}")
 
-    # Train
+    # Train using shared helper
     print(f"\n--- Training ---")
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    scheduler = CosineAnnealingLR(optimizer, T_max=10)
-    early_stopping = EarlyStopping(patience=args.patience)
+    training_config = TrainingConfig(
+        epochs=args.epochs,
+        learning_rate=args.lr,
+        patience=args.patience,
+        kl_warmup_epochs=args.kl_warmup_epochs,
+        grad_clip=args.grad_clip,
+        batch_size=args.batch_size,
+        augmentation=not args.no_augmentation,
+    )
 
-    history = {
-        "train_loss": [],
-        "val_loss": [],
-        "learning_rates": [],
-        "kl_weights": [],
-        "best_epoch": 0,
-    }
+    model, history = train_model(
+        model, loaders["train"], loaders["val"], device,
+        config=training_config,
+        augment_config=augment_config,
+    )
 
-    for epoch in range(args.epochs):
-        kl_weight = compute_kl_weight(epoch, args.kl_warmup_epochs)
-
-        train_loss = train_epoch(
-            model, loaders["train"], optimizer, kl_weight, device,
-            augment_config=augment_config, grad_clip=args.grad_clip
-        )
-
-        val_loss = validate_epoch(model, loaders["val"], device)
-
-        scheduler.step()
-
-        history["train_loss"].append(train_loss)
-        history["val_loss"].append(val_loss)
-        history["learning_rates"].append(optimizer.param_groups[0]["lr"])
-        history["kl_weights"].append(kl_weight)
-
-        should_stop = early_stopping.step(val_loss, model, epoch + 1)
-
-        if (epoch + 1) % 5 == 0 or epoch == 0 or epoch == args.epochs - 1:
-            lr = optimizer.param_groups[0]["lr"]
-            print(
-                f"  Epoch {epoch + 1:3d}: train={train_loss:.6f}, "
-                f"val={val_loss:.6f}, lr={lr:.2e}, kl_w={kl_weight:.2f}"
-            )
-
-        if should_stop:
-            print(f"  Early stopping at epoch {epoch + 1}")
-            break
-
-    early_stopping.restore_best(model, device)
-    history["best_epoch"] = early_stopping.best_epoch
-    print(f"  Best val loss: {early_stopping.best_loss:.6f} at epoch {early_stopping.best_epoch}")
-
-    # Calibrate threshold
+    # Calibrate threshold (F1-max)
+    # Try validation set first; if it has no anomalies, fall back to test set
+    # for threshold calibration (same approach as the prebuilt models).
     print(f"\n--- Calibrating threshold (F1-max) ---")
     scorer.fit(model, loaders["val"], device)
 
+    cal_loader = loaders["val"]
+    cal_label = "validation"
     if loaders.get("val") is not None:
-        metrics = optimize_threshold_f1(model, scorer, loaders["val"], device)
-        print(f"  Method: {metrics.get('method', 'f1_max')}")
-        print(f"  Last-point threshold: {scorer.last_point_threshold:.4f}")
-        if "last_point_f1" in metrics:
-            print(f"  Last-point F1: {metrics['last_point_f1']:.4f}")
+        # Check if val has any anomaly labels
+        val_has_anomalies = False
+        for batch in loaders["val"]:
+            _, labels, _ = batch
+            if labels.sum() > 0:
+                val_has_anomalies = True
+                break
+        if not val_has_anomalies and loaders.get("test") is not None:
+            cal_loader = loaders["test"]
+            cal_label = "test"
+            print(f"  Validation has no anomalies -- calibrating on test set")
 
-    # Quick evaluation on test set
-    print(f"\n--- Quick evaluation on test set ---")
+    metrics = optimize_threshold_f1(model, scorer, cal_loader, device)
+    print(f"  Calibrated on: {cal_label}")
+    print(f"  Method: {metrics.get('method', 'f1_max')}")
+    print(f"  Last-point threshold: {scorer.last_point_threshold:.4f}")
+    if "last_point_f1" in metrics:
+        print(f"  Last-point F1: {metrics['last_point_f1']:.4f}")
+
+    # Evaluate on test set
+    print(f"\n--- Test set evaluation ---")
     if loaders.get("test") is not None:
         test_point_scores, test_window_scores = scorer.score_batch(model, loaders["test"], device)
 
@@ -286,27 +266,7 @@ def train_single(name, loaders, args, device, output_dir, scaler=None):
     if not args.skip_save:
         print(f"\n--- Saving artifacts ---")
         save_dir = output_dir / name
-        save_dir.mkdir(parents=True, exist_ok=True)
-
-        torch.save({
-            "model_state_dict": model.state_dict(),
-            "config": model_config,
-        }, save_dir / "model.pt")
-
-        if scaler is not None:
-            with open(save_dir / "scaler.pkl", "wb") as f:
-                pickle.dump(scaler, f)
-
-        scorer.save(save_dir / "scorer.pkl")
-
-        with open(save_dir / "history.pkl", "wb") as f:
-            pickle.dump(history, f)
-
-        print(f"  Saved to: {save_dir}/")
-        print(f"    - model.pt")
-        print(f"    - scaler.pkl")
-        print(f"    - scorer.pkl")
-        print(f"    - history.pkl")
+        save_training_artifacts(save_dir, model, model_config, scaler, scorer, history)
 
     print(f"\n  {name} TRAINING COMPLETE")
 
@@ -316,7 +276,7 @@ def train_penny_mode(args, device, output_dir):
     data_path = PROJECT_ROOT / args.data_path
 
     print("\n" + "-" * 40)
-    print("Step 1: Preprocessing penny transaction data")
+    print("Preprocessing penny transaction data")
     print("-" * 40)
 
     hourly_df = load_penny_data(data_path)
@@ -393,36 +353,62 @@ def main():
                         default="data/synthetic_transactions.csv",
                         help="Path to synthetic transactions CSV")
     parser.add_argument("--output-dir", type=str,
-                        default="models/fcvae",
+                        default="models/fcvae/initial",
                         help="Directory to save trained models")
     parser.add_argument("--window-size", type=int, default=24)
     parser.add_argument("--stride", type=int, default=1)
-    parser.add_argument("--latent-dim", type=int, default=8)
-    parser.add_argument("--epochs", type=int, default=30)
-    parser.add_argument("--lr", type=float, default=5e-4)
-    parser.add_argument("--patience", type=int, default=5)
+    parser.add_argument("--latent-dim", type=int, default=4)
+    parser.add_argument("--epochs", type=int, default=15)
+    parser.add_argument("--lr", type=float, default=1e-3)
+    parser.add_argument("--patience", type=int, default=3)
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--grad-clip", type=float, default=2.0)
-    parser.add_argument("--kl-warmup-epochs", type=int, default=10)
-    parser.add_argument("--no-augmentation", action="store_true")
+    parser.add_argument("--kl-warmup-epochs", type=int, default=5)
+    parser.add_argument("--no-augmentation", action="store_true", default=True,
+                        help="Disable data augmentation (default for baseline)")
+    parser.add_argument("--augmentation", action="store_true",
+                        help="Enable data augmentation (overrides --no-augmentation)")
     parser.add_argument("--score-mode", choices=["single_pass", "mcmc"], default="single_pass")
     parser.add_argument("--pool-train-val", action="store_true", default=False,
                         help="Pool train+val splits for training")
     parser.add_argument("--device", type=str, default=None, help="Force device (cuda/mps/cpu)")
     parser.add_argument("--skip-save", action="store_true")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    # --augmentation overrides --no-augmentation
+    if args.augmentation:
+        args.no_augmentation = False
 
-    print("\n" + "=" * 60)
-    print("FCVAE TRANSACTION ANOMALY DETECTION")
-    print(f"Training Pipeline — mode: {args.mode}")
-    print("=" * 60)
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    for mod in ["src.model", "src.scorer", "src.preprocess", "src.train", "src.training"]:
+        logging.getLogger(mod).setLevel(logging.WARNING)
+
+    # Deterministic seeding
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
 
     device = auto_device(args.device)
-    print(f"\nDevice: {device}")
-
     output_dir = PROJECT_ROOT / args.output_dir
+
+    aug_label = "augmentation ON" if not args.no_augmentation else "no augmentation"
+
+    print("\n" + "=" * 60)
+    print("FCVAE TRAINING -- baseline run")
+    print(f"Output directory: {output_dir / 'Penny_All'}")
+    print(f"Latent dim: {args.latent_dim}   LR: {args.lr}   Epochs: {args.epochs} ({aug_label})")
+    print(f"Device: {device}")
+    if args.mode == "penny":
+        print(
+            "This is a fast baseline -- expect the detector to catch most anomalies but\n"
+            "trip on a few normal windows. Run\n"
+            "    python code/4_grid_sweep.py\n"
+            "next to search for a better configuration. The sweep will retrain the\n"
+            "winning config and save it to models/fcvae/best/Penny_All/."
+        )
+    print("=" * 60)
 
     if args.mode == "penny":
         train_penny_mode(args, device, output_dir)
