@@ -74,8 +74,10 @@ models/fcvae/optimization_results.json
 !data/*.csv
 *.pkl
 *.pt
+*.onnx
 !models/**/*.pt
 !models/**/*.pkl
+!models/**/*.onnx
 plots/
 logs/
 *.log
