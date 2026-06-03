@@ -90,3 +90,8 @@ diagrams/
 
 # UV
 uv.lock
+.claude/
+
+# Striim OP build artifacts (reproducible via build.sh)
+striim/fcvae-onnx-scorer/target/
+striim/fcvae-onnx-scorer/*.scm

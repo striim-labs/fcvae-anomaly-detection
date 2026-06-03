@@ -1,136 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>com.striim.fcvae</groupId>
   <artifactId>fcvae-onnx-scorer</artifactId>
-  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>FCVAEOnnxScorer</name>
+  <description>Striim Open Processor: in-process FCVAE anomaly scoring via ONNX Runtime (WAEvent pass-through)</description>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Striim install. Override with -DSTRIIM_HOME=... if not at /opt/Striim. -->
+    <STRIIM_HOME>/opt/Striim</STRIIM_HOME>
+    <STRIIM_VERSION>5.2.0.4</STRIIM_VERSION>
+    <onnxruntime.version>1.18.0</onnxruntime.version>
   </properties>
 
   <dependencies>
-
-    <!-- ONNX Runtime Java binding (includes JNI native libs for linux-x64, macos-x64, macos-aarch64) -->
-    <dependency>
-      <groupId>com.microsoft.onnxruntime</groupId>
-      <artifactId>onnxruntime</artifactId>
-      <version>1.18.0</version>
-    </dependency>
-
-    <!-- JSON parsing -->
-    <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.10.1</version>
-    </dependency>
-
-    <!-- Striim Open Processor SDK (provided by Striim at runtime) -->
+    <!-- Striim jars are system-scoped: resolved straight from the install,
+         never downloaded, never bundled into the .scm. Platform + Common carry
+         the runtime WAEvent class (com.webaction.proc.events.WAEvent, in
+         Common-${STRIIM_VERSION}.jar) that the @PropertyTemplate references. -->
     <dependency>
       <groupId>com.striim</groupId>
       <artifactId>OpenProcessorSDK</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
+      <scope>system</scope>
+      <systemPath>${STRIIM_HOME}/StriimSDK/StriimOpenProcessor-SDK.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.webaction</groupId>
+      <artifactId>Platform</artifactId>
+      <version>${STRIIM_VERSION}</version>
+      <scope>system</scope>
+      <systemPath>${STRIIM_HOME}/lib/Platform-${STRIIM_VERSION}.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.webaction</groupId>
+      <artifactId>Common</artifactId>
+      <version>${STRIIM_VERSION}</version>
+      <scope>system</scope>
+      <systemPath>${STRIIM_HOME}/lib/Common-${STRIIM_VERSION}.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.webaction</groupId>
+      <artifactId>SourceCommons</artifactId>
+      <version>${STRIIM_VERSION}</version>
+      <scope>system</scope>
+      <systemPath>${STRIIM_HOME}/lib/SourceCommons-${STRIIM_VERSION}.jar</systemPath>
     </dependency>
 
-    <!-- Logging (provided by Striim at runtime, needed for compile) -->
+    <!-- Logging: provided by Striim at runtime, needed for compile only. -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
       <version>2.17.2</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- ONNX Runtime. compile scope: bundled into the .scm (Striim does not
+         provide it). The jar carries the per-platform native libs. -->
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>2.17.2</version>
-      <scope>provided</scope>
+      <groupId>com.microsoft.onnxruntime</groupId>
+      <artifactId>onnxruntime</artifactId>
+      <version>${onnxruntime.version}</version>
     </dependency>
 
-    <!--
-      Type stubs (wa.fcvae_onnx.ScorerResult_1_0, DailyPayloadStream_Type_1_0)
-      are included as source files in this project. At runtime, Striim's parent
-      classloader provides the real generated classes from the types JAR.
-    -->
-
+    <!-- JSON parsing for model_config.json. Bundled (Striim does not provide it). -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.10.1</version>
+    </dependency>
   </dependencies>
 
   <build>
+    <!-- Produces target/FCVAEOnnxScorer.jar; build.sh copies it to FCVAEOnnxScorer.scm. -->
+    <finalName>FCVAEOnnxScorer</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
+        <version>3.13.0</version>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
-
-      <!-- Types JAR: packages the wa.fcvae_onnx type stubs into a separate JAR for $STRIIM_HOME/lib/ -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <id>types-jar</id>
-            <phase>package</phase>
-            <goals><goal>jar</goal></goals>
-            <configuration>
-              <classifier>types</classifier>
-              <finalName>fcvae_onnx</finalName>
-              <includes>
-                <include>wa/fcvae_onnx/**</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Shade plugin: produces the fat jar that becomes the .scm -->
+      <!-- Shade builds the fat jar (bundling onnxruntime + gson) and writes the
+           Striim manifest entries. No types JAR: this is a WAEvent pass-through
+           OP, so there are no wa.* type stubs to package or exclude. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.5.2</version>
+        <version>3.6.0</version>
         <configuration>
           <createDependencyReducedPom>false</createDependencyReducedPom>
-          <finalName>FCVAEOnnxScorer</finalName>
           <transformers>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
               <manifestEntries>
                 <Striim-Module-Name>FCVAEOnnxScorer</Striim-Module-Name>
-                <Striim-Service-Interface>
-                  com.webaction.runtime.components.openprocessor.StriimOpenProcessor
-                </Striim-Service-Interface>
-                <Striim-Service-Implementation>
-                  com.striim.fcvae.FCVAEOnnxScorer
-                </Striim-Service-Implementation>
-                <Multi-Release>true</Multi-Release>
+                <Striim-Service-Interface>com.webaction.runtime.components.openprocessor.StriimOpenProcessor</Striim-Service-Interface>
+                <Striim-Service-Implementation>com.striim.fcvae.FCVAEOnnxScorer</Striim-Service-Implementation>
               </manifestEntries>
             </transformer>
             <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
           </transformers>
+          <artifactSet>
+            <excludes>
+              <exclude>org.slf4j:*</exclude>
+              <exclude>log4j:*</exclude>
+            </excludes>
+          </artifactSet>
+          <!-- Drop module descriptors and jar signatures from the bundled
+               onnxruntime jar; both break a shaded fat jar. -->
           <filters>
             <filter>
               <artifact>*:*</artifact>
               <excludes>
-                <!-- Exclude type stubs from fat JAR; Striim's parent classloader
-                     provides the real classes from fcvae_onnx_types.jar in $STRIIM_HOME/lib/ -->
-                <exclude>wa/fcvae_onnx/**</exclude>
+                <exclude>module-info.class</exclude>
+                <exclude>META-INF/versions/*/module-info.class</exclude>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
               </excludes>
             </filter>
           </filters>
-          <artifactSet>
-            <excludes>
-              <exclude>org.slf4j:*</exclude>
-            </excludes>
-          </artifactSet>
         </configuration>
         <executions>
           <execution>

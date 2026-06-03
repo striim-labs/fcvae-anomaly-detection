@@ -1,25 +1,34 @@
-# Striim FCVAE Anomaly Detection Pipeline: ONNX Setup Guide
+# Striim FCVAE Penny-Carding Pipeline: In-Process ONNX Setup Guide
 
 **Striim Version:** Platform 5.2.0.4 (OpenJDK 11)
-**Namespace:** `fcvae_onnx` (separate from the HTTP sidecar's `fcvae` namespace)
-**Pipeline:** FileReader -> Parse CQ -> Hourly Jumping Window -> 24-Hour Sliding Window -> Open Processor (ONNX Runtime) -> FileWriter (JSON)
+**Use case:** Penny carding -- a single pooled `Penny_All` FCVAE model scoring the hourly frequency of penny transactions (amount < $1)
+**Namespace:** `fcvae_onnx` (fully isolated from the HTTP sidecar's `fcvae` namespace)
+**Pipeline:** FileReader -> Parse CQ -> Penny filter (amount < $1) -> Hourly Jumping Window -> 24-Hour Sliding Window -> `WAEUdf.createWAEvent` CQ -> Open Processor (ONNX Runtime) -> Format CQ -> FileWriter (JSON)
 
-This guide walks through setting up the end-to-end Striim FCVAE anomaly detection pipeline using the **ONNX Runtime scorer**. Unlike the HTTP sidecar approach (`STRIIM.md`), this version runs inference in-process via ONNX Runtime's Java JNI bindings. No Python dependency is required at runtime.
+This deploys the penny-carding pipeline scoring **in-process via ONNX Runtime's Java JNI bindings**: the `Penny_All` model runs inside the Striim JVM, with no Python dependency and no FastAPI sidecar. It is the in-process counterpart to the HTTP sidecar penny pipeline (`STRIIM_FCVAE.md`, namespace `fcvae`); both can coexist on the same Striim instance, and deploying this one never touches the running `fcvae` app.
 
-This deployment uses the `fcvae_onnx` namespace, which is independent of the `fcvae` namespace used by the HTTP sidecar OP. Both can coexist on the same Striim instance.
+The windowing stays in **Striim CQs** (penny filter -> hourly count -> 24-row sliding window). The assembled 24-hour row is converted to a `Global.WAEvent` by the **WAEUdf `createWAEvent` UDF**, so the scorer is a pure **WAEvent pass-through** Open Processor wired **directly in TQL**. That means:
 
-This uses the **typed-stream approach** (not the WAEvent pass-through pattern) because the pipeline requires Striim's native windowing and aggregation CQs upstream of the Open Processor. This requires a types JAR, `CREATE TYPE` statements, and the JAR removal trick for deployment.
+- **No types JAR** and **no JAR-removal trick** for the OP (it is a pass-through OP).
+- **No Flow Designer** -- the OP is wired in TQL with `CREATE OPEN PROCESSOR ... INSERT INTO ... FROM ...`.
+- **One `CREATE TYPE`** is required (the payload type for `createWAEvent`), and the **WAEUdf library** must be installed.
+
+> Why the createWAEvent UDF: a Striim CQ cannot turn aggregate columns into a `Global.WAEvent` directly (that type has 7 fixed fields -- `data`, `metadata`, `userdata`, ...). The supported way for a CQ to emit a WAEvent is the WAEUdf library's `createWAEvent(typeName, tableName, operation, data[], before[])`, which packages a value array into a WAEvent with a declared Striim type attached. See the Confluence pages "Reconstruct WAEvents (from IBR, File, Queue or test)" and "JsonNodeEvent to WAEvent conversion."
+
+> Single model. This is the penny use case (one pooled `Penny_All` model). The multi-combo volume use case (per network/transaction-type models) is covered in the notebooks and is not what this pipeline deploys.
 
 ---
 
 ## Table of Contents
 
 1. [Prerequisites](#1-prerequisites)
-2. [Deploy to Striim](#2-deploy-to-striim)
-3. [Wire the Open Processor in Flow Designer](#3-wire-the-open-processor-in-flow-designer)
-4. [Run and Verify](#4-run-and-verify)
-5. [Results](#5-results)
-6. [Teardown and Re-runs](#6-teardown-and-re-runs)
+2. [Install the WAEUdf Library](#2-install-the-waeudf-library)
+3. [Build and Stage the Open Processor](#3-build-and-stage-the-open-processor)
+4. [Stage the Model and Data](#4-stage-the-model-and-data)
+5. [Load, Deploy, and Run](#5-load-deploy-and-run)
+6. [Verify](#6-verify)
+7. [Teardown and Re-runs](#7-teardown-and-re-runs)
+8. [Retraining / Model Updates](#8-retraining--model-updates)
 
 ---
 
@@ -27,342 +36,127 @@ This uses the **typed-stream approach** (not the WAEvent pass-through pattern) b
 
 | Requirement | Detail |
 |---|---|
-| Striim Platform | 5.2.0.4, installed at `$STRIIM_HOME` (e.g. `/opt/Striim`) |
-| Java | OpenJDK 11 |
+| Striim Platform | 5.2.0.4, installed at `$STRIIM_HOME` (e.g. `/opt/Striim`), OpenJDK 11 |
+| WAEUdf library | The WAEvent UDF add-on JAR (provides `com.webaction.helpers.WAEUdf`) -- see step 2 |
+| Maven + JDK 11 | to build the Open Processor |
+| Penny model bundle | `models/fcvae/Penny_All/` (`model.onnx` + `model.onnx.data` + `model_config.json`), from `code/5_export_onnx.py` |
+| Penny data | `data/synthetic_transactions.csv` (7-column penny dataset incl. `amount`) |
 
-**No Python or scoring API required.** The ONNX Runtime scorer runs entirely in-process.
-
-Set `STRIIM_HOME`:
-
-```bash
-export STRIIM_HOME="/opt/Striim"
-```
-
-Pre-built artifacts in this repo:
-
-| Artifact | Path | Purpose |
-|---|---|---|
-| OP module (.scm) | `striim/fcvae-onnx-scorer/target/FCVAEOnnxScorer.jar` | Striim Open Processor (fat JAR, ONNX Runtime + Gson shaded in) |
-| Types JAR | `striim/fcvae-onnx-scorer/target/fcvae_onnx-types.jar` | Type classes for `$STRIIM_HOME/lib/` (`wa.fcvae_onnx` package) |
-| TQL | `striim/FCVAE.tql` | Striim application definition (base -- adjust namespace references) |
-| Models | `models/fcvae/{Penny_All,Accel_CMP,Accel_nopin,Star_CMP,Star_nopin}/` | ONNX model files + configs |
-| Data | `data/synthetic_transactions_phase2.csv` | Synthetic transaction data (~27.5 hours, 4 combos) |
-
-The Open Processor and types JAR are pre-built. You do not need to compile anything.
+The runtime WAEvent class (`com.webaction.proc.events.WAEvent`) lives in `$STRIIM_HOME/lib/Common-5.2.0.4.jar`; the build resolves it system-scoped from the install (see `pom.xml`). ONNX Runtime's native libraries are bundled inside the `.scm` fat JAR, so nothing else is needed on the host for the OP itself.
 
 ---
 
-## 2. Deploy to Striim
+## 2. Install the WAEUdf Library
 
-This pipeline uses typed streams, which requires the **JAR removal trick**: the types JAR must be absent from `lib/` when creating types (to avoid "class already exists" errors), then restored before loading the OP.
+The `createWAEvent` UDF that converts the aggregated row to a `Global.WAEvent` comes from the WAEUdf library, which is **not installed by default**.
 
-### 2.1 Copy model files
+1. Download the WAEUdf binaries: https://webaction.atlassian.net/wiki/spaces/SE/pages/2318336001
+2. Copy the JAR into `$STRIIM_HOME/lib/`.
+3. Restart Striim so the class loads.
+4. Confirm it is on the classpath:
 
 ```bash
+find $STRIIM_HOME/lib -name '*.jar' -exec sh -c \
+  'jar tf "{}" 2>/dev/null | grep -q "com/webaction/helpers/WAEUdf" && echo "FOUND in {}"' \;
+```
+
+If this prints nothing, the UDF is not installed and the `PennyToWaevent` CQ will fail to compile.
+
+---
+
+## 3. Build and Stage the Open Processor
+
+```bash
+cd striim/fcvae-onnx-scorer
+./build.sh
+```
+
+This runs `mvn clean package` (shading ONNX Runtime + Gson into the fat JAR), clears any stale cache copy, and stages the module at `$STRIIM_HOME/UploadedFiles/FCVAEOnnxScorer.scm` (plus a committed repo copy).
+
+Sanity-check the artifact:
+
+```bash
+unzip -p $STRIIM_HOME/UploadedFiles/FCVAEOnnxScorer.scm META-INF/MANIFEST.MF | grep Striim
+unzip -l $STRIIM_HOME/UploadedFiles/FCVAEOnnxScorer.scm | grep -E 'ai/onnxruntime|wa/fcvae_onnx' | head
+```
+
+Expect the three `Striim-*` manifest entries and `ai/onnxruntime/...` classes, and **no** `wa/fcvae_onnx/...` entries.
+
+---
+
+## 4. Stage the Model and Data
+
+```bash
+# Single penny model bundle:
 mkdir -p /opt/Striim/fcvae-models
 cp -r models/fcvae/Penny_All /opt/Striim/fcvae-models/
-cp -r models/fcvae/Accel_CMP /opt/Striim/fcvae-models/
-cp -r models/fcvae/Accel_nopin /opt/Striim/fcvae-models/
-cp -r models/fcvae/Star_CMP /opt/Striim/fcvae-models/
-cp -r models/fcvae/Star_nopin /opt/Striim/fcvae-models/
+
+# Isolated input/output dir (NOT the production app's dir):
+mkdir -p /tmp/fcvae_onnx_penny_test
 ```
 
-Each subdirectory must contain `model.onnx`, `model.onnx.data`, and `model_config.json`.
+`/opt/Striim/fcvae-models/Penny_All/` must contain `model.onnx`, `model.onnx.data`, and `model_config.json`. Do not copy the CSV in yet (FileReader processes files already present at start; copy it after the app is running -- see step 5).
 
-### 2.2 Install artifacts and stop Striim
+---
 
-```bash
-cp striim/fcvae-onnx-scorer/target/FCVAEOnnxScorer.jar $STRIIM_HOME/modules/FCVAEOnnxScorer.scm
-cp striim/fcvae-onnx-scorer/target/fcvae_onnx-types.jar $STRIIM_HOME/lib/fcvae_onnx-types.jar
-```
-
-If Striim is running, stop it with Ctrl+C.
-
-### 2.3 JAR removal trick
-
-```bash
-mv $STRIIM_HOME/lib/fcvae_onnx-types.jar /tmp/fcvae_onnx-types.jar
-$STRIIM_HOME/bin/server.sh
-```
-
-### 2.4 Create namespace, types, and import TQL
+## 5. Load, Deploy, and Run
 
 In the Striim console:
 
 ```sql
-CREATE NAMESPACE fcvae_onnx;
-USE fcvae_onnx;
+-- 1. Load the pass-through OP (registers in the Global namespace).
+LOAD OPEN PROCESSOR 'UploadedFiles/FCVAEOnnxScorer.scm';
+LIST OPENPROCESSORS;   -- confirm FCVAEOnnxScorer is listed
 
-CREATE TYPE ScorerResult (
-  combo_key     String,
-  is_anomaly    String,
-  anomaly_score String,
-  threshold     String,
-  window_end    String
-);
-
-CREATE TYPE DailyPayloadStream_Type (
-  combo_key    String,
-  values_list  String,
-  window_size  Integer,
-  window_start java.lang.String,
-  window_end   java.lang.String
-);
+-- 2. Import striim/FCVAE_ONNX.tql. It creates namespace fcvae_onnx, the
+--    PennyPayloadType, and app FCVAEOnnxPenny. Then:
+DEPLOY APPLICATION fcvae_onnx.FCVAEOnnxPenny;
+START  APPLICATION fcvae_onnx.FCVAEOnnxPenny;
 ```
 
-Then paste the contents of `striim/FCVAE_ONNX.tql` into the console (everything from `CREATE APPLICATION FCVAE` through `END APPLICATION FCVAE`).
-
-### 2.5 Restore types JAR, restart, and load OP
-
-Stop Striim with Ctrl+C, then:
+Then feed data (after the app is running, so FileReader picks it up):
 
 ```bash
-mv /tmp/fcvae_onnx-types.jar $STRIIM_HOME/lib/fcvae_onnx-types.jar
-$STRIIM_HOME/bin/server.sh
+cp data/synthetic_transactions.csv /tmp/fcvae_onnx_penny_test/
 ```
 
-In the Striim console:
+---
+
+## 6. Verify
+
+```bash
+# Scored windows land here as JSON:
+ls -la /tmp/fcvae_onnx_penny_test/penny_scored_output*
+cat    /tmp/fcvae_onnx_penny_test/penny_scored_output*
+```
+
+Each record carries `combo_key` (always `Penny_All`), `window_end`, `is_anomaly`, `anomaly_score`, `threshold`. In the Striim console, confirm:
+
+- The OP loaded the penny model (`FCVAEOnnxScorer loaded penny model from ...`).
+- The `PennyToWaevent` CQ compiled (i.e. WAEUdf is installed) and `PennyDailyPayloadStream` carries events.
+- The production app is untouched: `LIST APPLICATIONS;` shows `fcvae.FCVAE` still in its prior state.
+- **No-API proof:** stop the FastAPI service entirely -- this pipeline keeps scoring, because inference is in-process.
+
+Parity sanity: for a few windows, the `is_anomaly` / `anomaly_score` should match the `fcvae` HTTP penny app on the same input, consistent with the 99.9%+ PyTorch-vs-ONNX decision agreement validated by `code/5_export_onnx.py`.
+
+---
+
+## 7. Teardown and Re-runs
 
 ```sql
-USE fcvae_onnx;
-LOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEOnnxScorer.scm";
+STOP     APPLICATION fcvae_onnx.FCVAEOnnxPenny;
+UNDEPLOY APPLICATION fcvae_onnx.FCVAEOnnxPenny;
+-- To rebuild the OP: UNLOAD, restage, reLOAD (full Striim restart before reload
+-- avoids the ZLIB OpenProcessor-cache issue noted in CLAUDE.md).
+UNLOAD OPEN PROCESSOR 'UploadedFiles/FCVAEOnnxScorer.scm';
 ```
 
-Verify:
-
-```sql
-LIST OPENPROCESSORS;
-```
+FileReader tracks files by name + offset. To re-feed, use a fresh filename suffix (e.g. `synthetic_transactions_run2.csv`; the wildcard `synthetic_transactions*.csv` already matches it) or clear `/tmp/fcvae_onnx_penny_test/` between runs.
 
 ---
 
-## 3. Wire the Open Processor in Flow Designer
+## 8. Retraining / Model Updates
 
-1. In the Striim web UI, open `fcvae_onnx.FCVAE` in **Flow Designer**
-2. Drag **Open Processor** from Base Components into the workspace
-3. Configure:
-   - **Module:** `FCVAEOnnxScorer`
-   - **Input Stream:** `DailyPayloadStream`
-   - **Output Stream:** `ScorerResultStream`
-   - **modelsDir:** `/opt/Striim/fcvae-models` (default, change if models are elsewhere)
-4. Click **Save**
+Training is unchanged (Python). Re-export with `code/5_export_onnx.py` to produce a new penny bundle, stage it under `/opt/Striim/fcvae-models/Penny_All/` (optionally version it as `Penny_All/vN/` and point `ModelDir` at the new path), and restart the app to pick it up. The scorer loads the model once in `start()`.
 
----
-
-## 4. Run and Verify
-
-### 4.1 Deploy and start
-
-```sql
-USE fcvae_onnx;
-DEPLOY APPLICATION fcvae_onnx.FCVAE;
-START APPLICATION fcvae_onnx.FCVAE;
-```
-
-### 4.2 Copy data file (after app is running)
-
-```bash
-mkdir -p /tmp/fcvae_test
-cp data/synthetic_transactions_phase2.csv /tmp/fcvae_test/
-```
-
-### 4.3 Monitor
-
-Check that ONNX models loaded successfully:
-
-```bash
-grep "FCVAEOnnxScorer" $STRIIM_HOME/logs/striim.server.log | head -20
-```
-
-Should show 5 models loaded with their thresholds. Then check output:
-
-```bash
-cat /tmp/fcvae_test/scored_output.00
-```
-
----
-
-## 5. Results
-
-With `synthetic_transactions_phase2.csv` (~50,000 rows, ~27.5 hours, 4 combos):
-
-| Metric | Value |
-|---|---|
-| Combos scored | 4 (Accel_CMP, Accel_nopin, Star_CMP, Star_nopin) |
-| Windows per combo | ~3-4 (sliding window emits after 24 hourly counts) |
-| Threshold | Per-combo (NLL-based, F1-calibrated) |
-
-### Example JSON output
-
-```json
-{
-  "combo_key": "Star_CMP",
-  "is_anomaly": "false",
-  "anomaly_score": "-0.31990835",
-  "threshold": "-1.756",
-  "window_end": "2025/02/25 23:01:02.000"
-}
-```
-
-All four combos should appear in the output. With normal synthetic data, scores are above their respective thresholds (not anomalous).
-
-### Result parity with HTTP sidecar
-
-The ONNX scores should match the HTTP sidecar scores within tolerance (max absolute diff < 1e-3 for most windows, < 1.0 for edge cases due to FFT numerical differences). Same anomaly decisions expected.
-
----
-
-## 6. Teardown and Re-runs
-
-### Stop the application
-
-```sql
-USE fcvae_onnx;
-STOP APPLICATION fcvae_onnx.FCVAE;
-UNDEPLOY APPLICATION fcvae_onnx.FCVAE;
-```
-
-### Re-run with same data
-
-```bash
-rm -f /tmp/fcvae_test/scored_output*
-rm -f /tmp/fcvae_test/synthetic_transactions*.csv
-```
-
-Then redeploy and start, and copy data with a new filename:
-
-```sql
-DEPLOY APPLICATION fcvae_onnx.FCVAE;
-START APPLICATION fcvae_onnx.FCVAE;
-```
-
-```bash
-cp data/synthetic_transactions_phase2.csv /tmp/fcvae_test/synthetic_transactions_phase2_run2.csv
-```
-
-### Full reset
-
-```sql
-USE fcvae_onnx;
-STOP APPLICATION fcvae_onnx.FCVAE;
-UNDEPLOY APPLICATION fcvae_onnx.FCVAE;
-DROP APPLICATION fcvae_onnx.FCVAE CASCADE;
-DROP TYPE fcvae_onnx.ScorerResult;
-DROP TYPE fcvae_onnx.DailyPayloadStream_Type;
-USE admin;
-UNLOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEOnnxScorer.scm";
-DROP NAMESPACE fcvae_onnx;
-```
-
-Stop Striim, then:
-
-```bash
-rm -f $STRIIM_HOME/.striim/OpenProcessor/FCVAEOnnxScorer.scm
-rm -f $STRIIM_HOME/modules/FCVAEOnnxScorer.scm
-rm -f $STRIIM_HOME/lib/fcvae_onnx-types.jar
-rm -f /tmp/fcvae_test/scored_output*
-rm -f /tmp/fcvae_test/synthetic_transactions*.csv
-rm -rf /opt/Striim/fcvae-models
-$STRIIM_HOME/bin/server.sh
-```
-
-Then start from [Step 2](#2-deploy-to-striim).
-
----
-
-## Deployment Order (Quick Reference)
-
-```
- 1. Copy model directories        cp -r models/fcvae/* /opt/Striim/fcvae-models/
- 2. Copy .scm + types JAR         cp to $STRIIM_HOME/modules/ and $STRIIM_HOME/lib/
- 3. Stop Striim                   Ctrl+C
- 4. Remove types JAR              mv $STRIIM_HOME/lib/fcvae_onnx-types.jar /tmp/
- 5. Start Striim                  $STRIIM_HOME/bin/server.sh
- 6. CREATE types                  CREATE NAMESPACE fcvae_onnx; USE fcvae_onnx; CREATE TYPE ...
- 7. Paste TQL                     CREATE APPLICATION FCVAE; ... END APPLICATION;
- 8. Stop Striim                   Ctrl+C
- 9. Restore types JAR             mv /tmp/fcvae_onnx-types.jar $STRIIM_HOME/lib/
-10. Start Striim                  $STRIIM_HOME/bin/server.sh
-11. LOAD OP                       LOAD OPEN PROCESSOR "/opt/Striim/modules/FCVAEOnnxScorer.scm";
-12. Wire OP in Flow Designer      DailyPayloadStream -> FCVAEOnnxScorer -> ScorerResultStream
-13. Deploy + Start + Data         DEPLOY; START; cp data to /tmp/fcvae_test/
-```
-
----
-
-## Data Flow
-
-```
-TxnFileSource (FileReader + DSVParser, watches /tmp/fcvae_test/)
-    |
-    v
-RawTxnStream (WAEvent: data[0]=timestamp, data[1]=network, data[2]=txn_type, ...)
-    |
-    v
-ParseTransactions CQ (builds combo_key = network + "_" + txn_type, parses timestamp)
-    |
-    v
-TypedTxnStream (combo_key, txn_timestamp)
-    |
-    v
-HourlyWindow (1-hour jumping, PARTITION BY combo_key, ON txn_timestamp)
-    |
-    v
-HourlyCounts CQ (COUNT per combo per hour)
-    |
-    v
-HourlyCountStream (combo_key, txn_count, hour_start, hour_end)
-    |
-    v
-DailyWindow (KEEP 24 ROWS, PARTITION BY combo_key)
-    |
-    v
-AssembleDailyPayload CQ (LIST() of 24 counts, HAVING COUNT >= 24)
-    |
-    v
-DailyPayloadStream OF fcvae_onnx.DailyPayloadStream_Type
-    |
-    v
-FCVAEOnnxScorer OP (in-process ONNX Runtime inference)
-    |
-    v
-ScorerResultStream OF fcvae_onnx.ScorerResult
-    |
-    v
-ResultFile (FileWriter + JSONFormatter -> /tmp/fcvae_test/scored_output)
-```
-
----
-
-## Coexistence with HTTP Sidecar
-
-This ONNX deployment (`fcvae_onnx` namespace) is fully independent of the HTTP sidecar deployment (`fcvae` namespace). Both can run on the same Striim instance simultaneously:
-
-| | HTTP Sidecar | ONNX Runtime |
-|---|---|---|
-| Namespace | `fcvae` | `fcvae_onnx` |
-| Application | `fcvae.FCVAE` | `fcvae_onnx.FCVAE` |
-| OP module | `FCVAEScoreCaller` | `FCVAEOnnxScorer` |
-| Types JAR | `fcvae_types.jar` | `fcvae_onnx-types.jar` |
-| Python required | Yes | No |
-
----
-
-## Environment Reference
-
-| Component | Detail |
-|---|---|
-| Striim Platform | 5.2.0.4 at `$STRIIM_HOME` |
-| Scoring | In-process ONNX Runtime (no external API) |
-| Namespace | `fcvae_onnx` |
-| Application | `fcvae_onnx.FCVAE` |
-| OP module | `FCVAEOnnxScorer` |
-| Models dir | `/opt/Striim/fcvae-models/` (configurable via `modelsDir` property) |
-| Types JAR | `$STRIIM_HOME/lib/fcvae_onnx-types.jar` (must be present at boot) |
-| Data file | `data/synthetic_transactions_phase2.csv` (copy to `/tmp/fcvae_test/` after app starts) |
-| Output | `/tmp/fcvae_test/scored_output.00`, `.01`, etc. |
-| Striim logs | `$STRIIM_HOME/logs/striim.server.log` |
-| Window sizes | 1-hour jumping (aggregation), 24-row sliding (payload assembly) |
-| Partitioning | `combo_key` (4 combos: Accel_CMP, Accel_nopin, Star_CMP, Star_nopin) |
-| Scoring | NLL-based, F1-calibrated per-combo thresholds, ONNX float32 inference |
-| Annotation types | `DailyPayloadStream_Type_1_0` (input), `ScorerResult_1_0` (output) — in `wa.fcvae_onnx` package |
+> Roadmap note: Striim has a funded functional spec ("ML Inferencing Pipelines," ticket DEV-58023) for first-class in-process ONNX via `CREATE MODEL ... USING FileProvider(...)` + an `INFER USING model(...)` CQ clause -- which would replace this OP + createWAEvent plumbing with native Tungsten syntax. This pipeline is a working precursor of that design.

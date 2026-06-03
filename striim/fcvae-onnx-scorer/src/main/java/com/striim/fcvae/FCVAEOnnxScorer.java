@@ -4,10 +4,8 @@ import com.webaction.anno.AdapterType;
 import com.webaction.anno.PropertyTemplate;
 import com.webaction.anno.PropertyTemplateProperty;
 import com.webaction.runtime.components.openprocessor.StriimOpenProcessor;
-import com.webaction.runtime.containers.WAEvent;
 import com.webaction.runtime.containers.IBatch;
-import wa.fcvae_onnx.ScorerResult_1_0;
-import wa.fcvae_onnx.DailyPayloadStream_Type_1_0;
+import com.webaction.runtime.containers.WAEvent;
 
 import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
@@ -22,278 +20,257 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.Objects;
 
 /**
- * Striim Open Processor that scores FCVAE windows using ONNX Runtime.
+ * FCVAEOnnxScorer -- in-process FCVAE penny-carding anomaly scoring via ONNX Runtime.
  *
- * Replaces FCVAEScoreCaller (HTTP sidecar) with in-process ONNX inference.
- * Loads .onnx model files and model_config.json directly, runs inference
- * via ONNX Runtime's Java JNI bindings. No Python dependency.
+ * <p>Replaces the FCVAEScoreCaller HTTP sidecar (POST to a Python FastAPI
+ * service) with in-process ONNX inference through ONNX Runtime's Java JNI
+ * bindings. No Python dependency, no network hop.
  *
- * Input WAEvent.data is expected to be an Object with fields accessible
- * as an array. The upstream CQ should produce events with:
- *   data[0] = combo_key    (String, e.g. "Accel_CMP")
- *   data[1] = values_list  (String, LIST() of 24 hourly counts, comma-separated)
- *   data[2] = window_size  (Integer, always 24)
+ * <p>This is the PENNY use case: a single pooled model ("Penny_All") that scores
+ * a pre-assembled 24-hour window of penny-transaction (amount &lt; $1) hourly
+ * counts. The windowing is done UPSTREAM by Striim CQs; the assembled row is
+ * converted to a {@code Global.WAEvent} by the WAEUdf {@code createWAEvent} UDF
+ * and handed to this pass-through OP. So the OP itself is stateless -- it just
+ * scores the 24-vector it receives.
+ *
+ * <p>This is a WAEvent pass-through Open Processor (the recommended pattern in
+ * CLAUDE.md). Input and output are both the runtime WAEvent class, so the OP is
+ * wired directly in TQL with {@code CREATE OPEN PROCESSOR ... INSERT INTO ...
+ * FROM ...} -- no types JAR, no JAR-removal trick.
+ *
+ * <p>The incoming WAEvent's data[] (set by the upstream createWAEvent CQ) holds:
+ * <pre>
+ *   data[0] = combo_key    (String, "Penny_All")
+ *   data[1] = values_list  (String, LIST() of 24 hourly penny counts, comma-separated)
+ *   data[2] = window_size  (String, "24")
  *   data[3] = window_start (String, timestamp of first hour)
  *   data[4] = window_end   (String, timestamp of last hour)
+ * </pre>
  *
- * Output is a typed ScorerResult_1_0 with:
- *   combo_key, is_anomaly, anomaly_score, threshold, window_end
+ * <p>The OP applies the model's StandardScaler, runs inference to get the
+ * per-point NLL, thresholds the last point, and APPENDS the result to data[]
+ * (a Striim formatter cannot read userdata, so results must live in data[]):
+ * <pre>
+ *   data[5] = is_anomaly    (String "true"/"false")
+ *   data[6] = anomaly_score (String, last-point NLL)
+ *   data[7] = threshold     (String, last_point_threshold)
+ * </pre>
+ * The same three values are mirrored into userdata for live SysOut. A downstream
+ * CQ projects data[0,4,5,6,7] into named fields for the JSONFormatter target.
  */
 @PropertyTemplate(
     name = "FCVAEOnnxScorer",
     type = AdapterType.process,
     properties = {
-        @PropertyTemplateProperty(
-            name = "modelsDir",
-            type = String.class,
-            required = false,
-            defaultValue = "/opt/Striim/fcvae-models"
-        )
+        @PropertyTemplateProperty(name = "ModelDir", type = String.class, required = false,
+                defaultValue = "/opt/Striim/fcvae-models/Penny_All"),
+        @PropertyTemplateProperty(name = "ValuesIndex", type = Integer.class, required = false,
+                defaultValue = "1"),
+        @PropertyTemplateProperty(name = "ComboKeyIndex", type = Integer.class, required = false,
+                defaultValue = "0"),
+        @PropertyTemplateProperty(name = "WindowEndIndex", type = Integer.class, required = false,
+                defaultValue = "4"),
+        @PropertyTemplateProperty(name = "EnableLogging", type = Boolean.class, required = false,
+                defaultValue = "false")
     },
-    outputType = DailyPayloadStream_Type_1_0.class,
-    inputType = ScorerResult_1_0.class
+    outputType = com.webaction.proc.events.WAEvent.class,
+    inputType  = com.webaction.proc.events.WAEvent.class
 )
 public class FCVAEOnnxScorer extends StriimOpenProcessor {
 
     private static final Logger logger = LogManager.getLogger(FCVAEOnnxScorer.class);
-    private static final String[] MODEL_NAMES = {
-        "Penny_All", "Accel_CMP", "Accel_nopin", "Star_CMP", "Star_nopin"
-    };
-    private static final String DEFAULT_MODEL = "Penny_All";
 
-    private String modelsDir;
+    // Configuration (read in start()).
+    private String modelDir;
+    private int valuesIndex;
+    private int comboKeyIndex;
+    private int windowEndIndex;
+    private boolean enableLogging;
+
+    // ONNX Runtime state, built once in start().
     private OrtEnvironment ortEnv;
-    private Map<String, LoadedModel> models;
+    private OrtSession session;
+    private ModelConfig config;
 
-    private static class LoadedModel {
-        final OrtSession session;
-        final ModelConfig config;
+    @Override
+    public void start() throws Exception {
+        super.start();
+        final java.util.Map<String, Object> props = getProperties();
+        modelDir = orDefault(props.get("ModelDir"), "/opt/Striim/fcvae-models/Penny_All");
+        valuesIndex = parseInt(props.get("ValuesIndex"), 1);
+        comboKeyIndex = parseInt(props.get("ComboKeyIndex"), 0);
+        windowEndIndex = parseInt(props.get("WindowEndIndex"), 4);
+        enableLogging = Boolean.parseBoolean(Objects.toString(props.get("EnableLogging"), "false"));
+        loadModel();
+    }
 
-        LoadedModel(OrtSession session, ModelConfig config) {
-            this.session = session;
-            this.config = config;
+    /** Loads the single penny ONNX session + config once at startup. */
+    private void loadModel() throws IOException, OrtException {
+        final File dir = new File(modelDir);
+        final File configFile = new File(dir, "model_config.json");
+        final File onnxFile = new File(dir, "model.onnx");
+        if (!configFile.exists() || !onnxFile.exists()) {
+            throw new RuntimeException("Penny model not found in " + modelDir
+                + " (need model.onnx + model_config.json)");
         }
+        try (FileReader reader = new FileReader(configFile)) {
+            config = new Gson().fromJson(reader, ModelConfig.class);
+        }
+        ortEnv = OrtEnvironment.getEnvironment();
+        // ONNX 2.0 keeps weights in a sibling model.onnx.data file; ORT resolves
+        // it relative to the .onnx path, so load by absolute path.
+        session = ortEnv.createSession(onnxFile.getAbsolutePath());
+        logger.info("FCVAEOnnxScorer loaded penny model from {} (threshold={}, mean={}, scale={})",
+            modelDir, config.thresholds.last_point_threshold,
+            config.scaler.mean, config.scaler.scale);
     }
 
     @Override
     public void run() {
-        if (models == null) {
-            initialize();
+        final IBatch<WAEvent> batch = getAdded();
+        if (batch == null) {
+            return;
         }
-
-        IBatch<WAEvent> batch = getAdded();
-        if (batch == null) return;
-
-        Iterator<WAEvent> it = batch.iterator();
-        while (it.hasNext()) {
-            WAEvent inputEvent = it.next();
-
-            try {
-                Object eventData = inputEvent.data;
-                String comboKey;
-                String valuesJson;
-                String windowEnd;
-
-                // Unwrap nested WAEvent if needed
-                if (eventData != null && eventData.getClass().getName().contains("WAEvent")) {
-                    try {
-                        java.lang.reflect.Field dataField = eventData.getClass().getField("data");
-                        Object innerData = dataField.get(eventData);
-                        logger.info("Unwrapped nested WAEvent ({}), inner data type: {}",
-                            eventData.getClass().getName(),
-                            innerData != null ? innerData.getClass().getName() : "null");
-                        eventData = innerData;
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        logger.error("Failed to unwrap WAEvent: {}", e.getMessage());
-                    }
-                }
-
-                if (eventData instanceof Object[]) {
-                    Object[] arr = (Object[]) eventData;
-                    comboKey = arr.length > 0 ? String.valueOf(arr[0]).trim() : "";
-                    String rawValues = arr.length > 1 ? String.valueOf(arr[1]).trim() : "[]";
-                    windowEnd = arr.length > 4 ? String.valueOf(arr[4]).trim() : "";
-                    valuesJson = normalizeValuesList(rawValues);
-                } else {
-                    try {
-                        java.lang.reflect.Field f0 = eventData.getClass().getField("combo_key");
-                        java.lang.reflect.Field f1 = eventData.getClass().getField("values_list");
-                        java.lang.reflect.Field f2 = eventData.getClass().getField("window_end");
-                        comboKey = String.valueOf(f0.get(eventData)).trim();
-                        String rawValues = String.valueOf(f1.get(eventData)).trim();
-                        windowEnd = String.valueOf(f2.get(eventData)).trim();
-                        valuesJson = normalizeValuesList(rawValues);
-                    } catch (NoSuchFieldException e) {
-                        logger.error("Cannot extract fields from event data of type: {}",
-                            eventData.getClass().getName());
-                        continue;
-                    }
-                }
-
-                // Map combo_key to model name; unrecognized combos fall back to Penny_All
-                String modelName = models.containsKey(comboKey) ? comboKey : DEFAULT_MODEL;
-                LoadedModel loaded = models.get(modelName);
-                if (loaded == null) {
-                    logger.error("No model loaded for combo={}, modelName={}", comboKey, modelName);
-                    continue;
-                }
-
-                // Parse values and normalize
-                float[] rawValues = parseValues(valuesJson);
-                float[] normalized = new float[rawValues.length];
-                float mean = (float) loaded.config.scaler.mean;
-                float scale = (float) loaded.config.scaler.scale;
-                for (int i = 0; i < rawValues.length; i++) {
-                    normalized[i] = (rawValues[i] - mean) / scale;
-                }
-
-                // Create tensor of shape (1, 1, 24)
-                float[][][] inputArray = new float[1][1][normalized.length];
-                System.arraycopy(normalized, 0, inputArray[0][0], 0, normalized.length);
-
-                // Run ONNX inference
-                OnnxTensor inputTensor = OnnxTensor.createTensor(ortEnv, inputArray);
-                try {
-                    OrtSession.Result result = loaded.session.run(
-                        Collections.singletonMap(loaded.config.onnx.input_name, inputTensor));
-                    try {
-                        float[][] nllScores = (float[][]) result.get(loaded.config.onnx.output_name)
-                            .get().getValue();
-                        float lastPointScore = nllScores[0][23];
-                        boolean isAnomaly = lastPointScore < loaded.config.thresholds.last_point_threshold;
-
-                        logger.info("Scored combo={}, model={}, is_anomaly={}, score={}, threshold={}",
-                            comboKey, modelName, isAnomaly, lastPointScore,
-                            loaded.config.thresholds.last_point_threshold);
-
-                        ScorerResult_1_0 scorerResult = new ScorerResult_1_0();
-                        scorerResult.combo_key = comboKey;
-                        scorerResult.is_anomaly = String.valueOf(isAnomaly);
-                        scorerResult.anomaly_score = String.valueOf(lastPointScore);
-                        scorerResult.threshold = String.valueOf(loaded.config.thresholds.last_point_threshold);
-                        scorerResult.window_end = windowEnd;
-
-                        send(scorerResult);
-                    } finally {
-                        result.close();
-                    }
-                } finally {
-                    inputTensor.close();
-                }
-
-            } catch (Exception e) {
-                logger.error("Error processing event: {}", e.getMessage(), e);
-            }
-        }
-    }
-
-    private void initialize() {
-        if (modelsDir == null || modelsDir.isEmpty()) {
-            modelsDir = "/opt/Striim/fcvae-models";
-            logger.warn("modelsDir was null/empty, using default: {}", modelsDir);
-        }
-
-        try {
-            ortEnv = OrtEnvironment.getEnvironment();
-            logger.info("OrtEnvironment created successfully.");
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create OrtEnvironment", e);
-        }
-
-        models = new HashMap<>();
-        Gson gson = new Gson();
-
-        for (String modelName : MODEL_NAMES) {
-            File modelDir = new File(modelsDir, modelName);
-            File configFile = new File(modelDir, "model_config.json");
-            File onnxFile = new File(modelDir, "model.onnx");
-
-            if (!configFile.exists() || !onnxFile.exists()) {
-                logger.warn("Skipping model {}: config={} onnx={}",
-                    modelName, configFile.exists(), onnxFile.exists());
+        for (final WAEvent event : batch) {
+            // The SDK WAEvent wraps the runtime WAEvent in its data field.
+            final com.webaction.proc.events.WAEvent waevent =
+                    (com.webaction.proc.events.WAEvent) event.data;
+            if (waevent == null || waevent.data == null) {
                 continue;
             }
-
             try {
-                ModelConfig config;
-                try (FileReader reader = new FileReader(configFile)) {
-                    config = gson.fromJson(reader, ModelConfig.class);
-                }
-
-                OrtSession session = ortEnv.createSession(onnxFile.getAbsolutePath());
-                models.put(modelName, new LoadedModel(session, config));
-
-                logger.info("Loaded model: {} (threshold={}, mean={}, scale={})",
-                    modelName,
-                    config.thresholds.last_point_threshold,
-                    config.scaler.mean,
-                    config.scaler.scale);
-
-            } catch (OrtException | IOException e) {
-                logger.error("Failed to load model {}: {}", modelName, e.getMessage(), e);
+                scoreEvent(waevent);
+            } catch (final Exception e) {
+                logger.error("Error scoring event: {}", e.getMessage(), e);
+                continue;   // drop on hard failure rather than emit an unscored window
             }
-        }
-
-        logger.info("FCVAEOnnxScorer initialized. modelsDir={}, models loaded: {}/{}",
-            modelsDir, models.size(), MODEL_NAMES.length);
-
-        if (models.isEmpty()) {
-            throw new RuntimeException("No ONNX models loaded from " + modelsDir);
+            send(waevent);
         }
     }
 
-    private float[] parseValues(String valuesJson) {
-        String cleaned = valuesJson.replaceAll("[\\[\\]]", "").trim();
-        String[] parts = cleaned.split(",");
-        float[] values = new float[parts.length];
+    /** Reads the assembled window from data[], scores it, and appends the result. */
+    private void scoreEvent(final com.webaction.proc.events.WAEvent waevent) throws OrtException {
+        final Object[] data = waevent.data;
+        final String comboKey = stringAt(data, comboKeyIndex, "Penny_All");
+        final String windowEnd = stringAt(data, windowEndIndex, "");
+        final float[] rawValues = parseValues(stringAt(data, valuesIndex, ""));
+
+        // StandardScaler: (x - mean) / scale.
+        final float mean = (float) config.scaler.mean;
+        final float scale = (float) config.scaler.scale;
+        final float[][][] inputArray = new float[1][1][rawValues.length];
+        for (int i = 0; i < rawValues.length; i++) {
+            inputArray[0][0][i] = (rawValues[i] - mean) / scale;
+        }
+
+        final float lastPointScore;
+        try (OnnxTensor inputTensor = OnnxTensor.createTensor(ortEnv, inputArray);
+             OrtSession.Result result = session.run(
+                 Collections.singletonMap(config.onnx.input_name, inputTensor))) {
+            final float[][] nll = (float[][]) result.get(config.onnx.output_name).get().getValue();
+            lastPointScore = nll[0][nll[0].length - 1];   // last point = scored hour
+        }
+
+        final double threshold = config.thresholds.last_point_threshold;
+        final boolean isAnomaly = lastPointScore < threshold;
+
+        if (enableLogging) {
+            logger.info("Scored combo={} is_anomaly={} score={} threshold={} window_end={}",
+                comboKey, isAnomaly, lastPointScore, threshold, windowEnd);
+        }
+        appendResult(waevent, isAnomaly, lastPointScore, threshold);
+    }
+
+    /**
+     * Appends the scoring result to data[] (data[5..7]) so a downstream CQ and
+     * JSONFormatter can capture it, and mirrors it into userdata for SysOut.
+     */
+    private void appendResult(final com.webaction.proc.events.WAEvent waevent,
+                              final boolean isAnomaly,
+                              final float anomalyScore,
+                              final double threshold) {
+        final String isAnomalyStr = String.valueOf(isAnomaly);
+        final String scoreStr = String.valueOf(anomalyScore);
+        final String thresholdStr = String.valueOf(threshold);
+
+        final Object[] grown = Arrays.copyOf(waevent.data, waevent.data.length + 3);
+        grown[grown.length - 3] = isAnomalyStr;
+        grown[grown.length - 2] = scoreStr;
+        grown[grown.length - 1] = thresholdStr;
+        waevent.data = grown;
+
+        if (waevent.userdata == null) {
+            waevent.userdata = new HashMap<>();
+        }
+        waevent.userdata.put("is_anomaly", isAnomalyStr);
+        waevent.userdata.put("anomaly_score", scoreStr);
+        waevent.userdata.put("threshold", thresholdStr);
+    }
+
+    private static String stringAt(final Object[] data, final int idx, final String fallback) {
+        if (idx >= 0 && idx < data.length && data[idx] != null) {
+            return String.valueOf(data[idx]).trim();
+        }
+        return fallback;
+    }
+
+    /**
+     * Parses the LIST() values into a float[]. Striim's LIST() yields a
+     * comma-separated string, optionally bracketed and space-padded
+     * ("[100, 102, ...]" or "100, 102, ..."); both are handled.
+     */
+    private static float[] parseValues(final String raw) {
+        final String cleaned = raw.replaceAll("[\\[\\]]", "").trim();
+        if (cleaned.isEmpty()) {
+            return new float[0];
+        }
+        final String[] parts = cleaned.split(",");
+        final float[] values = new float[parts.length];
         for (int i = 0; i < parts.length; i++) {
             values[i] = Float.parseFloat(parts[i].trim());
         }
         return values;
     }
 
-    private String normalizeValuesList(String raw) {
-        if (raw == null || raw.isEmpty()) return "[]";
-        String cleaned = raw.trim();
-        if (cleaned.startsWith("[")) cleaned = cleaned.substring(1);
-        if (cleaned.endsWith("]"))   cleaned = cleaned.substring(0, cleaned.length() - 1);
-        String[] parts = cleaned.split(",");
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < parts.length; i++) {
-            if (i > 0) sb.append(",");
-            sb.append(parts[i].trim());
+    private static String orDefault(final Object v, final String dflt) {
+        final String s = Objects.toString(v, dflt);
+        return s.isEmpty() ? dflt : s;
+    }
+
+    private static int parseInt(final Object v, final int dflt) {
+        try {
+            return Integer.parseInt(Objects.toString(v, String.valueOf(dflt)).trim());
+        } catch (final NumberFormatException e) {
+            return dflt;
         }
-        sb.append("]");
-        return sb.toString();
     }
 
     @Override
     public void close() throws Exception {
-        logger.info("FCVAEOnnxScorer shutting down.");
-        if (models != null) {
-            for (Map.Entry<String, LoadedModel> entry : models.entrySet()) {
-                try {
-                    entry.getValue().session.close();
-                    logger.info("Closed ONNX session for model: {}", entry.getKey());
-                } catch (OrtException e) {
-                    logger.error("Error closing session for {}: {}", entry.getKey(), e.getMessage());
-                }
+        super.close();
+        if (session != null) {
+            try {
+                session.close();
+            } catch (final OrtException e) {
+                logger.error("Error closing ONNX session: {}", e.getMessage());
             }
         }
         if (ortEnv != null) {
             ortEnv.close();
         }
+        logger.info("FCVAEOnnxScorer closed.");
     }
 
+    // Stateless: the window is assembled upstream in Striim CQs.
     @Override
-    public Map getAggVec() { return null; }
+    public java.util.Map getAggVec() { return null; }
 
     @Override
-    public void setAggVec(Map aggVec) { }
+    public void setAggVec(final java.util.Map aggVec) { }
 }
