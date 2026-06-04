@@ -95,6 +95,7 @@ uv.lock
 # Striim OP build artifacts (reproducible via build.sh)
 striim/fcvae-onnx-scorer/target/
 striim/fcvae-onnx-scorer/*.scm
+striim/DEMO.md
 
 # Local working notes / scratch (not part of the tracked project)
 CLAUDE.md
