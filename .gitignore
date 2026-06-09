@@ -94,7 +94,10 @@ uv.lock
 
 # Striim OP build artifacts (reproducible via build.sh)
 striim/fcvae-onnx-scorer/target/
+# NOTE: FCVAEOnnxScorer.scm (86 MB fat JAR) is committed so the OP can be run
+# without a local Maven/JDK build. Other .scm files stay ignored.
 striim/fcvae-onnx-scorer/*.scm
+!striim/fcvae-onnx-scorer/FCVAEOnnxScorer.scm
 striim/DEMO.md
 
 # Local working notes / scratch (not part of the tracked project)
